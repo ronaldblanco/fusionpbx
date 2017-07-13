@@ -35,14 +35,14 @@
 	--luarun app.lua app_name 'a' 'b 123' 'c'
 
 --for loop through arguments
-	arguments = "";
-	for key,value in pairs(argv) do
-		if (key > 1) then
-			arguments = arguments .. " '" .. value .. "'";
-			--freeswitch.consoleLog("notice", "[app.lua] argv["..key.."]: "..argv[key].."\n");
-		end
-	end
+	-- arguments = "";
+	-- for key,value in pairs(argv) do
+	-- 	if (key > 1) then
+	-- 		arguments = arguments .. " '" .. value .. "'";
+	-- 		--freeswitch.consoleLog("notice", "[app.lua] argv["..key.."]: "..argv[key].."\n");
+	-- 	end
+	-- end
 
 --route the request to the application
-	freeswitch.consoleLog("notice", "["..app_name.."]".. scripts_dir .. "/app/custom/" .. app_name .. "/index.lua\n");
+	-- freeswitch.consoleLog("notice", "["..app_name.."]".. scripts_dir .. "/app/custom/" .. app_name .. "/index.lua\n");
 	loadfile(scripts_dir .. "/app/custom/" .. app_name .. "/index.lua")(argv);
