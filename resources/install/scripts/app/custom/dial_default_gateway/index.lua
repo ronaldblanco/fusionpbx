@@ -1,24 +1,42 @@
 --connect to the database
 require "resources.functions.database_handle"
---for loop through arguments
-for key,value in pairs(argv) do
-    --if (key >= 0) then
-        freeswitch.consoleLog("notice", "[dial_default_gateway.app] argv["..key.."]: "..value.."\n");
-    --end
-end
 
 local dbh = database_handle('system');
 
 if (session:ready()) then
 
+    local sql = "";
     local domain_id = session:getVariable("domain_uuid")
 
     if (domain_id == nil) then
-        domain_id = session:getVariable("domain_name")
-    end 
+        domain_id = session:getVariable("domain_name") 
+    end
+    else
+        sql = "SELECT gateway_uuid FROM v_gateways "
+        sql = sql .. "WHERE domain_uuid = '"..domain_id.."' "
+        sql = sql .. "AND enabled = 'true' LIMIT 1"
+    end
 
     if (domain_id ~= nil) then
-        -- 
+        if (sql == "") then
+            sql = "SELECT gateway_uuid FROM v_gateways "
+            sql = sql .. "WHERE domain_uuid = "
+            sql = sql .. "(SELECT domain_uuid FROM v_domains "
+            sql = sql .. "WHERE domain_name = '"..domain_id.."' "
+            sql = sql .. "and enabled = 'true') "
+            sql = sql .. "AND enabled = 'true' LIMIT 1"
+        end
+        dbh:query(sql, function(row)
+            gateway_uuid = row["gateway_uuid"] and row["gateway_uuid"] or nil
+        end);
+        if (gateway_uuid ~= nil) then
+            freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Dialing through gateway "..gateway_uuid.."\n");
+            local callee_id_number = session:getVariable("callee_id_number")
+            callee_id_number = callee_id_number and callee_id_number or "" 
+            session:execute("bridge", "sofia/gateway" .. gateway_uuid .. "/" .. callee_id_number)
+        else
+            freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Cannot get gateway for domain\n");
+        end
         -- session:setVariable("default_gateway", default_gateway)
     else
         freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Cannot get domain_uuid or domain_id\n");
