@@ -28,21 +28,21 @@
 	require "resources.functions.config";
 
 --get the argv values
-	script_name = argv[0];
-	app_name = argv[1];
+	script_name = argv[0]
+	app_name = argv[1]
 
 --example use command
 	--luarun app.lua app_name 'a' 'b 123' 'c'
 
 --for loop through arguments
-	-- arguments = "";
-	-- for key,value in pairs(argv) do
-	-- 	if (key > 1) then
+	--arguments = "";
+	--for key,value in pairs(argv) do
+	-- 	if (key > 0) then
 	-- 		arguments = arguments .. " '" .. value .. "'";
-	-- 		--freeswitch.consoleLog("notice", "[app.lua] argv["..key.."]: "..argv[key].."\n");
+	-- 		freeswitch.consoleLog("notice", "[app_custom.lua] argv["..key.."]: "..argv[key].."\n");
 	-- 	end
-	-- end
+	--end
 
 --route the request to the application
-	-- freeswitch.consoleLog("notice", "["..app_name.."]".. scripts_dir .. "/app/custom/" .. app_name .. "/index.lua\n");
-	loadfile(scripts_dir .. "/app/custom/" .. app_name .. "/index.lua")(argv);
+	--freeswitch.consoleLog("notice", "["..app_name.."]".. scripts_dir .. "/app/custom/" .. app_name .. "/index.lua\n")
+	loadfile(scripts_dir .. "/app/custom/" .. app_name .. "/index.lua")(argv)

@@ -1,14 +1,10 @@
 --connect to the database
-require "resources.functions.database_handle";
-
-
+require "resources.functions.database_handle"
 --for loop through arguments
-arguments = "";
 for key,value in pairs(argv) do
-    if (key > 1) then
-        -- arguments = arguments .. " '" .. value .. "'";
+    --if (key >= 0) then
         freeswitch.consoleLog("notice", "[dial_default_gateway.app] argv["..key.."]: "..value.."\n");
-    end
+    --end
 end
 
 local dbh = database_handle('system');
@@ -21,7 +17,7 @@ if (session:ready()) then
         domain_id = session:getVariable("domain_name")
     end 
 
-    if (domain_id ~nil) then
+    if (domain_id ~= nil) then
         -- 
         -- session:setVariable("default_gateway", default_gateway)
     else
