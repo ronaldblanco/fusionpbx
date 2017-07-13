@@ -1,0 +1,7 @@
+<context name="{v_context}">
+	<extension name="custom_variables" number="" continue="true" app_uuid="9f356fe7-8cf8-4c14-8fe2-6daf89304457">
+		<condition>
+			<action application="lua" data="app_cusom.lua moh_fix"/>
+		</condition>
+	</extension>
+</context>
