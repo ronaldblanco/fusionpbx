@@ -159,5 +159,21 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the accountcode.";
 		$z++;
-
+		// Extensions suppport
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_enabled";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Support extensions after main number.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_invalid_app";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Destination for invalid extension app.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_invalid_data";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Destination for invalid extension data.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_variable";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Variable to store original extension.";
+		$z++;
 ?>

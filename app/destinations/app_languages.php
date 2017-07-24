@@ -294,6 +294,8 @@ $text['label-destination_caller_id_number']['fa'] = "";
 $text['label-destination_caller_id_number']['ar-eg'] = "رقم المتصل";
 $text['label-destination_caller_id_number']['he'] = "";
 
+$text['label-destination_extensions_enabled']['en-us'] = "Support extensions";
+
 $text['label-destination_caller_id_name']['en-us'] = "Caller ID Name";
 $text['label-destination_caller_id_name']['es-cl'] = "Nombre de Caller ID";
 $text['label-destination_caller_id_name']['pt-pt'] = "Nome do chamador";
@@ -559,6 +561,8 @@ $text['description-destination_caller_id_name']['de-at'] = "Geben Sie die Anrufe
 $text['description-destination_caller_id_name']['fa'] = "";
 $text['description-destination_caller_id_name']['ar-eg'] = "أدخل اسم المتصل";
 $text['description-destination_caller_id_name']['he'] = "";
+
+$text['description-destination_extensions_enabled']['en-us'] = "Support extensions after main number";
 
 $text['description-carrier']['en-us'] = "Enter the carrier name. This is use to keep track incase billing";
 $text['description-carrier']['es-cl'] = "Introduzca el nombre del carrier. Esto se utiliza para realizar un seguimiento en caso de facturación";

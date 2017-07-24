@@ -789,6 +789,41 @@
 			echo "</tr>\n";
 		}
 	}
+	// Extensions support
+	// echo "<tr id='tr_extensions_enable'>\n";
+	// echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	// echo "	".$text['label-destination_extensions_enabled']."\n";
+	// echo "</td>\n";
+	// echo "<td class='vtable' align='left'>\n";
+	// echo "	<input class='formfld' type='text' name='destination_cid_name_prefix' maxlength='255' value=\"$destination_cid_name_prefix\">\n";
+	// echo "<br />\n";
+	// echo $text['description-destination_extensions_enabled']."\n";
+	// echo "</td>\n";
+	// echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-destination_extensions_enabled']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<label for='extensions_disabled'><input type='radio' name='extensions_enabled' id='extensions_disabled' onclick=\"$('#tr_extensions_support').slideUp('fast');\" value='false' ".(($extensions_enabled == "false" || $extensions_enabled == "") ? "checked='checked'" : null)." /> ".$text['label-disabled']."</label> \n";
+	echo "	<label for='extensions_enabled'><input type='radio' name='extensions_enabled' id='extensions_enabled' onclick=\"$('#tr_extensions_support').slideDown('fast'); \" value='true' ".(($extensions_enabled == "true") ? "checked='checked'" : null)."/> ".$text['label-enabled']."</label> \n";
+	unset($on_click);
+	echo "<br />\n";
+	echo $text['description-destination_extensions_enabled']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+
+	if ($extensions_enabled == "true") { 
+		$style = '';
+	} else { 
+		$style = 'display: none;'; 
+	}
+
+	echo "<div id='tr_extensions_support' style='$style'>\n";
+
+	// CallerID
 
 	echo "<tr id='tr_cid_name_prefix'>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
