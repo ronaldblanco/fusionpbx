@@ -597,6 +597,8 @@
 	echo "			if (document.getElementById('tr_caller_id_number')) { document.getElementById('tr_caller_id_number').style.display = 'none'; }\n";
 	echo "			document.getElementById('tr_actions').style.display = 'none';\n";
 	echo "			if (document.getElementById('tr_fax_detection')) { document.getElementById('tr_fax_detection').style.display = 'none'; }\n";
+	echo "			if (document.getElementById('tr_extensions_enabled')) { document.getElementById('tr_extensions_enabled').style.display = 'none'; }\n";
+	echo "			if (document.getElementById('tr_extensions_support')) { document.getElementById('tr_extensions_support').style.display = 'none'; }\n";
 	echo "			document.getElementById('tr_cid_name_prefix').style.display = 'none';\n";
 	echo "			if (document.getElementById('tr_sell')) { document.getElementById('tr_sell').style.display = 'none'; }\n";
 	echo "			if (document.getElementById('tr_buy')) { document.getElementById('tr_buy').style.display = 'none'; }\n";
@@ -608,6 +610,7 @@
 	echo "			if (document.getElementById('tr_caller_id_number')) { document.getElementById('tr_caller_id_number').style.display = ''; }\n";
 	echo "			document.getElementById('tr_actions').style.display = '';\n";
 	echo "			if (document.getElementById('tr_fax_detection')) { document.getElementById('tr_fax_detection').style.display = ''; }\n";
+	echo "			if (document.getElementById('tr_extensions_enabled')) { document.getElementById('tr_extensions_enabled').style.display = ''; }\n";
 	echo "			document.getElementById('tr_cid_name_prefix').style.display = '';\n";
 	echo "			if (document.getElementById('tr_sell')) { document.getElementById('tr_sell').style.display = ''; }\n";
 	echo "			if (document.getElementById('tr_buy')) { document.getElementById('tr_buy').style.display = ''; }\n";
@@ -789,19 +792,10 @@
 			echo "</tr>\n";
 		}
 	}
-	// Extensions support
-	// echo "<tr id='tr_extensions_enable'>\n";
-	// echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	// echo "	".$text['label-destination_extensions_enabled']."\n";
-	// echo "</td>\n";
-	// echo "<td class='vtable' align='left'>\n";
-	// echo "	<input class='formfld' type='text' name='destination_cid_name_prefix' maxlength='255' value=\"$destination_cid_name_prefix\">\n";
-	// echo "<br />\n";
-	// echo $text['description-destination_extensions_enabled']."\n";
-	// echo "</td>\n";
-	// echo "</tr>\n";
 
-	echo "<tr>\n";
+	// Extensions support
+
+	echo "<tr id='tr_extensions_enabled'>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-destination_extensions_enabled']."\n";
 	echo "</td>\n";
@@ -814,22 +808,49 @@
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "</table>\n";
 
-	if ($extensions_enabled == "true") { 
-		$style = '';
-	} else { 
-		$style = 'display: none;'; 
-	}
+	// TODO if ($extensions_enabled == "true" and $destination_type =="inbound") { $style = ''; } else { $style = 'display: none;'; }
+	//echo "<div id='tr_extensions_support' style='$style'>\n";
 
-	echo "<div id='tr_extensions_support' style='$style'>\n";
+	echo "<div id='tr_extensions_support'>\n";
+
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-destination_extensions_invalid']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='destination_extensions_invalid' id='destination_extensions_invalid' maxlength='255' value=\"$destination_extensions_invalid\">\n";
+	echo "<br />\n";
+	echo $text['description-destination_extensions_invalid']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-destinaion_extensions_variable']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='destinaion_extensions_variable' id='destinaion_extensions_variable' maxlength='255' value=\"$destinaion_extensions_variable\">\n";
+	echo "<br />\n";
+	echo $text['description-destinaion_extensions_variable']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "</table>\n</div>\n";
+
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	// CallerID
 
+
 	echo "<tr id='tr_cid_name_prefix'>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-destination_cid_name_prefix']."\n";
 	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
+	echo "<td width='70%' class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='destination_cid_name_prefix' maxlength='255' value=\"$destination_cid_name_prefix\">\n";
 	echo "<br />\n";
 	echo $text['description-destination_cid_name_prefix']."\n";
