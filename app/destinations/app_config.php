@@ -159,21 +159,41 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the accountcode.";
 		$z++;
+
+		
 		// Extensions suppport
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_enabled";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_extensions_enabled";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Support extensions after main number.";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_invalid_app";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_extensions_invalid_app";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Destination for invalid extension app.";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_invalid_data";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_extensions_invalid_data";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Destination for invalid extension data.";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extensions_variable";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_extensions_variable";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Variable to store original extension.";
+
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_dialplan_extensions_uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_dialplans";
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "dialplan_uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Reference to dialplan uuid, that holds inbound route with extension part";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_dialplan_extensions_invalid_uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_dialplans";
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "dialplan_uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Reference to dialplan uuid, that holds main _invalid_ext_catch context";
 ?>

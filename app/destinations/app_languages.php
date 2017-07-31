@@ -296,7 +296,7 @@ $text['label-destination_caller_id_number']['he'] = "";
 
 $text['label-destination_extensions_enabled']['en-us'] = "Support extensions";
 
-$text['label-destination_extensions_invalid']['en-us'] = "Invalid extension destination";
+$text['label-destination_extensions_invalid']['en-us'] = "Invalid/Empty extension destination";
 
 $text['label-destinaion_extensions_variable']['en-us'] = "Variable to store extension";
 
@@ -568,7 +568,7 @@ $text['description-destination_caller_id_name']['he'] = "";
 
 $text['description-destination_extensions_enabled']['en-us'] = "Support extensions after main number (Direct dial)";
 
-$text['description-destination_extensions_invalid']['en-us'] = "Destination for invalid extensions";
+$text['description-destination_extensions_invalid']['en-us'] = "Destination for invalid or empty (main number) extensions";
 
 $text['description-destinaion_extensions_variable']['en-us'] = "Variable (name) to store original extension for further use";
 
