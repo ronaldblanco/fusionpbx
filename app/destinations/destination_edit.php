@@ -80,6 +80,13 @@
 		}
 	}
 
+
+ // Debug POST
+//	echo '<pre>';
+//    print_r($_POST);
+//    echo '</pre>';
+// End debug POST
+
 //get http post variables and set them to php variables
 	if (count($_POST) > 0) {
 		//set the variables
@@ -105,6 +112,7 @@
 			$destination_extensions_enabled = check_str($_POST["destination_extensions_enabled"]);
 			$destination_dialplan_extensions_uuid = check_str($_POST["destination_dialplan_extensions_uuid"]);
 			$destination_dialplan_extensions_invalid_uuid = check_str($_POST["destination_dialplan_extensions_invalid_uuid"]);
+			$destinaion_extensions_variable = check_str($_POST["destinaion_extensions_variable"]);
 
 		//convert the number to a regular expression
 			$destination_number_regex = string_to_regex($destination_number);
@@ -274,6 +282,30 @@
 								//increment the dialplan detail order
 								$dialplan_detail_order = $dialplan_detail_order + 10;
 							}
+
+						//set variable to store extension
+							if ($destination_extensions_enabled == 'true' and strlen($destinaion_extensions_variable) > 0) {
+								$dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+								$dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+								$dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
+
+								$default_action = $dialplan_details[0]['dialplan_detail_data'];
+								$default_action = explode(":", $default_action);
+								if ($default_action[0] == 'transfer') {
+									$default_action = explode(' ', $default_action[1]);
+									$default_action = $default_action[0];
+								} else {
+									$default_action = '100';
+								}
+								$dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destinaion_extensions_variable."=".$default_action;
+								unset($default_action);
+
+								$dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+								$y++;
+
+								//increment the dialplan detail order
+								$dialplan_detail_order = $dialplan_detail_order + 10;								
+							}	
 
 						//set the call carrier
 							if (strlen($destination_carrier) > 0) {
@@ -665,6 +697,7 @@
 	echo "</script>\n";
 
 //show the content
+
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
@@ -829,8 +862,8 @@
 	echo "	".$text['label-destination_extensions_enabled']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<label for='extensions_disabled'><input type='radio' name='extensions_enabled' id='extensions_disabled' onclick=\"$('#tr_extensions_support').slideUp('fast');\" value='false' ".(($extensions_enabled == "false" || $extensions_enabled == "") ? "checked='checked'" : null)." /> ".$text['label-disabled']."</label> \n";
-	echo "	<label for='extensions_enabled'><input type='radio' name='extensions_enabled' id='extensions_enabled' onclick=\"$('#tr_extensions_support').slideDown('fast'); \" value='true' ".(($extensions_enabled == "true") ? "checked='checked'" : null)."/> ".$text['label-enabled']."</label> \n";
+	echo "	<label for='extensions_disabled'><input type='radio' name='destination_extensions_enabled' id='extensions_disabled' onclick=\"$('#tr_extensions_support').slideUp('fast');\" value='false' ".(($destination_extensions_enabled == "false" || $destination_extensions_enabled == "") ? "checked='checked'" : null)." /> ".$text['label-disabled']."</label> \n";
+	echo "	<label for='extensions_enabled'><input type='radio' name='destination_extensions_enabled' id='extensions_enabled' onclick=\"$('#tr_extensions_support').slideDown('fast'); \" value='true' ".(($destination_extensions_enabled == "true") ? "checked='checked'" : null)."/> ".$text['label-enabled']."</label> \n";
 	unset($on_click);
 	echo "<br />\n";
 	echo $text['description-destination_extensions_enabled']."\n";
@@ -1033,6 +1066,10 @@
 		echo "		<input type='hidden' name='db_destination_number' value='$destination_number'>\n";
 		echo "		<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 		echo "		<input type='hidden' name='destination_uuid' value='$destination_uuid'>\n";
+		if ($destination_extensions_enabled == 'true') {
+			echo "		<input type='hidden' name='destination_dialplan_extensions_uuid' value='$destination_dialplan_extensions_uuid'>\n";
+			echo "		<input type='hidden' name='destination_dialplan_extensions_invalid_uuid' value='$destination_dialplan_extensions_invalid_uuid'>\n";
+		}
 	}
 	echo "			<br>";
 	echo "			<input type='submit' class='btn' value='".$text['button-save']."'>\n";
