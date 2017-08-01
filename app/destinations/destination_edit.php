@@ -103,11 +103,8 @@
 			$destination_carrier = check_str($_POST["destination_carrier"]);
 
 			$destination_extensions_enabled = check_str($_POST["destination_extensions_enabled"]);
-			$destination_extensions_invalid_app = check_str($_POST["destination_extensions_invalid_app"]);
-			$destination_extensions_invalid_data = check_str($_POST["destination_extensions_invalid_data"]);
-			$destination_extensions_variable = check_str($_POST["destination_extensions_variable"]);
-			$dialplan_extensions_uuid = check_str($_POST["dialplan_extensions_uuid"]);
-			$dialplan_extensions_invalid_uuid = check_str($_POST["dialplan_extensions_invalid_uuid"]);
+			$destination_dialplan_extensions_uuid = check_str($_POST["destination_dialplan_extensions_uuid"]);
+			$destination_dialplan_extensions_invalid_uuid = check_str($_POST["destination_dialplan_extensions_invalid_uuid"]);
 
 		//convert the number to a regular expression
 			$destination_number_regex = string_to_regex($destination_number);
@@ -566,18 +563,7 @@
 	}
 	unset($limit);
 
-	// destination_dialplan_extensions_uuid get details into array. Actualy, should be only 1/
-
-	$sql = "select * from v_dialplan_details ";
-	$sql .= "where (domain_uuid = '".$domain_uuid."' or domain_uuid is null) ";
-	$sql .= "and dialplan_uuid = '".$destination_dialplan_extensions_uuid."' ";
-	$sql .= "order by dialplan_detail_group asc, dialplan_detail_order asc";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$dialplan_extensions_details = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	unset ($prep_statement, $sql);
-
-//remove previous fax details
+    //remove previous fax details
 	$x=0;
 	foreach($dialplan_details as $row) {
 		if ($row['dialplan_detail_data'] == "tone_detect_hits=1") {
@@ -595,6 +581,27 @@
 		//increment the row id
 		$x++;
 	}
+
+	// destination_dialplan_extensions_uuid get details into array. Actualy, should be only 1/
+
+	$sql = "select * from v_dialplan_details ";
+	$sql .= "where (domain_uuid = '".$domain_uuid."' or domain_uuid is null) ";
+	$sql .= "and dialplan_uuid = '".$destination_dialplan_extensions_uuid."' ";
+	$sql .= "order by dialplan_detail_group asc, dialplan_detail_order asc";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$dialplan_extensions_details = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	unset ($prep_statement, $sql);
+
+	if (count($dialplan_extensions_details) == 0) {
+		$dialplan_extensions_details[0]['domain_uuid'] = $domain_uuid;
+		$dialplan_extensions_details[0]['dialplan_uuid'] = $destination_dialplan_extensions_uuid;
+		$dialplan_extensions_details[0]['dialplan_detail_type'] = '';
+		$dialplan_extensions_details[0]['dialplan_detail_data'] = '';
+		$dialplan_extensions_details[0]['dialplan_detail_order'] = '';
+	}
+
+
 
 //set the defaults
 	if (strlen($destination_type) == 0) { $destination_type = 'inbound'; }
@@ -832,24 +839,12 @@
 
 	echo "</table>\n";
 
-	// TODO if ($extensions_enabled == "true" and $destination_type =="inbound") { $style = ''; } else { $style = 'display: none;'; }
-	//echo "<div id='tr_extensions_support' style='$style'>\n";
+	if ($destination_extensions_enabled == "true" and $destination_type =="inbound") { $style = ''; } else { $style = 'display: none;'; }
+	echo "<div id='tr_extensions_support' style='$style'>\n";
 
-	echo "<div id='tr_extensions_support'>\n";
+	//echo "<div id='tr_extensions_support'>\n";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
-	// echo "<tr>\n";
-	// echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	// echo "	".$text['label-destination_extensions_invalid']."\n";
-	// echo "</td>\n";
-	// echo "<td class='vtable' align='left'>\n";
-	// echo "	<input class='formfld' type='text' name='destination_extensions_invalid' id='destination_extensions_invalid' maxlength='255' value=\"$destination_extensions_invalid\">\n";
-	// echo "<br />\n";
-	// echo $text['description-destination_extensions_invalid']."\n";
-	// echo "</td>\n";
-	// echo "</tr>\n";
-
 
 	echo "<tr id='tr_extensions_actions'>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
@@ -860,22 +855,22 @@
 	echo "			<table width='52%' border='0' cellpadding='2' cellspacing='0'>\n";
 	$x = 0;
 	$order = 10;
-	foreach($dialplan_details as $row) {
+	foreach($dialplan_extensions_details as $row) {
 		if ($row["dialplan_detail_tag"] != "condition") {
 			if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set" && strpos($row["dialplan_detail_data"], "accountcode") == 0) { continue; } //exclude set:accountcode actions
 			echo "				<tr>\n";
 			echo "					<td style='padding-top: 5px; padding-right: 3px; white-space: nowrap;'>\n";
 			if (strlen($row['dialplan_detail_uuid']) > 0) {
-				echo "	<input name='dialplan_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
+				echo "	<input name='dialplan_extensions_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
 			}
-			echo "	<input name='dialplan_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
-			echo "	<input name='dialplan_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
+			echo "	<input name='dialplan_extensions_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
+			echo "	<input name='dialplan_extensions_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
 
 			$data = $row['dialplan_detail_data'];
 			$label = explode("XML", $data);
 			$divider = ($row['dialplan_detail_type'] != '') ? ":" : null;
 			$detail_action = $row['dialplan_detail_type'].$divider.$row['dialplan_detail_data'];
-			echo $destination->select('dialplan', 'dialplan_details['.$x.'][dialplan_detail_data]', $detail_action);
+			echo $destination->select('dialplan', 'dialplan_extensions_details['.$x.'][dialplan_detail_data]', $detail_action);
 			echo "					</td>\n";
 			echo "					<td class='list_control_icons' style='width: 25px;'>";
 			if (strlen($row['destination_uuid']) > 0) {
