@@ -80,13 +80,6 @@
 		}
 	}
 
-
- // Debug POST
-//	echo '<pre>';
-//    print_r($_POST);
-//    echo '</pre>';
-// End debug POST
-
 //get http post variables and set them to php variables
 	if (count($_POST) > 0) {
 		//set the variables
@@ -108,12 +101,6 @@
 			$currency_buy = check_str($_POST["currency_buy"]);
 			$destination_accountcode = check_str($_POST["destination_accountcode"]);
 			$destination_carrier = check_str($_POST["destination_carrier"]);
-
-			$destination_extensions_enabled = check_str($_POST["destination_extensions_enabled"]);
-			$destination_dialplan_extensions_uuid = check_str($_POST["destination_dialplan_extensions_uuid"]);
-			$destination_dialplan_extensions_invalid_uuid = check_str($_POST["destination_dialplan_extensions_invalid_uuid"]);
-			$destinaion_extensions_variable = check_str($_POST["destinaion_extensions_variable"]);
-
 		//convert the number to a regular expression
 			$destination_number_regex = string_to_regex($destination_number);
 			$_POST["destination_number_regex"] = $destination_number_regex;
@@ -282,30 +269,6 @@
 								//increment the dialplan detail order
 								$dialplan_detail_order = $dialplan_detail_order + 10;
 							}
-
-						//set variable to store extension
-							if ($destination_extensions_enabled == 'true' and strlen($destinaion_extensions_variable) > 0) {
-								$dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
-								$dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
-								$dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
-
-								$default_action = $dialplan_details[0]['dialplan_detail_data'];
-								$default_action = explode(":", $default_action);
-								if ($default_action[0] == 'transfer') {
-									$default_action = explode(' ', $default_action[1]);
-									$default_action = $default_action[0];
-								} else {
-									$default_action = '100';
-								}
-								$dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destinaion_extensions_variable."=".$default_action;
-								unset($default_action);
-
-								$dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
-								$y++;
-
-								//increment the dialplan detail order
-								$dialplan_detail_order = $dialplan_detail_order + 10;								
-							}	
 
 						//set the call carrier
 							if (strlen($destination_carrier) > 0) {
@@ -565,9 +528,6 @@
 				$currency_buy = $row["currency_buy"];
 				$destination_accountcode = $row["destination_accountcode"];
 				$destination_carrier = $row["destination_carrier"];
-				$destination_extensions_enabled = $row["destination_extensions_enabled"];
-				$destination_dialplan_extensions_uuid = $row["destination_dialplan_extensions_uuid"];
-				$destination_dialplan_extensions_invalid_uuid = $row["destination_dialplan_extensions_invalid_uuid"];
 			}
 		}
 	}
@@ -595,7 +555,7 @@
 	}
 	unset($limit);
 
-    //remove previous fax details
+//remove previous fax details
 	$x=0;
 	foreach($dialplan_details as $row) {
 		if ($row['dialplan_detail_data'] == "tone_detect_hits=1") {
@@ -613,27 +573,6 @@
 		//increment the row id
 		$x++;
 	}
-
-	// destination_dialplan_extensions_uuid get details into array. Actualy, should be only 1/
-
-	$sql = "select * from v_dialplan_details ";
-	$sql .= "where (domain_uuid = '".$domain_uuid."' or domain_uuid is null) ";
-	$sql .= "and dialplan_uuid = '".$destination_dialplan_extensions_uuid."' ";
-	$sql .= "order by dialplan_detail_group asc, dialplan_detail_order asc";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$dialplan_extensions_details = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	unset ($prep_statement, $sql);
-
-	if (count($dialplan_extensions_details) == 0) {
-		$dialplan_extensions_details[0]['domain_uuid'] = $domain_uuid;
-		$dialplan_extensions_details[0]['dialplan_uuid'] = $destination_dialplan_extensions_uuid;
-		$dialplan_extensions_details[0]['dialplan_detail_type'] = '';
-		$dialplan_extensions_details[0]['dialplan_detail_data'] = '';
-		$dialplan_extensions_details[0]['dialplan_detail_order'] = '';
-	}
-
-
 
 //set the defaults
 	if (strlen($destination_type) == 0) { $destination_type = 'inbound'; }
@@ -658,8 +597,6 @@
 	echo "			if (document.getElementById('tr_caller_id_number')) { document.getElementById('tr_caller_id_number').style.display = 'none'; }\n";
 	echo "			document.getElementById('tr_actions').style.display = 'none';\n";
 	echo "			if (document.getElementById('tr_fax_detection')) { document.getElementById('tr_fax_detection').style.display = 'none'; }\n";
-	echo "			if (document.getElementById('tr_extensions_enabled')) { document.getElementById('tr_extensions_enabled').style.display = 'none'; }\n";
-	echo "			if (document.getElementById('tr_extensions_support')) { document.getElementById('tr_extensions_support').style.display = 'none'; }\n";
 	echo "			document.getElementById('tr_cid_name_prefix').style.display = 'none';\n";
 	echo "			if (document.getElementById('tr_sell')) { document.getElementById('tr_sell').style.display = 'none'; }\n";
 	echo "			if (document.getElementById('tr_buy')) { document.getElementById('tr_buy').style.display = 'none'; }\n";
@@ -671,7 +608,6 @@
 	echo "			if (document.getElementById('tr_caller_id_number')) { document.getElementById('tr_caller_id_number').style.display = ''; }\n";
 	echo "			document.getElementById('tr_actions').style.display = '';\n";
 	echo "			if (document.getElementById('tr_fax_detection')) { document.getElementById('tr_fax_detection').style.display = ''; }\n";
-	echo "			if (document.getElementById('tr_extensions_enabled')) { document.getElementById('tr_extensions_enabled').style.display = ''; }\n";
 	echo "			document.getElementById('tr_cid_name_prefix').style.display = '';\n";
 	echo "			if (document.getElementById('tr_sell')) { document.getElementById('tr_sell').style.display = ''; }\n";
 	echo "			if (document.getElementById('tr_buy')) { document.getElementById('tr_buy').style.display = ''; }\n";
@@ -697,7 +633,6 @@
 	echo "</script>\n";
 
 //show the content
-
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
@@ -855,93 +790,11 @@
 		}
 	}
 
-	// Extensions support
-
-	echo "<tr id='tr_extensions_enabled'>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-destination_extensions_enabled']."\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<label for='extensions_disabled'><input type='radio' name='destination_extensions_enabled' id='extensions_disabled' onclick=\"$('#tr_extensions_support').slideUp('fast');\" value='false' ".(($destination_extensions_enabled == "false" || $destination_extensions_enabled == "") ? "checked='checked'" : null)." /> ".$text['label-disabled']."</label> \n";
-	echo "	<label for='extensions_enabled'><input type='radio' name='destination_extensions_enabled' id='extensions_enabled' onclick=\"$('#tr_extensions_support').slideDown('fast'); \" value='true' ".(($destination_extensions_enabled == "true") ? "checked='checked'" : null)."/> ".$text['label-enabled']."</label> \n";
-	unset($on_click);
-	echo "<br />\n";
-	echo $text['description-destination_extensions_enabled']."\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "</table>\n";
-
-	if ($destination_extensions_enabled == "true" and $destination_type =="inbound") { $style = ''; } else { $style = 'display: none;'; }
-	echo "<div id='tr_extensions_support' style='$style'>\n";
-
-	//echo "<div id='tr_extensions_support'>\n";
-
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
-	echo "<tr id='tr_extensions_actions'>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-destination_extensions_invalid']."\n";
-	echo "</td>\n";
-	echo "<td width='65%' class='vtable' align='left'>\n";
-
-	echo "			<table width='52%' border='0' cellpadding='2' cellspacing='0'>\n";
-	$x = 0;
-	$order = 10;
-	foreach($dialplan_extensions_details as $row) {
-		if ($row["dialplan_detail_tag"] != "condition") {
-			if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set" && strpos($row["dialplan_detail_data"], "accountcode") == 0) { continue; } //exclude set:accountcode actions
-			echo "				<tr>\n";
-			echo "					<td style='padding-top: 5px; padding-right: 3px; white-space: nowrap;'>\n";
-			if (strlen($row['dialplan_detail_uuid']) > 0) {
-				echo "	<input name='dialplan_extensions_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
-			}
-			echo "	<input name='dialplan_extensions_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
-			echo "	<input name='dialplan_extensions_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
-
-			$data = $row['dialplan_detail_data'];
-			$label = explode("XML", $data);
-			$divider = ($row['dialplan_detail_type'] != '') ? ":" : null;
-			$detail_action = $row['dialplan_detail_type'].$divider.$row['dialplan_detail_data'];
-			echo $destination->select('dialplan', 'dialplan_extensions_details['.$x.'][dialplan_detail_data]', $detail_action);
-			echo "					</td>\n";
-			echo "					<td class='list_control_icons' style='width: 25px;'>";
-			if (strlen($row['destination_uuid']) > 0) {
-				echo					"<a href='destination_delete.php?id=".$row['destination_uuid']."&destination_uuid=".$row['destination_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>\n";
-			}
-			echo "					</td>\n";
-			echo "				</tr>\n";
-		}
-		$order = $order + 10;
-		$x++;
-	}
-	echo "			</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-destinaion_extensions_variable']."\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='destinaion_extensions_variable' id='destinaion_extensions_variable' maxlength='255' value=\"$destinaion_extensions_variable\">\n";
-	echo "<br />\n";
-	echo $text['description-destinaion_extensions_variable']."\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "</table>\n</div>\n<br>\n";
-
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
-	// CallerID
-
-
 	echo "<tr id='tr_cid_name_prefix'>\n";
-	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-destination_cid_name_prefix']."\n";
 	echo "</td>\n";
-	echo "<td width='70%' class='vtable' align='left'>\n";
+	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='destination_cid_name_prefix' maxlength='255' value=\"$destination_cid_name_prefix\">\n";
 	echo "<br />\n";
 	echo $text['description-destination_cid_name_prefix']."\n";
@@ -1066,10 +919,6 @@
 		echo "		<input type='hidden' name='db_destination_number' value='$destination_number'>\n";
 		echo "		<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 		echo "		<input type='hidden' name='destination_uuid' value='$destination_uuid'>\n";
-		if ($destination_extensions_enabled == 'true') {
-			echo "		<input type='hidden' name='destination_dialplan_extensions_uuid' value='$destination_dialplan_extensions_uuid'>\n";
-			echo "		<input type='hidden' name='destination_dialplan_extensions_invalid_uuid' value='$destination_dialplan_extensions_invalid_uuid'>\n";
-		}
 	}
 	echo "			<br>";
 	echo "			<input type='submit' class='btn' value='".$text['button-save']."'>\n";
