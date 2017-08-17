@@ -43,6 +43,7 @@
 		$y = 0; //table array index
 		$z = 0; //field array index
 		$apps[$x]['db'][$y]['table'] = "v_destinations_ext";
+		
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "domain_uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";

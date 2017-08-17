@@ -1,76 +1,18 @@
 <?php
 
 $text['title-destinations_ext']['en-us'] = "Inbound destinations with extensions";
-$text['title-e911']['es-cl'] = "";
-$text['title-e911']['pt-pt'] = "";
-$text['title-e911']['fr-fr'] = "";
-$text['title-e911']['pt-br'] = "";
-$text['title-e911']['pl'] = "";
-$text['title-e911']['sv-se'] = "";
-$text['title-e911']['uk'] = "";
-$text['title-e911']['de-at'] = "";
 
-$text['header-e911']['en-us'] = "E911 Info";
-$text['header-e911']['es-cl'] = "";
-$text['header-e911']['pt-pt'] = "";
-$text['header-e911']['fr-fr'] = "";
-$text['header-e911']['pt-br'] = "";
-$text['header-e911']['pl'] = "";
-$text['header-e911']['sv-se'] = "";
-$text['header-e911']['uk'] = "";
-$text['header-e911']['de-at'] = "";
+$text['header-destinations_ext']['en-us'] = "Inbound destinations with extensions";
 
+$text['description-destinations_ext']['en-us'] = "Destinations with support of extensions for handling in some European countries";
 
-$text['description-e911']['en-us'] = "E911 Information, provided to upstream provider";
-$text['description-e911']['es-cl'] = "";
-$text['description-e911']['pt-pt'] = "";
-$text['description-e911']['fr-fr'] = "";
-$text['description-e911']['pt-br'] = "";
-$text['description-e911']['pl'] = "";
-$text['description-e911']['sv-se'] = "";
-$text['description-e911']['uk'] = "";
-$text['description-e911']['de-at'] = "";
+$text['label-destination_ext_number']['en-us'] = "Destination";
 
+$text['label-destination_ext_variable']['en-us'] = "Extension variable";
 
-$text['label-e911_did']['en-us'] = "DID";
-$text['label-e911_did']['es-cl'] = "";
-$text['label-e911_did']['pt-pt'] = "";
-$text['label-e911_did']['fr-fr'] = "";
-$text['label-e911_did']['pt-br'] = "";
-$text['label-e911_did']['pl'] = "";
-$text['label-e911_did']['sv-se'] = "";
-$text['label-e911_did']['uk'] = "";
-$text['label-e911_did']['de-at'] = "";
+$text['label-destination_ext_status']['en-us'] = "Status";
 
-$text['label-e911_callername']['en-us'] = "Callername";
-$text['label-e911_callername']['es-cl'] = "";
-$text['label-e911_callername']['pt-pt'] = "";
-$text['label-e911_callername']['fr-fr'] = "";
-$text['label-e911_callername']['pt-br'] = "";
-$text['label-e911_callername']['pl'] = "";
-$text['label-e911_callername']['sv-se'] = "";
-$text['label-e911_callername']['uk'] = "";
-$text['label-e911_callername']['de-at'] = "";
-
-$text['label-e911_city']['en-us'] = "City";
-$text['label-e911_city']['es-cl'] = "";
-$text['label-e911_city']['pt-pt'] = "";
-$text['label-e911_city']['fr-fr'] = "";
-$text['label-e911_city']['pt-br'] = "";
-$text['label-e911_city']['pl'] = "";
-$text['label-e911_city']['sv-se'] = "";
-$text['label-e911_city']['uk'] = "";
-$text['label-e911_city']['de-at'] = "";
-
-$text['label-e911_address_1']['en-us'] = "Address line 1";
-$text['label-e911_address_1']['es-cl'] = "";
-$text['label-e911_address_1']['pt-pt'] = "";
-$text['label-e911_address_1']['fr-fr'] = "";
-$text['label-e911_address_1']['pt-br'] = "";
-$text['label-e911_address_1']['pl'] = "";
-$text['label-e911_address_1']['sv-se'] = "";
-$text['label-e911_address_1']['uk'] = "";
-$text['label-e911_address_1']['de-at'] = "";
+$text['label-destination_ext_description']['en-us'] = "Description";
 
 $text['label-e911_address_2']['en-us'] = "Address line 2";
 $text['label-e911_address_2']['es-cl'] = "";
