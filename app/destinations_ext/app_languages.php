@@ -7,11 +7,11 @@ $text['title-destination_ext-edit']['en-us'] = "Edit destination";
 $text['title-destination_ext-add']['en-us'] = "Add destination";
 
 
-$text['header-destinations_ext']['en-us'] = "Inbound destinations with extensions";
+$text['header-destination_ext']['en-us'] = "Inbound destinations with extensions";
 
-$text['header-destinations_ext-add']['en-us'] = "Add destination";
+$text['header-destination_ext-add']['en-us'] = "Add destination";
 
-$text['header-destinations_ext-edit']['en-us'] = "Edit destination";
+$text['header-destination_ext-edit']['en-us'] = "Edit destination";
 
 
 $text['label-destination_ext_number']['en-us'] = "Destination";

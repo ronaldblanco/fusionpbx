@@ -170,7 +170,7 @@ require_once "resources/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td class='list_control_icons'>";
 	if (permission_exists('destinations_ext_add')) {
-		echo 		"<a href='destinations_ext_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
+		echo 		"<a href='destination_ext_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
