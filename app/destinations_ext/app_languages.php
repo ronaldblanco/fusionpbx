@@ -2,6 +2,10 @@
 
 $text['title-destinations_ext']['en-us'] = "Inbound destinations with extensions";
 
+$text['title-destination_ext-edit']['en-us'] = "Edit destination";
+
+$text['title-destination_ext-add']['en-us'] = "Add destination";
+
 $text['header-destinations_ext']['en-us'] = "Inbound destinations with extensions";
 
 $text['description-destinations_ext']['en-us'] = "Destinations with support of extensions for handling in some European countries";
