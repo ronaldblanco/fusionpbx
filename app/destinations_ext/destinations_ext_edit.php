@@ -759,10 +759,10 @@
     echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
     echo "<tr>\n";
     if ($action == "add") {
-        echo "<td align='left' width='30%' nowrap='nowrap' valign='top'><b>".$text['header-destination-add']."</b></td>\n";
+        echo "<td align='left' width='30%' nowrap='nowrap' valign='top'><b>".$text['header-destination_ext-add']."</b></td>\n";
     }
     if ($action == "update") {
-        echo "<td align='left' width='30%' nowrap='nowrap' valign='top'><b>".$text['header-destination-edit']."</b></td>\n";
+        echo "<td align='left' width='30%' nowrap='nowrap' valign='top'><b>".$text['header-destination_ext-edit']."</b></td>\n";
     }
     echo "<td width='70%' align='right' valign='top'>";
     echo "  <input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='destinations.php'\" value='".$text['button-back']."'>";
@@ -775,100 +775,55 @@
     echo "</td>\n";
     echo "</tr>\n";
 
-    echo "<tr>\n";
-    echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_type']."\n";
-    echo "</td>\n";
-    echo "<td class='vtable' align='left'>\n";
-    echo "  <select class='formfld' name='destination_type' id='destination_type' onchange='type_control(this.options[this.selectedIndex].value);'>\n";
-    switch ($destination_type) {
-        case "inbound" :    $selected[1] = "selected='selected'";   break;
-        case "outbound" :   $selected[2] = "selected='selected'";   break;
-    }
-    echo "  <option value='inbound' ".$selected[1].">".$text['option-type_inbound']."</option>\n";
-    echo "  <option value='outbound' ".$selected[2].">".$text['option-type_outbound']."</option>\n";
-    unset($selected);
-    echo "  </select>\n";
-    echo "<br />\n";
-    echo $text['description-destination_type']."\n";
-    echo "</td>\n";
-    echo "</tr>\n";
-
+// Destination number enter
     echo "<tr>\n";
     echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_number']."\n";
+    echo "  ".$text['label-destination_ext_number']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_number' maxlength='255' value=\"$destination_number\" required='required'>\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_number' maxlength='255' value=\"$destination_number\" required='required'>\n";
     echo "<br />\n";
-    echo $text['description-destination_number']."\n";
+    echo $text['description-destination_ext_number']."\n";
     echo "</td>\n";
     echo "</tr>\n";
 
-    if (permission_exists('outbound_caller_id_select')) {
-        echo "<tr id='tr_caller_id_name'>\n";
-        echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-        echo "  ".$text['label-destination_caller_id_name']."\n";
-        echo "</td>\n";
-        echo "<td class='vtable' align='left'>\n";
-        echo "  <input class='formfld' type='text' name='destination_caller_id_name' maxlength='255' value=\"$destination_caller_id_name\">\n";
-        echo "<br />\n";
-        echo $text['description-destination_caller_id_name']."\n";
-        echo "</td>\n";
-        echo "</tr>\n";
+// Main number actions select
 
-        echo "<tr id='tr_caller_id_number'>\n";
-        echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-        echo "  ".$text['label-destination_caller_id_number']."\n";
-        echo "</td>\n";
-        echo "<td class='vtable' align='left'>\n";
-        echo "  <input class='formfld' type='number' name='destination_caller_id_number' maxlength='255' min='0' step='1' value=\"$destination_caller_id_number\">\n";
-        echo "<br />\n";
-        echo $text['description-destination_caller_id_number']."\n";
-        echo "</td>\n";
-        echo "</tr>\n";
-    }
-
-    echo "<tr>\n";
+    echo "<tr id='tr_actions_main'>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_context']."\n";
-    echo "</td>\n";
-    echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_context' id='destination_context' maxlength='255' value=\"$destination_context\">\n";
-    echo "<br />\n";
-    echo $text['description-destination_context']."\n";
-    echo "</td>\n";
-    echo "</tr>\n";
-
-    echo "<tr id='tr_actions'>\n";
-    echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-detail_action']."\n";
+    echo "  ".$text['label-detail_action_main']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
 
     echo "          <table width='52%' border='0' cellpadding='2' cellspacing='0'>\n";
+
     $x = 0;
     $order = 10;
+    $dialplan_details = $destination_ext_dialplan_main_details;
+
     foreach($dialplan_details as $row) {
         if ($row["dialplan_detail_tag"] != "condition") {
-            if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set" && strpos($row["dialplan_detail_data"], "accountcode") == 0) { continue; } //exclude set:accountcode actions
+            if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
+                // Exclude all set's.
+                continue;
+            }
             echo "              <tr>\n";
             echo "                  <td style='padding-top: 5px; padding-right: 3px; white-space: nowrap;'>\n";
             if (strlen($row['dialplan_detail_uuid']) > 0) {
-                echo "  <input name='dialplan_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
+                echo "  <input name='destination_ext_dialplan_main_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
             }
-            echo "  <input name='dialplan_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
-            echo "  <input name='dialplan_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
+            echo "  <input name='destination_ext_dialplan_main_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
+            echo "  <input name='destination_ext_dialplan_main_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
 
             $data = $row['dialplan_detail_data'];
             $label = explode("XML", $data);
             $divider = ($row['dialplan_detail_type'] != '') ? ":" : null;
             $detail_action = $row['dialplan_detail_type'].$divider.$row['dialplan_detail_data'];
-            echo $destination->select('dialplan', 'dialplan_details['.$x.'][dialplan_detail_data]', $detail_action);
+            echo $destination->select('dialplan', 'destination_ext_dialplan_main_details['.$x.'][dialplan_detail_data]', $detail_action);
             echo "                  </td>\n";
             echo "                  <td class='list_control_icons' style='width: 25px;'>";
-            if (strlen($row['destination_uuid']) > 0) {
-                echo                    "<a href='destination_delete.php?id=".$row['destination_uuid']."&destination_uuid=".$row['destination_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>\n";
+            if (strlen($row['destination_ext_uuid']) > 0) {
+                echo                    "<a href='destination_ext_delete.php?id=".$row['destination_uuid']."&destination_uuid=".$row['destination_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>\n";
             }
             echo "                  </td>\n";
             echo "              </tr>\n";
@@ -880,29 +835,102 @@
     echo "</td>\n";
     echo "</tr>\n";
 
-    echo "<tr id='tr_cid_name_prefix'>\n";
+// Extensions destination set
+
+    echo "<tr id='tr_actions_ext'>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_cid_name_prefix']."\n";
+    echo "  ".$text['label-detail_action_ext']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_cid_name_prefix' maxlength='255' value=\"$destination_cid_name_prefix\">\n";
-    echo "<br />\n";
-    echo $text['description-destination_cid_name_prefix']."\n";
+
+    echo "          <table width='52%' border='0' cellpadding='2' cellspacing='0'>\n";
+
+    $x = 0;
+    $order = 10;
+    $dialplan_details = $destination_ext_dialplan_extensions_details;
+
+    foreach($dialplan_details as $row) {
+        if ($row["dialplan_detail_tag"] != "condition") {
+            if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
+                // Exclude all set's.
+                continue;
+            }
+            echo "              <tr>\n";
+            echo "                  <td style='padding-top: 5px; padding-right: 3px; white-space: nowrap;'>\n";
+            if (strlen($row['dialplan_detail_uuid']) > 0) {
+                echo "  <input name='destination_ext_dialplan_extensions_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
+            }
+            echo "  <input name='destination_ext_dialplan_extensions_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
+            echo "  <input name='destination_ext_dialplan_extensions_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
+
+            $data = $row['dialplan_detail_data'];
+            $label = explode("XML", $data);
+            $divider = ($row['dialplan_detail_type'] != '') ? ":" : null;
+            $detail_action = $row['dialplan_detail_type'].$divider.$row['dialplan_detail_data'];
+            echo $destination->select('dialplan', 'destination_ext_dialplan_extensions_details['.$x.'][dialplan_detail_data]', $detail_action);
+            echo "                  </td>\n";
+            echo "                  <td class='list_control_icons' style='width: 25px;'>";
+            if (strlen($row['destination_ext_uuid']) > 0) {
+                echo                    "<a href='destination_ext_delete.php?id=".$row['destination_uuid']."&destination_uuid=".$row['destination_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>\n";
+            }
+            echo "                  </td>\n";
+            echo "              </tr>\n";
+        }
+        $order = $order + 10;
+        $x++;
+    }
+    echo "          </table>\n";
     echo "</td>\n";
     echo "</tr>\n";
 
-    echo "<tr id='tr_account_code'>\n";
+
+// Invalid destiantions set
+
+    echo "<tr id='tr_actions_invalid'>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-account_code']."\n";
+    echo "  ".$text['label-detail_action_invalid']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_accountcode' maxlength='255' value=\"$destination_accountcode\">\n";
-    echo "<br />\n";
-    echo $text['description-account_code']."\n";
-    if (file_exists($_SERVER["PROJECT_ROOT"]."/app/billing/app_config.php")){
-        echo " ".$text['billing-warning'];
+
+    echo "          <table width='52%' border='0' cellpadding='2' cellspacing='0'>\n";
+
+    $x = 0;
+    $order = 10;
+    $dialplan_details = $destination_ext_dialplan_invalid_details;
+
+    foreach($dialplan_details as $row) {
+        if ($row["dialplan_detail_tag"] != "condition") {
+            if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
+                // Exclude all set's.
+                continue;
+            }
+            echo "              <tr>\n";
+            echo "                  <td style='padding-top: 5px; padding-right: 3px; white-space: nowrap;'>\n";
+            if (strlen($row['dialplan_detail_uuid']) > 0) {
+                echo "  <input name='destination_ext_dialplan_invalid_details[".$x."][dialplan_detail_uuid]' type='hidden' value=\"".$row['dialplan_detail_uuid']."\">\n";
+            }
+            echo "  <input name='destination_ext_dialplan_invalid_details[".$x."][dialplan_detail_type]' type='hidden' value=\"".$row['dialplan_detail_type']."\">\n";
+            echo "  <input name='destination_ext_dialplan_invalid_details[".$x."][dialplan_detail_order]' type='hidden' value=\"".$order."\">\n";
+
+            $data = $row['dialplan_detail_data'];
+            $label = explode("XML", $data);
+            $divider = ($row['dialplan_detail_type'] != '') ? ":" : null;
+            $detail_action = $row['dialplan_detail_type'].$divider.$row['dialplan_detail_data'];
+            echo $destination->select('dialplan', 'destination_ext_dialplan_invalid_details['.$x.'][dialplan_detail_data]', $detail_action);
+            echo "                  </td>\n";
+            echo "                  <td class='list_control_icons' style='width: 25px;'>";
+            if (strlen($row['destination_ext_uuid']) > 0) {
+                echo                    "<a href='destination_ext_delete.php?id=".$row['destination_uuid']."&destination_uuid=".$row['destination_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>\n";
+            }
+            echo "                  </td>\n";
+            echo "              </tr>\n";
+        }
+        $order = $order + 10;
+        $x++;
     }
+    echo "          </table>\n";
     echo "</td>\n";
+    echo "</tr>\n";
 
     if (permission_exists('destination_domain')) {
         echo "<tr>\n";
@@ -937,11 +965,22 @@
 
     echo "<tr>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_enabled']."\n";
+    echo "  ".$text['label-destination_ext_variable']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <select class='formfld' name='destination_enabled'>\n";
-    switch ($destination_enabled) {
+    echo "  <input class='formfld' type='text' name='destination_ext_variable' id='destination_ext_variable' maxlength='255' value=\"$destination_ext_variable\">\n";
+    echo "<br />\n";
+    echo $text['description-destination_ext_variable']."\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+
+    echo "<tr>\n";
+    echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+    echo "  ".$text['label-destination_ext_enabled']."\n";
+    echo "</td>\n";
+    echo "<td class='vtable' align='left'>\n";
+    echo "  <select class='formfld' name='destination_ext_enabled'>\n";
+    switch ($destination_ext_enabled) {
         case "true" :   $selected[1] = "selected='selected'";   break;
         case "false" :  $selected[2] = "selected='selected'";   break;
     }
@@ -950,18 +989,18 @@
     unset($selected);
     echo "  </select>\n";
     echo "<br />\n";
-    echo $text['description-destination_enabled']."\n";
+    echo $text['description-destination_ext_enabled']."\n";
     echo "</td>\n";
     echo "</tr>\n";
 
     echo "<tr>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_description']."\n";
+    echo "  ".$text['label-destination_ext_description']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_description' maxlength='255' value=\"$destination_description\">\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_description' maxlength='255' value=\"$destination_ext_description\">\n";
     echo "<br />\n";
-    echo $text['description-destination_description']."\n";
+    echo $text['description-destination_ext_description']."\n";
     echo "</td>\n";
     echo "</tr>\n";
     echo "  <tr>\n";
