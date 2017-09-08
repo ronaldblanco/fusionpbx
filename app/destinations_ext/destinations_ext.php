@@ -40,7 +40,7 @@ else {
 	$text = $language->get();
 
 require_once "resources/header.php";
-	$document['title'] = $text['title-destinations_ext'];
+	$document['title'] = $text['title-destination_ext'];
 
 require_once "resources/paging.php";
 
@@ -100,7 +100,7 @@ require_once "resources/paging.php";
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap='nowrap' valign='top'><b>".$text['header-destinations_ext']." (".$num_rows.")</b></td>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap' valign='top'><b>".$text['header-destination_ext']." (".$num_rows.")</b></td>\n";
 	echo "			<form method='get' action=''>\n";
 	echo "			<td width='50%' align='right'>\n";
 	echo "				<input type='text' class='txt' style='width: 150px' name='search' value='".$search."'>";
@@ -110,7 +110,7 @@ require_once "resources/paging.php";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' colspan='2' valign='top'>\n";
-	echo "			".$text['description-destinations_ext']."<br /><br />\n";
+	echo "			".$text['description-destination_ext']."<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
@@ -136,7 +136,7 @@ require_once "resources/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			$tr_link = (permission_exists('destinations_ext_edit')) ? "href='destinations_ext_edit.php?id=".$row['destination_ext_uuid']."'" : null;
+			$tr_link = (permission_exists('destinations_ext_edit')) ? "href='destination_ext_edit.php?id=".$row['destination_ext_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['destination_ext_number']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['destination_ext_variable']."&nbsp;</td>\n";
@@ -150,10 +150,10 @@ require_once "resources/paging.php";
 			//echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['destination_ext_description']."&nbsp;</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('destinations_ext_edit')) {
-				echo "<a href='destinations_ext_edit.php?id=".$row['e911_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
+				echo "<a href='destination_ext_edit.php?id=".$row['destination_ext_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('destinations_ext_delete')) {
-				echo "<a href='destination_ext_delete.php?id=".$row['e911_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
+				echo "<a href='destination_ext_delete.php?id=".$row['destination_ext_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
