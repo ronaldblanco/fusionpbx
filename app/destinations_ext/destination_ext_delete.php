@@ -27,9 +27,7 @@ require_once "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
 
-require_once "app/e911/api_calls.php";
-
-if (permission_exists('e911_delete')) {
+if (permission_exists('destinations_ext_delete')) {
 	//access granted
 }
 else {
@@ -47,39 +45,61 @@ if (count($_GET)>0) {
 
 $message = $text['message-delete'];
 
-if (strlen($id)>0) {
-	// First - get did for this call and call API
-	$sql = "select e911_did from v_e911 ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and e911_uuid = '$id' ";
+if (strlen($id ) >0) {
+
+	// First - select corresponding routes
+	$sql = "SELECT destination_ext_uuid, destination_ext_dialplan_main_uuid, destination_ext_dialplan_extensions_uuid"; 
+	$sql .= " FROM v_destinations_ext WHERE destination_ext_uuid = '".$id."'";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$did = $prep_statement->fetch(PDO::FETCH_ASSOC);
-	unset ($sql, $prep_statement);
+	$result = $prep_statement->fetch(PDO::FETCH_ASSOC);
 
-	$did = isset($did['e911_did'])?$did['e911_did']:False;
-	if ($did) {
-		if (remove_e911_data($did)) {
-			$message .= " ".$text['message-e911_info_deleted'];
-		} else {
-			$message .= " ".$text['message-e911_info_deleted_error'];
-		}
-	} else {
-		$message .= " ".$text['message-e911_info_deleted_error'];
+	if (isset($result['destination_ext_uuid'])) {
+
+		$destination_ext_uuid = $result['destination_ext_uuid'];
+		$destination_ext_dialplan_main_uuid = isset($result['destination_ext_dialplan_main_uuid'])?$result['destination_ext_dialplan_main_uuid']:"";
+		$destination_ext_dialplan_extensions_uuid = isset($result['destination_ext_dialplan_extensions_uuid'])?$result['destination_ext_dialplan_extensions_uuid']:"";
+
+		$db->beginTransaction();
+
+		// Delete dialplan_details for main and extensions
+
+		$sql = "DELETE FROM v_dialplan_details WHERE";
+		$sql .= " dialplan_uuid = '".$destination_ext_dialplan_main_uuid."'";
+		$sql .= " OR dialplan_uuid = '".$destination_ext_dialplan_extensions_uuid."'";
+
+		$db->exec(check_sql($sql));
+		unset($sql);
+
+		// Delete dialplans for main and ext
+
+		$sql = "DELETE FROM v_dialplans WHERE";
+		$sql .= " dialplan_uuid = '".$destination_ext_dialplan_main_uuid."'";
+		$sql .= " OR dialplan_uuid = '".$destination_ext_dialplan_extensions_uuid."'";
+
+		$db->exec(check_sql($sql));
+		unset($sql);
+
+		// Delete v_destinations_ext
+		$sql = "DELETE FROM v_destinations_ext WHERE";
+		$sql .= " destination_ext_uuid = '".$destination_ext_uuid."'";
+
+		$db->exec(check_sql($sql));
+		unset($sql);
+
+		$db->commit();
+
+		save_dialplan_xml();
+
+		$cache = new cache;
+		$cache->delete("dialplan: public");
 	}
 
-	// Delete data from database
-	$sql = "delete from v_e911 ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and e911_uuid = '$id' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	unset($sql);
 }
-
+$message = $text['message-delete'];
 
 $_SESSION["message"] = $message;
-header("Location: e911.php");
+header("Location: destinations_ext.php");
 return;
 
 ?>
