@@ -60,10 +60,10 @@
         $domain_uuid = check_str($_POST["domain_uuid"]);
         $destination_ext_uuid = check_str($_POST["destination_ext_uuid"]);
         $destination_ext_dialplan_main_uuid = check_str($_POST["destination_ext_dialplan_main_uuid"]);
-        $destination_ext_dialplan_main_details = check_str($_POST["destination_ext_dialplan_main_details"]);
+        $destination_ext_dialplan_main_details = $_POST["destination_ext_dialplan_main_details"];
         $destination_ext_dialplan_extensions_uuid = check_str($_POST["destination_ext_dialplan_extensions_uuid"]);
-        $destination_ext_dialplan_extensions_details = check_str($_POST["destination_ext_dialplan_extensions_details"]);
-        $destination_ext_dialplan_invalid_details = check_str($_POST["destination_ext_dialplan_invalid_details"]);
+        $destination_ext_dialplan_extensions_details = $_POST["destination_ext_dialplan_extensions_details"];
+        $destination_ext_dialplan_invalid_details = $_POST["destination_ext_dialplan_invalid_details"];
         $destination_ext_number = check_str($_POST["destination_ext_number"]);
         $db_destination_ext_number = check_str($_POST["db_destination_ext_number"]);
         $destination_ext_variable = check_str($_POST["destination_ext_variable"]);
@@ -79,11 +79,15 @@
     if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
         // TODO - check for all required data
+
+        $destination_ext_dialplan_main_details_data = reset($destination_ext_dialplan_main_details)['dialplan_detail_data'];
+        $destination_ext_dialplan_extensions_details_data = reset($destination_ext_dialplan_extensions_details)['dialplan_detail_data'];
+        $destination_ext_dialplan_invalid_details_data = reset($destination_ext_dialplan_invalid_details)['dialplan_detail_data'];
         $msg = '';
-        // if (strlen($destination_type) == 0) { $msg .= $text['message-required']." ".$text['label-destination_type']."<br>\n"; }
-        // if (strlen($destination_number) == 0) { $msg .= $text['message-required']." ".$text['label-destination_number']."<br>\n"; }
-        // if (strlen($destination_context) == 0) { $msg .= $text['message-required']." ".$text['label-destination_context']."<br>\n"; }
-        // if (strlen($destination_enabled) == 0) { $msg .= $text['message-required']." ".$text['label-destination_enabled']."<br>\n"; }
+        if (strlen($destination_ext_number) == 0) { $msg .= $text['message-required']." ".$text['label-destination_ext_number']."<br>\n"; }
+        if (strlen($destination_ext_dialplan_main_details_data) == 0) { $msg .= $text['message-required']." ".$text['label-detail_action_main']."<br>\n"; }
+        if (strlen($destination_ext_dialplan_extensions_details_data) == 0) { $msg .= $text['message-required']." ".$text['label-detail_action_ext']."<br>\n"; }
+        if (strlen($destination_ext_dialplan_invalid_details_data) == 0) { $msg .= $text['message-required']." ".$text['label-detail_action_invalid']."<br>\n"; }
 
         //check for duplicates
         if ($destination_ext_number != $db_destination_ext_number) {
@@ -121,11 +125,159 @@
         //add or update the database
         if ($_POST["persistformvar"] != "true") {
 
-            $destination_ext_domain = $_SESSION['domains'][$domain_uuid]['domain_name'];
-            
+            $destination_ext_domain = $_SESSION['domains'][$domain_uuid]['domain_name'];            
+
+            foreach ($destination_ext_dialplan_invalid_details as $row) {
+                if (strlen($row["dialplan_detail_data"]) > 0) {
+                    $add_dialplan_invalid = true;
+                    break;
+                }
+            }
+
+            //add or update the main dialplan part if the destination number is set
+            if ($add_dialplan_invalid) {
+                //get the array
+                $dialplan_details = $destination_ext_dialplan_invalid_details;
+
+                //remove the array from the HTTP POST
+                unset($_POST["destination_ext_dialplan_invalid_details"]);
+
+                //array cleanup
+                foreach ($dialplan_details as $index => $row) {
+                    //unset the empty row
+                    if (strlen($row["dialplan_detail_data"]) == 0) {
+                        unset($dialplan_details[$index]);
+                    }
+                }
+
+                //check to see if the dialplan exists
+                $sql = "select dialplan_uuid, dialplan_description from v_dialplans ";
+                $sql .= "where dialplan_name = '_invalid_ext_handler' ";
+                $sql .= "and domain_uuid = '".$domain_uuid."' ";
+                $prep_statement = $db->prepare($sql);
+                if ($prep_statement) {
+                    $prep_statement->execute();
+                    $row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+                    if (strlen($row['dialplan_uuid']) > 0) {
+                        $dialplan_uuid = $row['dialplan_uuid'];
+                        $dialplan_description = $row['dialplan_description'];
+                    }
+                    else {
+                        $dialplan_uuid = "";
+                    }
+                    unset($prep_statement);
+                } else {
+                    $dialplan_uuid = "";
+                }
+
+                //build the dialplan array
+                $dialplan["app_uuid"] = "742714e5-8cdf-32fd-462c-cbe7e3d655db";
+                if (strlen($dialplan_uuid) > 0) {
+                    $dialplan["dialplan_uuid"] = $dialplan_uuid;
+                }
+                $dialplan["domain_uuid"] = $domain_uuid;
+                $dialplan["dialplan_name"] = "_invalid_ext_handler";
+                $dialplan["dialplan_number"] = '[invalid_ext]';
+                $dialplan["dialplan_context"] = $destination_ext_domain;
+                $dialplan["dialplan_continue"] = "true";
+                $dialplan["dialplan_order"] = "889";
+                $dialplan["dialplan_enabled"] = $destination_ext_enabled;
+                $dialplan["dialplan_description"] = ($dialplan_description != '') ? $dialplan_description : "Invalid extension handler";
+
+                $dialplan_detail_order = 10;
+                $y = 0;
+
+                $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "condition";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = '${user_exists}';
+                $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "^false$";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                $y += 1;
+                $dialplan_detail_order += 10;
+
+                $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "condition";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = '${call_direction}';
+                $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "^inbound$";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                $y += 1;
+                $dialplan_detail_order += 10;
+
+                //add the actions
+
+                foreach ($dialplan_details as $row) {
+                    if (strlen($row["dialplan_detail_data"]) > 1) {
+                        $actions = explode(":", $row["dialplan_detail_data"]);
+                        $dialplan_detail_type = array_shift($actions);
+                        $dialplan_detail_data = join(':', $actions);
+
+                        if ($dialplan_detail_type == 'transfer') {
+                            $invalid_ext_transfer = explode(" ", $dialplan_detail_data)[0];
+                        }
+
+                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = $dialplan_detail_type;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $dialplan_detail_data;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                        $dialplan_detail_order += 10;
+                        $y += 1;
+                    }
+                }
+
+                //delete the previous details
+                if(strlen($dialplan_uuid) > 0) {
+                    $sql = "delete from v_dialplan_details ";
+                    $sql .= "where dialplan_uuid = '".$dialplan_uuid."' ";
+                    $sql .= "and (domain_uuid = '".$domain_uuid."') ";
+                    //echo $sql."<br><br>";
+                    $db->exec(check_sql($sql));
+                    unset($sql);
+                }
+
+                //add the dialplan permission
+                $p = new permissions;
+                $p->add("dialplan_add", 'temp');
+                $p->add("dialplan_detail_add", 'temp');
+                $p->add("dialplan_edit", 'temp');
+                $p->add("dialplan_detail_edit", 'temp');
+
+                //save the dialplan
+                $orm = new orm;
+                $orm->name('dialplans');
+                if (isset($dialplan["dialplan_uuid"])) {
+                    $orm->uuid($dialplan["dialplan_uuid"]);
+                }
+                $orm->save($dialplan);
+                $dialplan_response = $orm->message;
+
+                //remove the temporary permission
+                $p->delete("dialplan_add", 'temp');
+                $p->delete("dialplan_detail_add", 'temp');
+                $p->delete("dialplan_edit", 'temp');
+                $p->delete("dialplan_detail_edit", 'temp');
+
+                //synchronize the xml config
+                save_dialplan_xml();
+
+                //clear the cache
+                $cache = new cache;
+                $cache->delete("dialplan:".$destination_ext_domain);
+
+                unset($orm);
+
+                if (strlen($dialplan_response['uuid']) > 0) {
+                    $_POST["destination_ext_dialplan_invalid_uuid"] = $dialplan_response['uuid'];
+                    $destination_ext_dialplan_invalid_uuid = $dialplan_response['uuid'];
+                }
+                unset($dialplan_response);
+                unset($dialplan);
+                unset($dialplan_uuid);
+            }
+        // End of invalid handler part -----------------
 
             //determine whether save the main dialplan // TODO - can be optimized
-            foreach ($_POST["destination_ext_dialplan_main_details"] as $row) {
+            foreach ($destination_ext_dialplan_main_details as $row) {
                 if (strlen($row["dialplan_detail_data"]) > 0) {
                     $add_dialplan_main = true;
                     break;
@@ -136,7 +288,7 @@
             if ($add_dialplan_main) {
 
                 //get the array
-                $dialplan_details = $_POST["destination_ext_dialplan_main_details"];
+                $dialplan_details = $destination_ext_dialplan_main_details;
                 $dialplan_uuid = $destination_ext_dialplan_main_uuid;
 
                 //remove the array from the HTTP POST
@@ -223,12 +375,13 @@
 
                 // TODO - get $destination_ext_variable here as 1st occure of $dialplan_details transfer
 
-                if (strlen($destination_ext_variable) > 0 and strlen($dialplan_details[0]['dialplan_detail_data']) > 0) {
+                if (strlen($destination_ext_variable) > 0 and isset($invalid_ext_transfer)) {
+
                     
                     $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
                     $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
                     $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
-                    $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable."=".$destination_ext_domain;
+                    $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable."=".$invalid_ext_transfer;
                     $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                     $dialplan_detail_order += 10;
                     $y += 1;
@@ -318,7 +471,7 @@
 
         // End of main part -----------------------------
 
-           foreach ($_POST["destination_ext_dialplan_extensions_details"] as $row) {
+            foreach ($destination_ext_dialplan_extensions_details as $row) {
                 if (strlen($row["dialplan_detail_data"]) > 0) {
                     $add_dialplan_extensions = true;
                     break;
@@ -329,7 +482,7 @@
             if ($add_dialplan_extensions) {
 
                 //get the array
-                $dialplan_details = $_POST["destination_ext_dialplan_extensions_details"];
+                $dialplan_details = $destination_ext_dialplan_extensions_details;
                 $dialplan_uuid = $destination_ext_dialplan_extensions_uuid;
 
                 //remove the array from the HTTP POST
@@ -515,151 +668,6 @@
             unset($dialplan_uuid);
 
         // End of extensions part -----------------------
-
-            foreach ($_POST["destination_ext_dialplan_invalid_details"] as $row) {
-                if (strlen($row["dialplan_detail_data"]) > 0) {
-                    $add_dialplan_invalid = true;
-                    break;
-                }
-            }
-
-            //add or update the main dialplan part if the destination number is set
-            if ($add_dialplan_invalid) {
-                //get the array
-                $dialplan_details = $_POST["destination_ext_dialplan_invalid_details"];
-
-                //remove the array from the HTTP POST
-                unset($_POST["destination_ext_dialplan_invalid_details"]);
-
-                //array cleanup
-                foreach ($dialplan_details as $index => $row) {
-                    //unset the empty row
-                    if (strlen($row["dialplan_detail_data"]) == 0) {
-                        unset($dialplan_details[$index]);
-                    }
-                }
-
-                //check to see if the dialplan exists
-                $sql = "select dialplan_uuid, dialplan_description from v_dialplans ";
-                $sql .= "where dialplan_name = '_invalid_ext_handler' ";
-                $sql .= "and domain_uuid = '".$domain_uuid."' ";
-                $prep_statement = $db->prepare($sql);
-                if ($prep_statement) {
-                    $prep_statement->execute();
-                    $row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-                    if (strlen($row['dialplan_uuid']) > 0) {
-                        $dialplan_uuid = $row['dialplan_uuid'];
-                        $dialplan_description = $row['dialplan_description'];
-                    }
-                    else {
-                        $dialplan_uuid = "";
-                    }
-                    unset($prep_statement);
-                } else {
-                    $dialplan_uuid = "";
-                }
-
-                //build the dialplan array
-                $dialplan["app_uuid"] = "742714e5-8cdf-32fd-462c-cbe7e3d655db";
-                if (strlen($dialplan_uuid) > 0) {
-                    $dialplan["dialplan_uuid"] = $dialplan_uuid;
-                }
-                $dialplan["domain_uuid"] = $domain_uuid;
-                $dialplan["dialplan_name"] = "_invalid_ext_handler";
-                $dialplan["dialplan_number"] = '[invalid_ext]';
-                $dialplan["dialplan_context"] = $destination_ext_domain;
-                $dialplan["dialplan_continue"] = "true";
-                $dialplan["dialplan_order"] = "889";
-                $dialplan["dialplan_enabled"] = $destination_ext_enabled;
-                $dialplan["dialplan_description"] = ($dialplan_description != '') ? $dialplan_description : "Invalid extension handler";
-
-                $dialplan_detail_order = 10;
-                $y = 0;
-
-                $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
-                $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "condition";
-                $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = '${user_exists}';
-                $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "^false$";
-                $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
-                $y += 1;
-                $dialplan_detail_order += 10;
-
-                $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
-                $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "condition";
-                $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = '${call_direction}';
-                $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "^inbound$";
-                $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
-                $y += 1;
-                $dialplan_detail_order += 10;
-
-                //add the actions
-
-                foreach ($dialplan_details as $row) {
-                    if (strlen($row["dialplan_detail_data"]) > 1) {
-                        $actions = explode(":", $row["dialplan_detail_data"]);
-                        $dialplan_detail_type = array_shift($actions);
-                        $dialplan_detail_data = join(':', $actions);
-
-                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = $dialplan_detail_type;
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $dialplan_detail_data;
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
-                        $dialplan_detail_order += 10;
-                        $y += 1;
-                    }
-                }
-
-                //delete the previous details
-                if(strlen($dialplan_uuid) > 0) {
-                    $sql = "delete from v_dialplan_details ";
-                    $sql .= "where dialplan_uuid = '".$dialplan_uuid."' ";
-                    $sql .= "and (domain_uuid = '".$domain_uuid."') ";
-                    //echo $sql."<br><br>";
-                    $db->exec(check_sql($sql));
-                    unset($sql);
-                }
-
-                //add the dialplan permission
-                $p = new permissions;
-                $p->add("dialplan_add", 'temp');
-                $p->add("dialplan_detail_add", 'temp');
-                $p->add("dialplan_edit", 'temp');
-                $p->add("dialplan_detail_edit", 'temp');
-
-                //save the dialplan
-                $orm = new orm;
-                $orm->name('dialplans');
-                if (isset($dialplan["dialplan_uuid"])) {
-                    $orm->uuid($dialplan["dialplan_uuid"]);
-                }
-                $orm->save($dialplan);
-                $dialplan_response = $orm->message;
-
-                //remove the temporary permission
-                $p->delete("dialplan_add", 'temp');
-                $p->delete("dialplan_detail_add", 'temp');
-                $p->delete("dialplan_edit", 'temp');
-                $p->delete("dialplan_detail_edit", 'temp');
-
-                //synchronize the xml config
-                save_dialplan_xml();
-
-                //clear the cache
-                $cache = new cache;
-                $cache->delete("dialplan:".$destination_ext_domain);
-
-                unset($orm);
-
-                if (strlen($dialplan_response['uuid']) > 0) {
-                    $_POST["destination_ext_dialplan_invalid_uuid"] = $dialplan_response['uuid'];
-                    $destination_ext_dialplan_invalid_uuid = $dialplan_response['uuid'];
-                }
-                unset($dialplan_response);
-                unset($dialplan);
-                unset($dialplan_uuid);
-            }
-        // End of invalid handler part -----------------
 
             if ($action == 'add') {
                 $destination_ext_uuid = uuid();
@@ -919,14 +927,6 @@
     $order = 10;
     $dialplan_details = $destination_ext_dialplan_extensions_details;
 
-
-            //Debug here!
-              //  echo "<pre>";
-              //  var_dump($dialplan_details);
-              //  echo "</pre><br>";
-              // exit();
-
-
     if (sizeof($dialplan_details) == 1) {
 
         $domain_uuid = $dialplan_details[0]['domain_uuid'];
@@ -986,6 +986,17 @@
     $x = 0;
     $order = 10;
     $dialplan_details = $destination_ext_dialplan_invalid_details;
+
+    if (sizeof($dialplan_details) == 1) {
+
+        $domain_uuid = $dialplan_details[0]['domain_uuid'];
+        $destination_ext_domain = $_SESSION['domains'][$domain_uuid]['domain_name'];
+
+        $dialplan_details = array();
+        $dialplan_details[1] = array();
+        $dialplan_details[1]['dialplan_detail_data'] = "hangup";
+        $dialplan_details[1]['dialplan_detail_tag'] = "action";
+    }
 
     foreach($dialplan_details as $row) {
         if ($row["dialplan_detail_tag"] != "condition") {
