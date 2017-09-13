@@ -37,12 +37,12 @@ $text['label-destination_ext_description']['en-us'] = "Description";
 
 $text['description-destination_ext']['en-us'] = "Destinations with support of extensions for handling in some European countries";
 
-$text['description-destination_ext_variable']['en-us'] = "destinations_ext_variable";
+$text['description-destination_ext_variable']['en-us'] = "Variable to store extension, if needed to use in dialplan later";
 
-$text['description-destination_ext_number']['en-us'] = "Destinations ext number desc";
+$text['description-destination_ext_number']['en-us'] = "Destinations main number";
 
-$text['description-destination_ext_enabled']['en-us'] = "description-destination_ext_enabled";
+$text['description-destination_ext_enabled']['en-us'] = "Enable or disable current destiantion";
 
-$text['description-destination_ext_description']['en-us'] = "destination_ext_description";
+$text['description-destination_ext_description']['en-us'] = "Destination description";
 
 ?>
