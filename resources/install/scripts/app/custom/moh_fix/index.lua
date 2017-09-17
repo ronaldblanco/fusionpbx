@@ -4,16 +4,22 @@ require "resources.functions.local_to_file_stream"
 if (session:ready()) then
     hold_music = session:getVariable("hold_music")
     --freeswitch.consoleLog("notice", "[FIX_MOH] Got moh "..hold_music.."\n")
-    hold_music = local_to_file_stream(hold_music)
-    session:setVariable("hold_music", hold_music)
+    if (hold_music ~= nil) then
+        hold_music = local_to_file_stream(hold_music)
+        session:setVariable("hold_music", hold_music)
+    end
 
     transfer_ringback = session:getVariable("transfer_ringback")
-    transfer_ringback = local_to_file_stream(transfer_ringback)
-    session:setVariable("transfer_ringback", transfer_ringback)
+    if (transfer_ringback ~= nil) then
+        transfer_ringback = local_to_file_stream(transfer_ringback)
+        session:setVariable("transfer_ringback", transfer_ringback)
+    end
 
     ringback = session:getVariable("ringback")
-    ringback = local_to_file_stream(ringback)
-    session:setVariable("ringback", ringback)
+    if (ringback ~= nil) then
+        ringback = local_to_file_stream(ringback)
+        session:setVariable("ringback", ringback)
+    end
     --freeswitch.consoleLog("notice", "[FIX_MOH] Set moh "..hold_music.."\n")
     session:setVariable("fix_moh", "true")
 end
