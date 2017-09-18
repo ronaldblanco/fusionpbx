@@ -46,8 +46,8 @@ if ( session:ready() ) then
         --session:setVariable("effective_caller_id_name", effective_caller_id)
         --session:setVariable("effective_caller_id_number", effective_caller_id)
 
-        --session:setVariable("sip_h_X-ASTPP-Outbound", effective_caller_id)
-        --session:setVariable("sip_h_X-ASTPP-Billing", company_caller_id)
+        session:setVariable("sip_h_X-ASTPP-Outbound", effective_caller_id)
+        session:setVariable("sip_h_X-ASTPP-Billing", company_caller_id)
         -- else 
         session:consoleLog("notice","[PREPARE_CALLERID]: Setting effective_caller_id_name to "..effective_caller_id.."\n")
         session:setVariable("effective_caller_id_name", effective_caller_id)
