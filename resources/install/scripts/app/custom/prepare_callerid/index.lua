@@ -7,10 +7,11 @@ if ( session:ready() ) then
     for key,value in pairs(argv) do
         if (key > 1) then
             arguments = arguments .. " '" .. value .. "'";
-            freeswitch.consoleLog("notice", "[prepare_callerid.lua] argv["..key.."]: "..argv[key].."\n");
+            freeswitch.consoleLog("notice", "[prepare_callerid.lua] Modifiers: argv["..key.."]: "..argv[key].."\n");
         end
     end
 
+   modifier_1 = argv[2] or '';
 
     company_caller_id = session:getVariable("company_caller_id")
     if (company_caller_id) then
@@ -31,10 +32,14 @@ if ( session:ready() ) then
             if (string.find(outbound_caller_id_name, 'anon') or outbound_caller_id_number == '0000') then -- Checking for anon callerid
                 effective_caller_id = "anonymous|"..company_caller_id
             else
-                if (string.len(outbound_caller_id_number) > 3) then
-                    effective_caller_id = outbound_caller_id_number.."|"..company_caller_id
+        	if (modifier_1 == 'a2billing') then
+                    if (string.len(outbound_caller_id_number) > 3) then
+                        effective_caller_id = outbound_caller_id_number.."|"..company_caller_id
+                    else
+                        effective_caller_id = company_caller_id.."|"..company_caller_id
+                    end
                 else
-                    effective_caller_id = company_caller_id.."|"..company_caller_id
+                    effective_caller_id = (string.len(outbound_caller_id_number) > 1) and outbound_caller_id_number or company_caller_id
                 end
             end
         else
@@ -48,7 +53,7 @@ if ( session:ready() ) then
 
         session:setVariable("sip_h_X-ASTPP-Outbound", effective_caller_id)
         session:setVariable("sip_h_X-ASTPP-Billing", company_caller_id)
-        -- else 
+        -- else
         session:consoleLog("notice","[PREPARE_CALLERID]: Setting effective_caller_id_name to "..effective_caller_id.."\n")
         session:setVariable("effective_caller_id_name", effective_caller_id)
         -- end
