@@ -34,7 +34,7 @@ include "resources/classes/functions.php";
 $date = check_str($_REQUEST["date"]);
 
 if ($date == "") {
-    $date = date("Y-m-d");     
+    $date = date("Y-m-d");
 }
 
 if (!validateDate($date,"Y-m-d")) {
@@ -91,9 +91,13 @@ foreach ($db_result as $cdr_line) {
             'time_to_answer' => (string)($cdr_line['start_epoch'] - $cdr_line['answer_epoch']),
             'duration' => $cdr_line['duration'],
         );
-        $filename = isset($json_cdr_line['variables']['filename'])?$json_cdr_line['variables']['filename']:False;
-        if (file_exists($filename)) {
-            $cdr_data['recording'] = $filename;
+        $filename = isset($json_cdr_line['variables']['nolocal:api_on_answer'])?$json_cdr_line['variables']['nolocal:api_on_answer']:False;
+        if ($filename) {
+            $filename = urldecode($filename);
+            $filename = end(explode(' ', $filename));
+            if (file_exists($filename)) {
+                $cdr_data['recording'] = $filename;
+            }
         }
         $result[] = $cdr_data;
     }
