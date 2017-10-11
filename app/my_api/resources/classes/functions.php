@@ -11,4 +11,9 @@ function send_api_answer($code, $message, $data = False) {
 	echo $response;
 	return;
 }
+function validateDate($date, $format = 'Y-m-d H:i:s')
+{
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
+}
 ?>
