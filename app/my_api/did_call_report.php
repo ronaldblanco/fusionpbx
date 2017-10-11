@@ -56,8 +56,8 @@ $campagin_did = $_SESSION['campagin']['did'];
 $domain_uuid = $_SESSION['domain_uuid'];
 
 // Ask for cdr here
-$start_date = strtotime($date);
-$end_date = strtotime("+1 day", $start_date);
+$end_date = strtotime($date);
+$start_date = strtotime("-1 day", $start_date);
 
 // Get CDR's here
 $sql = "SELECT caller_id_name, caller_id_number, destination_number, start_epoch, answer_epoch, duration, json";
@@ -102,6 +102,38 @@ foreach ($db_result as $cdr_line) {
         $result[] = $cdr_data;
     }
 }
+
+include_once("resources/phpmailer/class.phpmailer.php");
+include_once("resources/phpmailer/class.smtp.php");
+
+$regexp = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,6}$/';
+
+$mail = new PHPMailer();
+$mail -> IsSMTP();
+$mail -> Host = $_SESSION['email']['smtp_host']['var'];
+if ($_SESSION['email']['smtp_port']['var'] != '') {
+    $mail -> Port = $_SESSION['email']['smtp_port']['var'];
+}
+if ($_SESSION['email']['smtp_auth']['var'] == "true") {
+    $mail -> SMTPAuth = $_SESSION['email']['smtp_auth']['var'];
+}
+if ($_SESSION['email']['smtp_username']['var']) {
+    $mail -> Username = $_SESSION['email']['smtp_username']['var'];
+    $mail -> Password = $_SESSION['email']['smtp_password']['var'];
+}
+if ($_SESSION['email']['smtp_secure']['var'] == "none") {
+    $_SESSION['email']['smtp_secure']['var'] = '';
+}
+if ($_SESSION['email']['smtp_secure']['var'] != '') {
+    $mail -> SMTPSecure = $_SESSION['email']['smtp_secure']['var'];
+}
+$eml_from_address = ($eml_from_address != '') ? $eml_from_address : $_SESSION['email']['smtp_from']['var'];
+$eml_from_name = ($eml_from_name != '') ? $eml_from_name : $_SESSION['email']['smtp_from_name']['var'];
+$mail -> SetFrom($eml_from_address, $eml_from_name);
+$mail -> AddReplyTo($eml_from_address, $eml_from_name);
+$mail -> Subject = $eml_subject;
+$mail -> MsgHTML($eml_body);
+$mail -> Priority = $eml_priority;
 
 var_dump($result);
 
