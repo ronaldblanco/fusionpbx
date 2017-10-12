@@ -65,7 +65,7 @@ if ($date != 'all') {
 }
 
 // Get CDR's here
-$sql = "SELECT caller_id_name, caller_id_number, destination_number, start_epoch, answer_epoch, duration, json";
+$sql = "SELECT caller_id_name, caller_id_number, destination_number, start_stamp, duration, json";
 $sql .= " FROM v_xml_cdr WHERE (start_epoch";
 $sql .= " BETWEEN ".$start_date." AND ".$end_date.")";
 $sql .= " AND (domain_uuid = '".$domain_uuid."')";
@@ -143,12 +143,12 @@ if (count($did_campagin_calls) > 0) {
     $eml_body = "";
     foreach ($did_campagin_calls as $index => $did_campagin_call) {
         
-        $eml_body .= $index.". Call to DID ".$did_campagin_call['did']." at time ".$did_campagin_call['start_stamp']." from ".$cdr_line['caller_id_name']." ".$cdr_line['caller_id_number']."\n";
+        $eml_body .= $index.". Call to DID ".$did_campagin_call['did']." at time ".$did_campagin_call['start_stamp']." from ".$did_campagin_call['caller_id_name']." ".$did_campagin_call['caller_id_number']."\n";
     
         if (isset($did_campagin_call['recording'])) {
             $filename_ext = explode(".",$did_campagin_call['recording']);
             $filename_ext = end($filename_ext);
-            $filename = $did_campagin_call['start_stamp']."-".$did_campagin_call['did']."-".$cdr_line['caller_id_name']."-".$cdr_line['caller_id_number'];
+            $filename = $did_campagin_call['start_stamp']."-".$did_campagin_call['did']."-".$did_campagin_call['caller_id_name']."-".$did_campagin_call['caller_id_number'];
             $filename = preg_replace("/[^A-Za-z0-9-]/", '_', $filename);
             $filename .= ".".$filename_ext;
             $mail->addAttachment($did_campagin_call['recording'], $filename);
