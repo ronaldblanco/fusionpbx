@@ -135,7 +135,7 @@ if (count($did_campagin_calls) > 0) {
     $eml_from_address = $_SESSION['email']['smtp_from']['var'];
     $eml_from_name = $_SESSION['email']['smtp_from_name']['var'];
 
-    $mail -> addAddress($_SESSION['campagin']['email_to_address']);
+    $mail -> addAddress($_SESSION['campagin']['report_email']['text']);
     $mail -> SetFrom($eml_from_address, $eml_from_name);
     $mail -> Subject = "Campagin calls to ".implode(',',$did);
     
@@ -144,8 +144,9 @@ if (count($did_campagin_calls) > 0) {
         
         $eml_body .= $index.". Call to DID ".$did_campagin_call['did']." at time ".$did_campagin_call['start_stamp']." from ".$cdr_line['caller_id_name']." ".$cdr_line['caller_id_number']."\n";
     
-        if (isset($did_campagin_call['recording']) and strlen($did_campagin_call['recording']) > 0) {
-            $filename_ext = end(explode(".",$did_campagin_call['recording']));
+        if (isset($did_campagin_call['recording'])) {
+            $filename_ext = explode(".",$did_campagin_call['recording']);
+            $filename_ext = end($filename_ext);
             $filename = $did_campagin_call['start_stamp']."-".$did_campagin_call['did']."-".$cdr_line['caller_id_name']."-".$cdr_line['caller_id_number'];
             $filename = preg_replace("/[^A-Za-z0-9-]/", '_', $filename);
             $filename .= ".".$filename_ext;
