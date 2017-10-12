@@ -144,7 +144,7 @@ if (count($did_campagin_calls) > 0) {
         
         $eml_body .= $index.". Call to DID ".$did_campagin_call['did']." at time ".$did_campagin_call['start_stamp']." from ".$cdr_line['caller_id_name']." ".$cdr_line['caller_id_number']."\n";
     
-        if (isset($did_campagin_call['recording'])) {
+        if (isset($did_campagin_call['recording']) and strlen($did_campagin_call['recording']) > 0) {
             $filename_ext = end(explode(".",$did_campagin_call['recording']));
             $filename = $did_campagin_call['start_stamp']."-".$did_campagin_call['did']."-".$cdr_line['caller_id_name']."-".$cdr_line['caller_id_number'];
             $filename = preg_replace("/[^A-Za-z0-9-]/", '_', $filename);
@@ -152,7 +152,7 @@ if (count($did_campagin_calls) > 0) {
             $mail->addAttachment($did_campagin_call['recording'], $filename);
         }
     }
-    $mail -> Body($eml_body);
+    $mail -> Body = $eml_body;
 
     if (!$mail->send()) {
         send_api_answer("500",'Mailer Error: ' . $mail->ErrorInfo);
