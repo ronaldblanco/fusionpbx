@@ -138,7 +138,7 @@ if (count($did_campagin_calls) > 0) {
 
     $mail -> addAddress($_SESSION['campagin']['report_email']['text']);
     $mail -> SetFrom($eml_from_address, $eml_from_name);
-    $mail -> Subject = "Campagin calls to ".implode(',',$did);
+    $mail -> Subject = "Campagin calls to ".implode(',',$did)." from ".date("Y-m-d", $start_date)." to ".date("Y-m-d", $end_date);
     
     $eml_body = "";
     foreach ($did_campagin_calls as $index => $did_campagin_call) {
