@@ -98,7 +98,8 @@ foreach ($db_result as $cdr_line) {
         $filename = isset($json_cdr_line['variables']['nolocal:api_on_answer'])?$json_cdr_line['variables']['nolocal:api_on_answer']:False;
         if ($filename and strlen($filename) > 0) {
             $filename = urldecode($filename);
-            $filename = end(explode(' ', $filename));
+            $filename = explode(' ', $filename);
+            $filename = end($filename);
             if (file_exists($filename)) {
                 $cdr_data['recording'] = $filename;
             }
