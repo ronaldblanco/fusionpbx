@@ -37,7 +37,7 @@ if ($date == "") {
     $date = date("Y-m-d");
 }
 
-if (!validateDate($date,"Y-m-d")) {
+if (!validateDate($date,"Y-m-d") and $date != 'all') {
     send_api_answer("406", "Date format incorrect");
     exit;
 }
@@ -55,9 +55,14 @@ if (!isset($_SESSION['domain_uuid'])) {
 $campagin_did = $_SESSION['campagin']['did'];
 $domain_uuid = $_SESSION['domain_uuid'];
 
-// Ask for cdr here
-$end_date = strtotime($date);
-$start_date = strtotime("-1 day", $start_date);
+// Get date ranges. A bit hardcode actually, but really date = 'all' is not supposed to be supported
+if ($date != 'all') {
+    $end_date = strtotime($date);
+    $start_date = strtotime("-1 day", $start_date);
+} else {
+    $end_date = time();
+    $start_date = strtotime('2017-10-1');
+}
 
 // Get CDR's here
 $sql = "SELECT caller_id_name, caller_id_number, destination_number, start_epoch, answer_epoch, duration, json";
@@ -75,7 +80,7 @@ if (count($db_result) <= 0) {
     exit;
 }
 
-$result = array();
+$did_campagin_calls = array();
 
 foreach ($db_result as $cdr_line) {
     $json_cdr_line = json_decode($cdr_line['json'], true);
@@ -86,55 +91,77 @@ foreach ($db_result as $cdr_line) {
         $cdr_data = array(
             'caller_id_name' => $cdr_line['caller_id_name'],
             'caller_id_number' => $cdr_line['caller_id_number'],
-            'destination' => $cdr_line['destination_number'],
-            'start' => $cdr_line['start_epoch'],
-            'time_to_answer' => (string)($cdr_line['start_epoch'] - $cdr_line['answer_epoch']),
+            'start_stamp' => $cdr_line['start_stamp'],
             'duration' => $cdr_line['duration'],
+            'did' => $did,
         );
         $filename = isset($json_cdr_line['variables']['nolocal:api_on_answer'])?$json_cdr_line['variables']['nolocal:api_on_answer']:False;
-        if ($filename) {
+        if ($filename and strlen($filename) > 0) {
             $filename = urldecode($filename);
             $filename = end(explode(' ', $filename));
             if (file_exists($filename)) {
                 $cdr_data['recording'] = $filename;
             }
         }
-        $result[] = $cdr_data;
+        $did_campagin_calls[] = $cdr_data;
     }
 }
 
-include_once("resources/phpmailer/class.phpmailer.php");
-include_once("resources/phpmailer/class.smtp.php");
+if (count($did_campagin_calls) > 0) {
 
-$regexp = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,6}$/';
+    include_once("resources/phpmailer/class.phpmailer.php");
+    include_once("resources/phpmailer/class.smtp.php");
 
-$mail = new PHPMailer();
-$mail -> IsSMTP();
-$mail -> Host = $_SESSION['email']['smtp_host']['var'];
-if ($_SESSION['email']['smtp_port']['var'] != '') {
-    $mail -> Port = $_SESSION['email']['smtp_port']['var'];
-}
-if ($_SESSION['email']['smtp_auth']['var'] == "true") {
-    $mail -> SMTPAuth = $_SESSION['email']['smtp_auth']['var'];
-}
-if ($_SESSION['email']['smtp_username']['var']) {
-    $mail -> Username = $_SESSION['email']['smtp_username']['var'];
-    $mail -> Password = $_SESSION['email']['smtp_password']['var'];
-}
-if ($_SESSION['email']['smtp_secure']['var'] == "none") {
-    $_SESSION['email']['smtp_secure']['var'] = '';
-}
-if ($_SESSION['email']['smtp_secure']['var'] != '') {
-    $mail -> SMTPSecure = $_SESSION['email']['smtp_secure']['var'];
-}
-$eml_from_address = ($eml_from_address != '') ? $eml_from_address : $_SESSION['email']['smtp_from']['var'];
-$eml_from_name = ($eml_from_name != '') ? $eml_from_name : $_SESSION['email']['smtp_from_name']['var'];
-$mail -> SetFrom($eml_from_address, $eml_from_name);
-$mail -> AddReplyTo($eml_from_address, $eml_from_name);
-$mail -> Subject = $eml_subject;
-$mail -> MsgHTML($eml_body);
-$mail -> Priority = $eml_priority;
 
-var_dump($result);
+    $mail = new PHPMailer();
+    $mail -> IsSMTP();
+    $mail -> Host = $_SESSION['email']['smtp_host']['var'];
+    if ($_SESSION['email']['smtp_port']['var'] != '') {
+        $mail -> Port = $_SESSION['email']['smtp_port']['var'];
+    }
+    if ($_SESSION['email']['smtp_auth']['var'] == "true") {
+        $mail -> SMTPAuth = $_SESSION['email']['smtp_auth']['var'];
+    }
+    if ($_SESSION['email']['smtp_username']['var']) {
+        $mail -> Username = $_SESSION['email']['smtp_username']['var'];
+        $mail -> Password = $_SESSION['email']['smtp_password']['var'];
+    }
+    if ($_SESSION['email']['smtp_secure']['var'] == "none") {
+        $_SESSION['email']['smtp_secure']['var'] = '';
+    }
+    if ($_SESSION['email']['smtp_secure']['var'] != '') {
+        $mail -> SMTPSecure = $_SESSION['email']['smtp_secure']['var'];
+    }
+    $eml_from_address = $_SESSION['email']['smtp_from']['var'];
+    $eml_from_name = $_SESSION['email']['smtp_from_name']['var'];
+
+    $mail -> addAddress($_SESSION['campagin']['email_to_address']);
+    $mail -> SetFrom($eml_from_address, $eml_from_name);
+    $mail -> Subject = "Campagin calls to ".implode(',',$did);
+    
+    $eml_body = "";
+    foreach ($did_campagin_calls as $index => $did_campagin_call) {
+        
+        $eml_body .= $index.". Call to DID ".$did_campagin_call['did']." at time ".$did_campagin_call['start_stamp']." from ".$cdr_line['caller_id_name']." ".$cdr_line['caller_id_number']."\n";
+    
+        if (isset($did_campagin_call['recording'])) {
+            $filename_ext = end(explode(".",$did_campagin_call['recording']));
+            $filename = $did_campagin_call['start_stamp']."-".$did_campagin_call['did']."-".$cdr_line['caller_id_name']."-".$cdr_line['caller_id_number'];
+            $filename = preg_replace("/[^A-Za-z0-9-]/", '_', $filename);
+            $filename .= ".".$filename_ext;
+            $mail->addAttachment($did_campagin_call['recording'], $filename);
+        }
+    }
+    $mail -> Body($eml_body);
+
+    if (!$mail->send()) {
+        send_api_answer("500",'Mailer Error: ' . $mail->ErrorInfo);
+    } else {
+        send_api_answer("200",'Message sent!');
+    }
+
+} else {
+    send_api_answer("404", "No calls on $date found");
+}
 
 ?>
