@@ -134,7 +134,7 @@ if (count($did_campagin_calls) > 0) {
         $mail -> SMTPSecure = $_SESSION['email']['smtp_secure']['var'];
     }
     $eml_from_address = $_SESSION['email']['smtp_from']['var'];
-    $eml_from_name = $_SESSION['email']['smtp_from_name']['var'];
+    $eml_from_name = "Campagin calls";
 
     $mail -> addAddress($_SESSION['campagin']['report_email']['text']);
     $mail -> SetFrom($eml_from_address, $eml_from_name);
@@ -143,7 +143,7 @@ if (count($did_campagin_calls) > 0) {
     $eml_body = "";
     foreach ($did_campagin_calls as $index => $did_campagin_call) {
         
-        $eml_body .= $index.". Call to DID ".$did_campagin_call['did']." at time ".$did_campagin_call['start_stamp']." from ".$did_campagin_call['caller_id_name']." ".$did_campagin_call['caller_id_number']."\n";
+        $eml_body .= ($index + 1).". ".$did_campagin_call['start_stamp']." DID:".$did_campagin_call['did']." from ".$did_campagin_call['caller_id_name']." ".$did_campagin_call['caller_id_number']."\n";
     
         if (isset($did_campagin_call['recording'])) {
             $filename_ext = explode(".",$did_campagin_call['recording']);
