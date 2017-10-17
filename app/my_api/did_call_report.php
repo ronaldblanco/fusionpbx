@@ -58,7 +58,7 @@ $domain_uuid = $_SESSION['domain_uuid'];
 // Get date ranges. A bit hardcode actually, but really date = 'all' is not supposed to be supported
 if ($date != 'all') {
     $end_date = strtotime($date);
-    $start_date = strtotime("-1 day", $start_date);
+    $start_date = strtotime("-1 day", $end_date);
 } else {
     $end_date = time();
     $start_date = strtotime('2017-10-1');
