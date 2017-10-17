@@ -1104,6 +1104,8 @@ $text['label-aloc']['uk'] = "";
 $text['label-aloc']['de-at'] = "ALOC";
 $text['label-aloc']['he'] = "";
 
+$text['label-did']['en-us'] = "DID";
+
 $text['label-accountcode']['en-us'] = "Account Code";
 $text['label-accountcode']['es-cl'] = "Código de Cuenta";
 $text['label-accountcode']['pt-pt'] = "Código de Conta";

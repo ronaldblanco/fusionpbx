@@ -152,6 +152,9 @@
 			$database->fields['conference_name'] = check_str(urldecode($xml->variables->conference_name));
 			$database->fields['conference_uuid'] = check_str(urldecode($xml->variables->conference_uuid));
 			$database->fields['conference_member_id'] = check_str(urldecode($xml->variables->conference_member_id));
+		// did
+			$database->fields['did'] = check_str(urldecode($xml->variables->sip_to_user));
+
 		//call quality
 			$rtp_audio_in_mos = check_str(urldecode($xml->variables->rtp_audio_in_mos));
 			if (strlen($rtp_audio_in_mos) > 0) {

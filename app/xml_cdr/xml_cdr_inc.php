@@ -75,6 +75,7 @@
 		$bridge_uuid = check_str($_REQUEST["network_addr"]);
 		$order_by = check_str($_REQUEST["order_by"]);
 		$order = check_str($_REQUEST["order"]);
+		$did = check_str($_REQUEST["did"]);
 		if (is_array($_SESSION['cdr']['field'])) {
 			foreach ($_SESSION['cdr']['field'] as $field) {
 				$array = explode(",", $field);
@@ -200,6 +201,7 @@
 	if (strlen($remote_media_ip) > 0) { $sql_where_ands[] = "remote_media_ip like '%".$remote_media_ip."%'"; }
 	if (strlen($network_addr) > 0) { $sql_where_ands[] = "network_addr like '%".$network_addr."%'"; }
 	if (strlen($mos_comparison) > 0 && strlen($mos_score) > 0 ) { $sql_where_ands[] = "rtp_audio_in_mos " . $mos_comparison . " ".$mos_score.""; }
+	if (strlen($did) > 0) { $sql_where_ands[] = "did = '".$did."'"; }
 
 	//if not admin or superadmin, only show own calls
 	if (!permission_exists('xml_cdr_domain')) {
@@ -277,6 +279,7 @@
 	$param .= "&bridge_uuid=".$bridge_uuid;
 	$param .= "&mos_comparison=".$mos_comparison;
 	$param .= "&mos_score=".$mos_score;
+	$param .= "&did=".$did;
 	if (is_array($_SESSION['cdr']['field'])) {
 		foreach ($_SESSION['cdr']['field'] as $field) {
 			$array = explode(",", $field);
@@ -362,6 +365,7 @@
 	$sql .= "caller_id_number, ";
 	$sql .= "source_number, ";
 	$sql .= "destination_number, ";
+	$sql .= "did, ";
 	$sql .= "(xml IS NOT NULL OR json IS NOT NULL) AS raw_data_exists, ";
 	if (is_array($_SESSION['cdr']['field'])) {
 		foreach ($_SESSION['cdr']['field'] as $field) {

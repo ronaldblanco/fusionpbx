@@ -109,6 +109,7 @@
 	echo "	<input type='hidden' name='remote_media_ip' value='".$remote_media_ip."'>\n";
 	echo "	<input type='hidden' name='network_addr' value='".$network_addr."'>\n";
 	echo "	<input type='hidden' name='bridge_uuid' value='".$bridge_uuid."'>\n";
+	echo "	<input type='hidden' name='did' value='".$did."'>\n";
 	if (is_array($_SESSION['cdr']['field'])) {
 		foreach ($_SESSION['cdr']['field'] as $field) {
 			$array = explode(",", $field);
@@ -177,173 +178,182 @@
 	echo "</table>\n";
 
 	//basic search of call detail records
-		if (permission_exists('xml_cdr_search')) {
+	if (permission_exists('xml_cdr_search')) {
 
-			echo "<form method='get' action=''>\n";
+		echo "<form method='get' action=''>\n";
+
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+		echo "<tr>\n";
+		echo "<td width='".((if_group("admin") || if_group("superadmin") || if_group("cdr")) ? '19%' : '30%')."' style='vertical-align: top;'>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-			echo "<tr>\n";
-			echo "<td width='".((if_group("admin") || if_group("superadmin") || if_group("cdr")) ? '19%' : '30%')."' style='vertical-align: top;'>\n";
+			echo "	<tr>\n";
+			echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
+			echo "			".$text['label-direction']."\n";
+			echo "		</td>\n";
+			echo "		<td class='vtable' align='left'>\n";
+			echo "			<select name='direction' class='formfld'>\n";
+			echo "				<option value=''></option>\n";
+			echo "				<option value='inbound' ".(($direction == "inbound") ? "selected='selected'" : null).">".$text['label-inbound']."</option>\n";
+			echo "				<option value='outbound' ".(($direction == "outbound") ? "selected='selected'" : null).">".$text['label-outbound']."</option>\n";
+			echo "				<option value='local' ".(($direction == "local") ? "selected='selected'" : null).">".$text['label-local']."</option>\n";
+			echo "			</select>\n";
+			echo "		</td>\n";
+			echo "	</tr>\n";
+
+			echo "	<tr>\n";
+			echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
+			echo "			".$text['label-status']."\n";
+			echo "		</td>\n";
+			echo "		<td class='vtable' align='left'>\n";
+			echo "			<select name='call_result' class='formfld'>\n";
+			echo "				<option value=''></option>\n";
+			echo "				<option value='answered' ".(($call_result == 'answered') ? 'selected' : null).">".$text['label-answered']."</option>\n";
+			echo "				<option value='missed' ".(($call_result == 'missed') ? 'selected' : null).">".$text['label-missed']."</option>\n";
+			echo "				<option value='voicemail' ".(($call_result == 'voicemail') ? 'selected' : null).">".$text['label-voicemail']."</option>\n";
+			echo "				<option value='cancelled' ".(($call_result == 'cancelled') ? 'selected' : null).">".$text['label-cancelled']."</option>\n";
+			echo "				<option value='failed' ".(($call_result == 'failed') ? 'selected' : null).">".$text['label-failed']."</option>\n";
+			echo "			</select>\n";
+			echo "		</td>\n";
+			echo "	</tr>\n";
+			echo "</table>\n";
+
+		echo "</td>";
+		echo "<td width='".((if_group("admin") || if_group("superadmin") || if_group("cdr")) ? '24%' : '30%')."' style='vertical-align: top;'>\n";
+
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+			echo "	<tr>\n";
+			echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
+			echo "			".$text['label-source']."\n";
+			echo "		</td>\n";
+			echo "		<td class='vtable' align='left' style='white-space: nowrap;'>\n";
+			echo "			<input type='text' class='formfld' style='".$style['caller_id_number']."' name='caller_id_number' id='caller_id_number' value='".$caller_id_number."'>\n";
+			echo "		</td>\n";
+			echo "	</tr>\n";
+			echo "	<tr>\n";
+			echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
+			echo "			".$text['label-destination']."\n";
+			echo "		</td>\n";
+			echo "		<td class='vtable' align='left' style='white-space: nowrap;'>\n";
+			echo "			<input type='text' class='formfld' name='destination_number' id='destination_number' value='".$destination_number."'>\n";
+			echo "		</td>\n";
+			echo "	</tr>\n";
+			echo "</table>\n";
+
+		echo "</td>";
+		echo "<td width='".((if_group("admin") || if_group("superadmin") || if_group("cdr")) ? '30%' : '40%')."' style='vertical-align: top;'>\n";
+
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+			echo "	<tr>\n";
+			echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
+			echo "			".$text['label-start_range']."\n";
+			echo "		</td>\n";
+			echo "		<td class='vtable' align='left' style='position: relative; min-width: 250px;'>\n";
+			echo "			<input type='text' class='formfld datetimepicker' style='min-width: 115px; width: 115px;' name='start_stamp_begin' placeholder='".$text['label-from']."' value='$start_stamp_begin'>\n";
+			echo "			<input type='text' class='formfld datetimepicker' style='min-width: 115px; width: 115px;' name='start_stamp_end' placeholder='".$text['label-to']."' value='$start_stamp_end'>\n";
+			echo "		</td>\n";
+			echo "	</tr>\n";
+			echo "	<tr>\n";
+			echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
+			echo "			".$text['label-cid-name']."\n";
+			echo "		</td>\n";
+			echo "		<td class='vtable' align='left'>\n";
+			echo "			<input type='text' class='formfld' name='caller_id_name' value='$caller_id_name'>\n";
+			echo "		</td>\n";
+			echo "	</tr>\n";
+			echo "</table>\n";
+
+		echo "</td>";
+
+		// show hangup clause filter to super/admin
+		if (if_group("admin") || if_group("superadmin") || if_group("cdr")) {
+			echo "<td width='27%' style='vertical-align: top;'>\n";
 
 				echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 				echo "	<tr>\n";
 				echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-				echo "			".$text['label-direction']."\n";
+				echo "			".$text['label-hangup_cause']."\n";
 				echo "		</td>\n";
 				echo "		<td class='vtable' align='left'>\n";
-				echo "			<select name='direction' class='formfld'>\n";
+				echo "			<select name='hangup_cause' class='formfld'>\n";
 				echo "				<option value=''></option>\n";
-				echo "				<option value='inbound' ".(($direction == "inbound") ? "selected='selected'" : null).">".$text['label-inbound']."</option>\n";
-				echo "				<option value='outbound' ".(($direction == "outbound") ? "selected='selected'" : null).">".$text['label-outbound']."</option>\n";
-				echo "				<option value='local' ".(($direction == "local") ? "selected='selected'" : null).">".$text['label-local']."</option>\n";
+
+				$cdr_status_options = array(
+					'NORMAL_CLEARING',
+					'ORIGINATOR_CANCEL',
+					'BLIND_TRANSFER',
+					'LOSE_RACE',
+					'NO_ANSWER',
+					'NORMAL_UNSPECIFIED',
+					'NO_USER_RESPONSE',
+					'NO_ROUTE_DESTINATION',
+					'SUBSCRIBER_ABSENT',
+					'NORMAL_TEMPORARY_FAILURE',
+					'ATTENDED_TRANSFER',
+					'PICKED_OFF',
+					'USER_BUSY',
+					'CALL_REJECTED',
+					'INVALID_NUMBER_FORMAT',
+					'NETWORK_OUT_OF_ORDER',
+					'DESTINATION_OUT_OF_ORDER',
+					'RECOVERY_ON_TIMER_EXPIRE',
+					'MANAGER_REQUEST',
+					'MEDIA_TIMEOUT',
+					'UNALLOCATED_NUMBER',
+					'NONE',
+					'EXCHANGE_ROUTING_ERROR',
+					'ALLOTTED_TIMEOUT',
+					'CHAN_NOT_IMPLEMENTED',
+					'INCOMPATIBLE_DESTINATION',
+					'USER_NOT_REGISTERED',
+					'SYSTEM_SHUTDOWN',
+					'MANDATORY_IE_MISSING'
+					);
+				sort($cdr_status_options);
+				foreach ($cdr_status_options as $cdr_status) {
+					$selected = ($hangup_cause == $cdr_status) ? "selected='selected'" : null;
+					$cdr_status_label = ucwords(strtolower(str_replace("_", " ", $cdr_status)));
+					echo "			<option value='".$cdr_status."' ".$selected.">".$cdr_status_label."</option>\n";
+				}
 				echo "			</select>\n";
 				echo "		</td>\n";
 				echo "	</tr>\n";
-
+				// Paste DID search here
 				echo "	<tr>\n";
 				echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-				echo "			".$text['label-status']."\n";
+				echo "			".$text['label-did']."\n";
 				echo "		</td>\n";
 				echo "		<td class='vtable' align='left'>\n";
-				echo "			<select name='call_result' class='formfld'>\n";
-				echo "				<option value=''></option>\n";
-				echo "				<option value='answered' ".(($call_result == 'answered') ? 'selected' : null).">".$text['label-answered']."</option>\n";
-				echo "				<option value='missed' ".(($call_result == 'missed') ? 'selected' : null).">".$text['label-missed']."</option>\n";
-				echo "				<option value='voicemail' ".(($call_result == 'voicemail') ? 'selected' : null).">".$text['label-voicemail']."</option>\n";
-				echo "				<option value='cancelled' ".(($call_result == 'cancelled') ? 'selected' : null).">".$text['label-cancelled']."</option>\n";
-				echo "				<option value='failed' ".(($call_result == 'failed') ? 'selected' : null).">".$text['label-failed']."</option>\n";
-				echo "			</select>\n";
+				echo "			<input type='text' class='formfld' name='did' value='$did'>\n";
 				echo "		</td>\n";
 				echo "	</tr>\n";
 				echo "</table>\n";
 
 			echo "</td>";
-			echo "<td width='".((if_group("admin") || if_group("superadmin") || if_group("cdr")) ? '24%' : '30%')."' style='vertical-align: top;'>\n";
-
-				echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-				echo "	<tr>\n";
-				echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-				echo "			".$text['label-source']."\n";
-				echo "		</td>\n";
-				echo "		<td class='vtable' align='left' style='white-space: nowrap;'>\n";
-				echo "			<input type='text' class='formfld' style='".$style['caller_id_number']."' name='caller_id_number' id='caller_id_number' value='".$caller_id_number."'>\n";
-				echo "		</td>\n";
-				echo "	</tr>\n";
-				echo "	<tr>\n";
-				echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-				echo "			".$text['label-destination']."\n";
-				echo "		</td>\n";
-				echo "		<td class='vtable' align='left' style='white-space: nowrap;'>\n";
-				echo "			<input type='text' class='formfld' name='destination_number' id='destination_number' value='".$destination_number."'>\n";
-				echo "		</td>\n";
-				echo "	</tr>\n";
-				echo "</table>\n";
-
-			echo "</td>";
-			echo "<td width='".((if_group("admin") || if_group("superadmin") || if_group("cdr")) ? '30%' : '40%')."' style='vertical-align: top;'>\n";
-
-				echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-				echo "	<tr>\n";
-				echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-				echo "			".$text['label-start_range']."\n";
-				echo "		</td>\n";
-				echo "		<td class='vtable' align='left' style='position: relative; min-width: 250px;'>\n";
-				echo "			<input type='text' class='formfld datetimepicker' style='min-width: 115px; width: 115px;' name='start_stamp_begin' placeholder='".$text['label-from']."' value='$start_stamp_begin'>\n";
-				echo "			<input type='text' class='formfld datetimepicker' style='min-width: 115px; width: 115px;' name='start_stamp_end' placeholder='".$text['label-to']."' value='$start_stamp_end'>\n";
-				echo "		</td>\n";
-				echo "	</tr>\n";
-				echo "	<tr>\n";
-				echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-				echo "			".$text['label-cid-name']."\n";
-				echo "		</td>\n";
-				echo "		<td class='vtable' align='left'>\n";
-				echo "			<input type='text' class='formfld' name='caller_id_name' value='$caller_id_name'>\n";
-				echo "		</td>\n";
-				echo "	</tr>\n";
-				echo "</table>\n";
-
-			echo "</td>";
-
-			// show hangup clause filter to super/admin
-			if (if_group("admin") || if_group("superadmin") || if_group("cdr")) {
-				echo "<td width='27%' style='vertical-align: top;'>\n";
-
-					echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-					echo "	<tr>\n";
-					echo "		<td class='vncell' valign='top' nowrap='nowrap'>\n";
-					echo "			".$text['label-hangup_cause']."\n";
-					echo "		</td>\n";
-					echo "		<td class='vtable' align='left'>\n";
-					echo "			<select name='hangup_cause' class='formfld'>\n";
-					echo "				<option value=''></option>\n";
-
-					$cdr_status_options = array(
-						'NORMAL_CLEARING',
-						'ORIGINATOR_CANCEL',
-						'BLIND_TRANSFER',
-						'LOSE_RACE',
-						'NO_ANSWER',
-						'NORMAL_UNSPECIFIED',
-						'NO_USER_RESPONSE',
-						'NO_ROUTE_DESTINATION',
-						'SUBSCRIBER_ABSENT',
-						'NORMAL_TEMPORARY_FAILURE',
-						'ATTENDED_TRANSFER',
-						'PICKED_OFF',
-						'USER_BUSY',
-						'CALL_REJECTED',
-						'INVALID_NUMBER_FORMAT',
-						'NETWORK_OUT_OF_ORDER',
-						'DESTINATION_OUT_OF_ORDER',
-						'RECOVERY_ON_TIMER_EXPIRE',
-						'MANAGER_REQUEST',
-						'MEDIA_TIMEOUT',
-						'UNALLOCATED_NUMBER',
-						'NONE',
-						'EXCHANGE_ROUTING_ERROR',
-						'ALLOTTED_TIMEOUT',
-						'CHAN_NOT_IMPLEMENTED',
-						'INCOMPATIBLE_DESTINATION',
-						'USER_NOT_REGISTERED',
-						'SYSTEM_SHUTDOWN',
-						'MANDATORY_IE_MISSING'
-						);
-					sort($cdr_status_options);
-					foreach ($cdr_status_options as $cdr_status) {
-						$selected = ($hangup_cause == $cdr_status) ? "selected='selected'" : null;
-						$cdr_status_label = ucwords(strtolower(str_replace("_", " ", $cdr_status)));
-						echo "			<option value='".$cdr_status."' ".$selected.">".$cdr_status_label."</option>\n";
-					}
-					echo "			</select>\n";
-					echo "		</td>\n";
-					echo "	</tr>\n";
-					echo "</table>\n";
-
-				echo "</td>";
-			}
-
-			echo "</tr>";
-			echo "</table>";
-
-			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-			echo "<tr>";
-			echo "<td style='padding-top: 8px;' align='left'>";
-			echo 	$text['description_search'];
-			echo "</td>";
-			echo "<td style='padding-top: 8px;' align='right' nowrap>";
-			if (permission_exists('xml_cdr_all') && $_REQUEST['showall'] == 'true') {
-				echo "<input type='hidden' name='showall' value='true'>\n";
-			}
-			echo "<input type='button' class='btn' value='".$text['button-reset']."' onclick=\"document.location.href='xml_cdr.php';\">\n";
-			echo "<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>\n";
-
-			echo "</td>";
-			echo "</tr>";
-			echo "</table>";
-
-			echo "</form>";
-			echo "<br /><br />";
 		}
+
+		echo "</tr>";
+		echo "</table>";
+
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+		echo "<tr>";
+		echo "<td style='padding-top: 8px;' align='left'>";
+		echo 	$text['description_search'];
+		echo "</td>";
+		echo "<td style='padding-top: 8px;' align='right' nowrap>";
+		if (permission_exists('xml_cdr_all') && $_REQUEST['showall'] == 'true') {
+			echo "<input type='hidden' name='showall' value='true'>\n";
+		}
+		echo "<input type='button' class='btn' value='".$text['button-reset']."' onclick=\"document.location.href='xml_cdr.php';\">\n";
+		echo "<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>\n";
+
+		echo "</td>";
+		echo "</tr>";
+		echo "</table>";
+
+		echo "</form>";
+		echo "<br /><br />";
+	}
 
 //mod paging parameters for inclusion in column sort heading links
 	$param = substr($param, 1); //remove leading '&'
@@ -364,6 +374,7 @@
 			echo th_order_by('domain_name', $text['label-domain'], $order_by, $order, null, null, $param);
 			$col_count++;
 		}
+		echo th_order_by('did', $text['label-did'], $order_by, $order, null, null, $param);
 		echo th_order_by('caller_id_name', $text['label-cid-name'], $order_by, $order, null, null, $param);
 		echo th_order_by('caller_id_number', $text['label-source'], $order_by, $order, null, null, $param);
 		echo th_order_by('destination_number', $text['label-destination'], $order_by, $order, null, null, $param);
@@ -525,6 +536,8 @@
 					echo 	$row['domain_name'].'&nbsp;';
 					echo "	</td>\n";
 				}
+			// DID
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['did']."&nbsp;</td>\n";
 			//caller id name
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['caller_id_name']."&nbsp;</td>\n";
 			//source

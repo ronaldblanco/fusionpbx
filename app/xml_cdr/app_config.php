@@ -359,5 +359,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sip_hangup_disposition";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Save who hung up or cancelled the leg.";
-
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "did";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "DID for this call";
 ?>

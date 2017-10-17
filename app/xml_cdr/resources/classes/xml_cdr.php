@@ -142,6 +142,7 @@ if (!class_exists('xml_cdr')) {
 			$this->fields[] = "hangup_cause";
 			$this->fields[] = "hangup_cause_q850";
 			$this->fields[] = "sip_hangup_disposition";
+			$this->fields[] = "did";
 			if (is_array($_SESSION['cdr']['field'])) {
 				foreach ($_SESSION['cdr']['field'] as $field) {
 					$this->fields[] = $field;
@@ -310,6 +311,8 @@ if (!class_exists('xml_cdr')) {
 				$this->array[$key]['conference_name'] = check_str(urldecode($xml->variables->conference_name));
 				$this->array[$key]['conference_uuid'] = check_str(urldecode($xml->variables->conference_uuid));
 				$this->array[$key]['conference_member_id'] = check_str(urldecode($xml->variables->conference_member_id));
+			// did
+				$this->array[$key]['did'] = check_str(urldecode($xml->variables->sip_to_user));
 			//call quality
 				$rtp_audio_in_mos = check_str(urldecode($xml->variables->rtp_audio_in_mos));
 				if (strlen($rtp_audio_in_mos) > 0) {
