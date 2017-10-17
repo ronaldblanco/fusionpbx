@@ -201,7 +201,7 @@
 	if (strlen($remote_media_ip) > 0) { $sql_where_ands[] = "remote_media_ip like '%".$remote_media_ip."%'"; }
 	if (strlen($network_addr) > 0) { $sql_where_ands[] = "network_addr like '%".$network_addr."%'"; }
 	if (strlen($mos_comparison) > 0 && strlen($mos_score) > 0 ) { $sql_where_ands[] = "rtp_audio_in_mos " . $mos_comparison . " ".$mos_score.""; }
-	if (strlen($did) > 0) { $sql_where_ands[] = "did = '".$did."'"; }
+	if (strlen($did) > 0) { $sql_where_ands[] = "did like '%".$did."%'"; }
 
 	//if not admin or superadmin, only show own calls
 	if (!permission_exists('xml_cdr_domain')) {
