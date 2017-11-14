@@ -31,6 +31,7 @@ if ( session:ready() ) then
         if (string.len(caller_id_number) < 5) then
             if (string.find(outbound_caller_id_name, 'anon') or outbound_caller_id_number == '0000') then -- Checking for anon callerid
                 effective_caller_id = "anonymous|"..company_caller_id
+                effective_caller_id_sip_header = "anonymous"
             else
         	if (modifier_1 == 'a2billing') then
                     if (string.len(outbound_caller_id_number) > 3) then
@@ -51,7 +52,9 @@ if ( session:ready() ) then
         --session:setVariable("effective_caller_id_name", effective_caller_id)
         --session:setVariable("effective_caller_id_number", effective_caller_id)
 
-        session:setVariable("sip_h_X-ASTPP-Outbound", effective_caller_id)
+        effective_caller_id_sip_header = effective_caller_id_sip_header or effective_caller_id
+
+        session:setVariable("sip_h_X-ASTPP-Outbound", effective_caller_id_sip_header)
         session:setVariable("sip_h_X-ASTPP-Billing", company_caller_id)
         -- else
         session:consoleLog("notice","[PREPARE_CALLERID]: Setting effective_caller_id_name to "..effective_caller_id.."\n")
