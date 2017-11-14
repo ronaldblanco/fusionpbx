@@ -30,8 +30,8 @@ if ( session:ready() ) then
 
         if (string.len(caller_id_number) < 5) then
             if (string.find(outbound_caller_id_name, 'anon') or outbound_caller_id_number == '0000') then -- Checking for anon callerid
-                effective_caller_id = "anonymous|"..company_caller_id
-                effective_caller_id_sip_header = "anonymous"
+                effective_caller_id = "restricted|"..company_caller_id
+                effective_caller_id_sip_header = "restricted"
             else
         	if (modifier_1 == 'a2billing') then
                     if (string.len(outbound_caller_id_number) > 3) then
