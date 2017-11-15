@@ -858,6 +858,8 @@ $text['label-call_group']['ro'] = "Grup apelare";
 $text['label-call_group']['ar-eg'] = "";
 $text['label-call_group']['he'] = "קבוצת חיוג";
 
+$text['label-toll_allow']['en-us'] = "Toll Allow";
+
 $text['label-bypass_media_after_bridge']['en-us'] = "Bypass Media After Bridge";
 $text['label-bypass_media_after_bridge']['es-cl'] = "Después de la omisión de medios puente";
 $text['label-bypass_media_after_bridge']['pt-pt'] = "Depois de Ponte de mídia Bypass";
