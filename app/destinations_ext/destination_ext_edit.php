@@ -51,10 +51,11 @@
     }
     else {
         $action = "add";
+        $destination_ext_uuid = uuid();
     }
 
     //get http post variables and set them to php variables
-    // ToDo - define varables list to get
+
     if (count($_POST) > 0) {
         //set the variables
         $domain_uuid = check_str($_POST["domain_uuid"]);
@@ -75,10 +76,10 @@
     }
     unset($_POST["db_destination_ext_number"]);
 
+    $invalid_name_id = explode("-", $destination_ext_uuid)[0];
+
     //process the http post. Here we process UPDATE request and putting/updating info in database
     if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
-
-        // TODO - check for all required data
 
         $destination_ext_dialplan_main_details_data = reset($destination_ext_dialplan_main_details)['dialplan_detail_data'];
         $destination_ext_dialplan_extensions_details_data = reset($destination_ext_dialplan_extensions_details)['dialplan_detail_data'];
@@ -152,7 +153,7 @@
 
                 //check to see if the dialplan exists
                 $sql = "select dialplan_uuid, dialplan_description from v_dialplans ";
-                $sql .= "where dialplan_name = '_invalid_ext_handler' ";
+                $sql .= "where dialplan_name = '_invalid_ext_handler_".$invalid_name_id."' ";
                 $sql .= "and domain_uuid = '".$domain_uuid."' ";
                 $prep_statement = $db->prepare($sql);
                 if ($prep_statement) {
@@ -176,7 +177,7 @@
                     $dialplan["dialplan_uuid"] = $dialplan_uuid;
                 }
                 $dialplan["domain_uuid"] = $domain_uuid;
-                $dialplan["dialplan_name"] = "_invalid_ext_handler";
+                $dialplan["dialplan_name"] = "_invalid_ext_handler_".$invalid_name_id;
                 $dialplan["dialplan_number"] = '[invalid_ext]';
                 $dialplan["dialplan_context"] = $destination_ext_domain;
                 $dialplan["dialplan_continue"] = "true";
@@ -199,6 +200,14 @@
                 $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "condition";
                 $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = '${call_direction}';
                 $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "^inbound$";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                $y += 1;
+                $dialplan_detail_order += 10;
+
+                $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "condition";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = '${invalid_ext_id}';
+                $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "^".$invalid_name_id."$";
                 $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                 $y += 1;
                 $dialplan_detail_order += 10;
@@ -372,6 +381,7 @@
 
                 //increment the dialplan detail order
                 $dialplan_detail_order += 10;
+                
 
                 // TODO - get $destination_ext_variable here as 1st occure of $dialplan_details transfer
 
@@ -579,6 +589,15 @@
                 $y++;
                 $dialplan_detail_order += 10;
 
+                $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "invalid_ext_id=".$invalid_name_id."";
+                $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                
+                $y++;
+                $dialplan_detail_order += 10;
+
                 if (strlen($destination_ext_variable) > 0) {
                     
                     $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
@@ -670,7 +689,6 @@
         // End of extensions part -----------------------
 
             if ($action == 'add') {
-                $destination_ext_uuid = uuid();
                 $_POST['destination_ext_uuid'] = $destination_ext_uuid;
                 $sql = "INSERT INTO v_destinations_ext (";
                 $sql .= " domain_uuid,";
@@ -806,7 +824,7 @@
     $sql .= "and dialplan_uuid = (";
     $sql .= "select dialplan_uuid from v_dialplans ";
     $sql .= "where domain_uuid = '".$domain_uuid."' ";
-    $sql .= "and dialplan_name = '_invalid_ext_handler'";
+    $sql .= "and dialplan_name = '_invalid_ext_handler_".$invalid_name_id."'";
     $sql .= " limit 1) ";
     $sql .= "order by dialplan_detail_group asc, dialplan_detail_order asc";
     $prep_statement = $db->prepare(check_sql($sql));
