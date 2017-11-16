@@ -48,25 +48,34 @@ local log = require "resources.functions.log".ring_group
 	require "resources.functions.format_ringback"
 
 --get the variables
-	domain_name = session:getVariable("domain_name");
-	ring_group_uuid = session:getVariable("ring_group_uuid");
-	recordings_dir = session:getVariable("recordings_dir");
-	sounds_dir = session:getVariable("sounds_dir");
+	if (session:ready()) then
+		domain_name = session:getVariable("domain_name");
+		ring_group_uuid = session:getVariable("ring_group_uuid");
+		recordings_dir = session:getVariable("recordings_dir");
+		sounds_dir = session:getVariable("sounds_dir");
+	end
 
 --variables that don't require ${} when used in the dialplan conditions
-	username = session:getVariable("username");
-	dialplan = session:getVariable("dialplan");
-	caller_id_name = session:getVariable("caller_id_name");
-	caller_id_number = session:getVariable("caller_id_number");
-	network_addr = session:getVariable("network_addr");
-	ani = session:getVariable("ani");
-	aniii = session:getVariable("aniii");
-	rdnis = session:getVariable("rdnis");
-	destination_number = session:getVariable("destination_number");
-	source = session:getVariable("source");
-	uuid = session:getVariable("uuid");
-	context = session:getVariable("context");
-	call_direction = session:getVariable("call_direction");
+	if (session:ready()) then
+		username = session:getVariable("username");
+		dialplan = session:getVariable("dialplan");
+		caller_id_name = session:getVariable("caller_id_name");
+		caller_id_number = session:getVariable("caller_id_number");
+		network_addr = session:getVariable("network_addr");
+		ani = session:getVariable("ani");
+		aniii = session:getVariable("aniii");
+		rdnis = session:getVariable("rdnis");
+		destination_number = session:getVariable("destination_number");
+		source = session:getVariable("source");
+		uuid = session:getVariable("uuid");
+		context = session:getVariable("context");
+		call_direction = session:getVariable("call_direction");
+	end
+
+--set the call_timeout to a higher value to prevent the early timeout of the ring group
+	if (session:ready()) then
+		session:setVariable("call_timeout","300");
+	end
 
 --default to local if nil
 	if (call_direction == nil) then
@@ -208,6 +217,29 @@ local log = require "resources.functions.log".ring_group
 		end
 	end
 
+--get the destination and follow the forward
+	function get_forward_all(count, destination_number, domain_name)
+		cmd = "user_exists id ".. destination_number .." "..domain_name;
+		freeswitch.consoleLog("notice", "[ring groups][call forward all] " .. cmd .. "\n");
+		user_exists = api:executeString(cmd);
+		if (user_exists == "true") then
+			---check to see if the new destination is forwarded - third forward
+				cmd = "user_data ".. destination_number .."@" ..domain_name.." var forward_all_enabled";
+				if (api:executeString(cmd) == "true") then
+					--get the new destination - third foward
+						cmd = "user_data ".. destination_number .."@" ..domain_name.." var forward_all_destination";
+						destination_number = api:executeString(cmd);
+						freeswitch.consoleLog("notice", "[ring groups][call forward all] " .. count .. " " .. cmd .. " ".. destination_number .."\n");
+
+						count = count + 1;
+						if (count < 5) then
+							count, destination_number = get_forward_all(count, destination_number, domain_name);
+						end
+				end
+		end
+		return count, destination_number;
+	end
+
 --process the ring group
 	if (ring_group_forward_enabled == "true" and string.len(ring_group_forward_destination) > 0) then
 		--forward the ring group
@@ -272,31 +304,36 @@ local log = require "resources.functions.log".ring_group
 				else
 					leg_domain_name = array[2];
 				end
-				cmd = "user_exists id ".. row.destination_number .." "..leg_domain_name;
+
+				--follow the forwards
+				count, destination_number = get_forward_all(0, row.destination_number, leg_domain_name);
+
+				--check if the user exists
+				cmd = "user_exists id ".. destination_number .." "..domain_name;
 				user_exists = api:executeString(cmd);
 				if (user_exists == "true") then
 					--add user_exists true or false to the row array
 						row['user_exists'] = "true";
 					--handle do_not_disturb
-						cmd = "user_data ".. row.destination_number .."@" ..leg_domain_name.." var do_not_disturb";
+						cmd = "user_data ".. destination_number .."@" ..leg_domain_name.." var do_not_disturb";
 						if (api:executeString(cmd) ~= "true") then
 							--add the row to the destinations array
 							destinations[x] = row;
 						end
 					--determine if the user is registered if not registered then lookup 
-						cmd = "sofia_contact */".. row.destination_number .."@" ..leg_domain_name;
+						cmd = "sofia_contact */".. destination_number .."@" ..leg_domain_name;
 						if (api:executeString(cmd) == "error/user_not_registered") then
-							cmd = "user_data ".. row.destination_number .."@" ..leg_domain_name.." var forward_user_not_registered_enabled";
+							cmd = "user_data ".. destination_number .."@" ..leg_domain_name.." var forward_user_not_registered_enabled";
 							if (api:executeString(cmd) == "true") then
 								--get the new destination number
-								cmd = "user_data ".. row.destination_number .."@" ..leg_domain_name.." var forward_user_not_registered_destination";
-								destination_number = api:executeString(cmd);
-								if (row.destination_number ~= nil) then
-									row.destination_number = destination_number;	
+								cmd = "user_data ".. destination_number .."@" ..leg_domain_name.." var forward_user_not_registered_destination";
+								not_registered_destination_number = api:executeString(cmd);
+								if (not_registered_destination_number ~= nil) then
+									destination_number = not_registered_destination_number;	
 								end
 
 								--check the new destination number for user_exists
-								cmd = "user_exists id ".. row.destination_number .." "..leg_domain_name;
+								cmd = "user_exists id ".. destination_number .." "..leg_domain_name;
 								user_exists = api:executeString(cmd);
 								if (user_exists == "true") then
 									row['user_exists'] = "true";
@@ -365,6 +402,13 @@ local log = require "resources.functions.log".ring_group
 					destination_timeout = row.destination_timeout;
 					destination_prompt = row.destination_prompt;
 					domain_name = row.domain_name;
+
+				--follow the forwards
+					count, destination_number = get_forward_all(0, destination_number, leg_domain_name);
+
+				--check if the user exists
+					cmd = "user_exists id ".. destination_number .." "..domain_name;
+					user_exists = api:executeString(cmd);
 
 				--set ringback
 					ring_group_ringback = format_ringback(ring_group_ringback);
