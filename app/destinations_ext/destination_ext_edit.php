@@ -51,7 +51,7 @@
     }
     else {
         $action = "add";
-        $destination_ext_uuid = uuid();
+        $prev_generated_destination_ext_uuid = uuid();
     }
 
     //get http post variables and set them to php variables
@@ -76,7 +76,8 @@
     }
     unset($_POST["db_destination_ext_number"]);
 
-    $invalid_name_id = explode("-", $destination_ext_uuid)[0];
+    //$invalid_name_id = explode("-", $destination_ext_uuid)[0];
+    $invalid_name_id = (strlen($destination_ext_uuid) == 0)?explode("-", $prev_generated_destination_ext_uuid)[0]:explode("-", $destination_ext_uuid)[0];
 
     //process the http post. Here we process UPDATE request and putting/updating info in database
     if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -689,6 +690,7 @@
         // End of extensions part -----------------------
 
             if ($action == 'add') {
+                $destination_ext_uuid = $prev_generated_destination_ext_uuid;
                 $_POST['destination_ext_uuid'] = $destination_ext_uuid;
                 $sql = "INSERT INTO v_destinations_ext (";
                 $sql .= " domain_uuid,";
