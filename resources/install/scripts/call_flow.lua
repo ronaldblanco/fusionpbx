@@ -32,7 +32,7 @@
 	require "resources.functions.config";
 
 	local presence_in 		= require "resources.functions.presence_in"
-	local presence_custom 	= require "resources.functions.presence_custom"
+	--local presence_custom 	= require "resources.functions.presence_custom"
 	local Database    		= require "resources.functions.database"
 	local Settings    		= require "resources.functions.lazy_settings"
 	local file        		= require "resources.functions.file"
@@ -210,7 +210,7 @@ if (session:ready()) then
 			);
 
 		-- set custom presence state
-            presence_custom.publish_presence(call_flow_feature_code.."@"..domain_name, call_flow_status);
+            --presence_custom.publish_presence(call_flow_feature_code.."@"..domain_name, call_flow_status);
 
 		--active label
 			local active_flow_label = (toggle == "true") and call_flow_label or call_flow_alternate_label
