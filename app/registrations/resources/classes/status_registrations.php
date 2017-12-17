@@ -50,11 +50,11 @@ function get_registrations($sip_profile_name) {
 					$registrations[$x]['ping-time'] = $row['ping-time'] ?: "&nbsp;";
 
 					preg_match('/.*sip:\d+@(.*):/', $registrations[$x]['contact'], $matches);
-                    $registrations[$x]['contact'] = $matches[1] ?: "&nbsp;";
+                    $registrations[$x]['contact'] = $matches[1];
 
 				//get network-ip to url or blank
-					if(isset($row['network-ip'])) {
-						$registrations[$x]['network-ip'] = "<a href='http://".$row['network-ip']."' target='_blank'>".$row['network-ip']."</a>";
+					if(isset($row['contact'])) {
+						$registrations[$x]['network-ip'] = "<a href='http://".$row['contact']."' target='_blank'>".$row['contact']."</a>";
 					} else {
 						$registrations[$x]['network-ip'] = "&nbsp;";
 					}
