@@ -53,8 +53,8 @@ function get_registrations($sip_profile_name) {
                     $registrations[$x]['contact'] = $matches[1];
 
 				//get network-ip to url or blank
-					if(isset($row['contact'])) {
-						$registrations[$x]['network-ip'] = "<a href='http://".$row['contact']."' target='_blank'>".$row['contact']."</a>";
+					if(isset($registrations[$x]['contact'])) {
+						$registrations[$x]['network-ip'] = "<a href='http://".$registrations[$x]['contact']."' target='_blank'>".$registrations[$x]['contact']."</a>";
 					} else {
 						$registrations[$x]['network-ip'] = "&nbsp;";
 					}
