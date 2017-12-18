@@ -244,7 +244,7 @@ if (sizeof($result) != 0) {
 							//block unauthorized files
 								if (!$fax_allowed_extension['.' . $fax_file_extension]) { continue; } 
 							//support only attachments
-								if($attachment['disposition'] != 'attachment'){ continue; } 
+								if(strtolower($attachment['disposition']) != 'attachment'){ continue; } 
 
 							//store attachment in local fax temp folder
 								$local_filepath = $fax_dir.'/'.$fax_extension.'/temp/'.$attachment['name'];
