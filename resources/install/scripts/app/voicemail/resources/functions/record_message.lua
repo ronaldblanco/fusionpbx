@@ -282,39 +282,40 @@
 			-- If we skip confirm messages - hangup immediate
 			if (skip_confirmation == 'true') then
 				session:hangup()
+				return
+			end
+			
+			--if the recording is below the minimal length then re-record the message
+			if (message_length > 2) then
+				--continue
 			else
-				--if the recording is below the minimal length then re-record the message
-				if (message_length > 2) then
-					--continue
-				else
-					if (session:ready()) then
-						--your recording is below the minimal acceptable length, please try again
-							dtmf_digits = '';
-							macro(session, "too_small", 1, 100);
-						--record your message at the tone
-							timeouts = timeouts + 1;
-							if (timeouts < max_timeouts) then
-								record_message();
-							else
-								timeouts = 0;
-								record_menu("message", voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
-							end
-					end
-				end
-
-			--instructions press 1 to listen to the recording, press 2 to save the recording, press 3 to re-record
 				if (session:ready()) then
-					if (skip_instructions == "true") then
-						--save the message
-							dtmf_digits = '';
-							macro(session, "message_saved", 1, 100, '');
-							macro(session, "goodbye", 1, 100, '');
-						--hangup the call
-							session:hangup();
-					else
-						timeouts = 0;
-						record_menu("message", voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
-					end
+					--your recording is below the minimal acceptable length, please try again
+						dtmf_digits = '';
+						macro(session, "too_small", 1, 100);
+					--record your message at the tone
+						timeouts = timeouts + 1;
+						if (timeouts < max_timeouts) then
+							record_message();
+						else
+							timeouts = 0;
+							record_menu("message", voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
+						end
+				end
+			end
+
+		--instructions press 1 to listen to the recording, press 2 to save the recording, press 3 to re-record
+			if (session:ready()) then
+				if (skip_instructions == "true") then
+					--save the message
+						dtmf_digits = '';
+						macro(session, "message_saved", 1, 100, '');
+						macro(session, "goodbye", 1, 100, '');
+					--hangup the call
+						session:hangup();
+				else
+					timeouts = 0;
+					record_menu("message", voicemail_dir.."/"..voicemail_id.."/msg_"..uuid.."."..vm_message_ext);
 				end
 			end
 	end
