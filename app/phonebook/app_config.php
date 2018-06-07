@@ -1,7 +1,7 @@
 <?php
 
 	//application details
-		$apps[$x]['name'] = "Phone Book";
+		$apps[$x]['name'] = "Phonebook";
 		$apps[$x]['uuid'] = "63dadfd0-ec76-11e6-b006-92361f002671";
 		$apps[$x]['category'] = "Switch";
 		$apps[$x]['subcategory'] = "";

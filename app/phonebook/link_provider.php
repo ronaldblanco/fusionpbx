@@ -27,7 +27,7 @@ $prep_statement->execute();
 // Retrieve result
 $fetchedArray = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 // Loop fetched array and concatenate into a single string
-foreach($fetchedArray as $fetched){
+foreach($fetchedArray as $fetched) {
 	$groupString .= $fetched['contact_group'].",";
 }
 // Trim the comma from that string
