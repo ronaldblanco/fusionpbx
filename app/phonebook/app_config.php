@@ -46,6 +46,10 @@
                 $apps[$x]['permissions'][$y]['groups'][] = "superadmin";
                 $apps[$x]['permissions'][$y]['groups'][] = "admin";
                 $y++;
+                $apps[$x]['permissions'][$y]['name'] = "phonebook_phone_access";
+                $apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+                $apps[$x]['permissions'][$y]['groups'][] = "admin";
+                $y++;
 
 	//schema details
                 $y = 0; //table array index

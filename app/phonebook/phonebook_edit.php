@@ -51,13 +51,11 @@ $text = $language->get();
 if (isset($_REQUEST["id"])) {
 	$action = "update";
 	$phonebook_detail_uuid = check_str($_REQUEST["id"]);
-}
-elseif (isset($_REQUEST["cid"])) {
+} elseif (isset($_REQUEST["cid"])) {
 	$action = "add";
 	$company_name = check_str($_REQUEST["cid"]);
 	$phonebook_uuid = check_str($_REQUEST["did"]);
-}
-else {
+} else {
 	$action = "add";
 }
 
@@ -116,7 +114,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	
 	// check if a group is being added
 	if(strlen($contact_group) == 0){
-		$contact_group = "Global";
+		$contact_group = "global";
 	}
 	//add or update the database
 	if (($_POST["persistformvar"] != "true")>0) {
