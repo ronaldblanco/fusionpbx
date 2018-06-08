@@ -103,7 +103,7 @@ $imported = simplexml_load_file($_FILES['file']['tmp_name']);
                     $sql .= "'".$uuid."', ";
                     $sql .= "'".uuid()."', ";
                     $sql .= ":telephone".",";
-                    $sql .= "'Global'";
+                    $sql .= "'global'";
                 $sql .= ")";
                 $sth = $db->prepare($sql);
                 $sth->bindParam(":telephone", $telephone);
