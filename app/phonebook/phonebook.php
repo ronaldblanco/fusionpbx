@@ -45,36 +45,51 @@ require_once "resources/require.php";
 	require_once "resources/header.php";
 	require_once "resources/paging.php";
 
-        echo "<script language='JavaScript' type='text/javascript'>\n";
+	echo "<script language='JavaScript' type='text/javascript'>\n";
 
-        echo "  function check_filetype(file_input) {\n";
-        echo "          file_ext = file_input.value.substr((~-file_input.value.lastIndexOf('.') >>> 0) + 2);\n";
-        echo "          if (file_ext != 'xml' && file_ext != '') {\n";
-        echo "                  display_message(\"".$text['message-unsupported_file_type']."\", 'negative', '2750');\n";
-        echo "          }\n";
-        echo "          var selected_file_path = file_input.value;\n";
-        echo "          selected_file_path = selected_file_path.replace(\"C:\\\\fakepath\\\\\",'');\n";
-        echo "          document.getElementById('file_label').innerHTML = selected_file_path;\n";
-        echo "          document.getElementById('button_reset').style.display='inline';\n";
-        echo "  }\n";
+	echo "  function check_filetype(file_input) {\n";
+	echo "          file_ext = file_input.value.substr((~-file_input.value.lastIndexOf('.') >>> 0) + 2);\n";
+	echo "          if (file_ext != 'xml' && file_ext != '') {\n";
+	echo "                  display_message(\"".$text['message-unsupported_file_type']."\", 'negative', '2750');\n";
+	echo "          }\n";
+	echo "          var selected_file_path = file_input.value;\n";
+	echo "          selected_file_path = selected_file_path.replace(\"C:\\\\fakepath\\\\\",'');\n";
+	echo "          document.getElementById('file_label').innerHTML = selected_file_path;\n";
+	echo "          document.getElementById('button_reset').style.display='inline';\n";
+	echo "  }\n";
 
-        echo "</script>";
-        echo "<script language='JavaScript' type='text/javascript' src='".PROJECT_PATH."/resources/javascript/reset_file_input.js'></script>\n";
+	echo "</script>";
+	echo "<script language='JavaScript' type='text/javascript' src='".PROJECT_PATH."/resources/javascript/reset_file_input.js'></script>\n";
 
-        echo "<div style='float: right; white-space: nowrap;'>\n";
-        if (permission_exists('phonebook_import')) {
-                echo "          <form name='frmimport' method='POST' enctype='multipart/form-data' action='/app/phonebook/phonebookimport.php'>\n";
-                echo "          <input name='file' id='file' type='file' style='display: none;' onchange='check_filetype(this);'>";
-                echo "          <label id='file_label' for='file' class='txt' style='width: 200px; overflow: hidden; white-space: nowrap;'>".$text['label-select_a_file']."</label>\n";
-                echo "          <input id='button_reset' type='reset' class='btn' style='display: none;' value='".$text['button-reset']."' onclick=\"reset_file_input('file'); document.getElementById('file_label').innerHTML = '".$text['label-select_a_file']."'; this.style.display='none'; return true;\">\n";
-                echo "          <input name='submit' type='submit' class='btn' id='upload' value=\"".$text['button-import']."\">\n";
-                echo "          </form>";
-        }
-        echo "</div>";
-        echo "<span class='title'>".$text['title-phonebook']."</span>\n";
-        echo "<br>\n";
-        echo $text['description-phonebook'];
-        echo "<br /><br />\n";
+	echo "<div style='float: right; white-space: nowrap;'>\n";
+	// TODO - Make phonebook import
+	/*
+	if (permission_exists('phonebook_import')) {
+			echo "          <form name='frmimport' method='POST' enctype='multipart/form-data' action='/app/phonebook/phonebookimport.php'>\n";
+			echo "          <input name='file' id='file' type='file' style='display: none;' onchange='check_filetype(this);'>";
+			echo "          <label id='file_label' for='file' class='txt' style='width: 200px; overflow: hidden; white-space: nowrap;'>".$text['label-select_a_file']."</label>\n";
+			echo "          <input id='button_reset' type='reset' class='btn' style='display: none;' value='".$text['button-reset']."' onclick=\"reset_file_input('file'); document.getElementById('file_label').innerHTML = '".$text['label-select_a_file']."'; this.style.display='none'; return true;\">\n";
+			echo "          <input name='submit' type='submit' class='btn' id='upload' value=\"".$text['button-import']."\">\n";
+			echo "          </form>";
+	}
+	*/
+	echo "</div>";
+
+
+	echo "<table width='100%' cellpadding='0' cellspacing='0 border='0'>\n";
+	echo "	<tr>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-phonebook']."</b></td>\n";
+	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "		<td width='70%' align='right'>";
+	echo "			<input type='button' id='addGroup' class='btn' name='' alt='".$text['button-groups']."' onclick=\"window.location=' groups.php'\" value='".$text['button-groups']."'>";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "		<td align='left' colspan='2'>\n";
+	echo "			".$text['description-phonebook']."<br /><br />\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "</table>\n";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];
@@ -84,8 +99,8 @@ require_once "resources/require.php";
 	$domain_name = $_SESSION['domain_name'];
 
 //prepare to page the results
-	$sql = "select count(*) as num_rows from v_phonebook_details ";
-	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql = "SELECT count(*) AS num_rows FROM v_phonebook ";
+	$sql .= "WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	if (strlen($order_by)> 0) { 
 		$sql .= "order by $order_by $order ";
 	}
@@ -110,19 +125,24 @@ require_once "resources/require.php";
 	$offset = $rows_per_page * $page;
 
 //get the  list
-	$sql = "select * from v_phonebook_details INNER JOIN v_phonebook ON v_phonebook_details.phonebook_uuid = v_phonebook.phonebook_uuid ";
-	$sql .= "where v_phonebook.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	// Get all phonebook enties for this domain.
+	$sql = "SELECT * FROM v_phonebook WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	if (strlen($order_by)> 0) { 
-		$sql .= "order by $order_by $order "; 
+		$sql .= "ORDER BY $order_by $order "; 
 	}else{
-		$sql .= "order by company_name asc, phonenumber asc ";
+		$sql .= "ORDER BY name ASC, phonenumber ASC ";
 	}
-	$sql .= " limit $rows_per_page offset $offset ";
+	$sql .= " LIMIT $rows_per_page OFFSET $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
+
+	// TODO - Get group per user
+	foreach ($result as $row) {
+		$row['group'] = "TBD";
+	}
 
 
 //table headers
@@ -131,9 +151,9 @@ require_once "resources/require.php";
 	$row_style["1"] = "row_style1";
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo th_order_by('phonebook_name', $text['label-name'], $order_by, $order);
-        echo th_order_by('phonebook_number', $text['label-number'], $order_by, $order);
-	echo th_order_by('phonebook_number', $text['label-group'], $order_by, $order);
+	echo th_order_by('name', $text['label-name'], $order_by, $order);
+    echo th_order_by('number', $text['label-number'], $order_by, $order);
+	echo "<th>" .$text['label-group']. "</th>";
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('phonebook_add')) {
 		echo "<a href='phonebook_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
@@ -143,25 +163,26 @@ require_once "resources/require.php";
 //show the results
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			$tr_link = (permission_exists('phonebook_edit')) ? "href='phonebook_edit.php?cid=".$row['company_name']."&amp;did=".$row['phonebook_uuid']."'" : null;
+
+			$tr_link = (permission_exists('phonebook_edit')) ? "href='phonebook_edit.php?id=".$row['phonebook_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
-		        //echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".($lastcompanyname != $row['company_name']?$row['company_name']:'')."</td>\n";
-			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['company_name']."</td>\n";
+		        //echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".($lastcompanyname != $row['name']?$row['name']:'')."</td>\n";
+			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['name']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			if (permission_exists('phonebook_edit')) {
-				echo "<a href='phonebook_edit.php?id=".$row['phonebook_details_uuid']."'>".$row['phonenumber']."</a>";
+				echo "<a href='phonebook_edit.php?id=".$row['phonebook_uuid']."'>".$row['phonenumber']."</a>";
 			}
 			else {
 				echo $row['phonenumber'];
 			}
 			echo "	</td>\n";
-                        echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['contact_group']."</td>\n";
+            echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['group']."</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('phonebook_edit')) {
-				echo "<a href='phonebook_edit.php?id=".$row['phonebook_detail_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
+				echo "<a href='phonebook_edit.php?id=".$row['phonebook_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('phonebook_delete')) {
-				echo "<a href='phonebook_delete.php?id=".$row['phonebook_detail_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
+				echo "<a href='phonebook_delete.php?id=".$row['phonebook_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			};
 			echo "  </td>";
 			echo "</tr>\n";
@@ -191,10 +212,12 @@ require_once "resources/require.php";
 	echo "<br /><br />";
 
 //include link provider
+// TODO - Modify link provider
+/*
 	if(!$result_count == "0"){
 		require_once "link_provider.php";
 	}
-
+*/
 //include the footer
 	require_once "resources/footer.php";
 

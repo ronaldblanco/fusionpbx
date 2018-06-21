@@ -41,7 +41,15 @@
                 $apps[$x]['permissions'][$y]['name'] = "phonebook_group_add";
                 $apps[$x]['permissions'][$y]['groups'][] = "superadmin";
                 $apps[$x]['permissions'][$y]['groups'][] = "admin";
-		$y++;
+                $y++;
+                $apps[$x]['permissions'][$y]['name'] = "phonebook_group_edit";
+                $apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+                $apps[$x]['permissions'][$y]['groups'][] = "admin";
+                $y++;
+                $apps[$x]['permissions'][$y]['name'] = "phonebook_group_delete";
+                $apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+                $apps[$x]['permissions'][$y]['groups'][] = "admin";
+                $y++;
                 $apps[$x]['permissions'][$y]['name'] = "phonebook_import";
                 $apps[$x]['permissions'][$y]['groups'][] = "superadmin";
                 $apps[$x]['permissions'][$y]['groups'][] = "admin";
@@ -54,6 +62,8 @@
 	//schema details
                 $y = 0; //table array index
                 $z = 0; //field array index
+
+                // Main table with entries
                 $apps[$x]['db'][$y]['table'] = "v_phonebook";
                 $apps[$x]['db'][$y]['fields'][$z]['name'] = "domain_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
@@ -70,14 +80,21 @@
                 $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "primary";
                 $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "company_name";
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "name";
                 $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
                 $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the name.";
                 $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Enter the name.";
+                $z++;
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonenumber";
+                $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the phone number.";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Insira o número de telefone.";
+                $z++;
 
                 $y = 1; //table array index
                 $z = 0; //field array index
-                $apps[$x]['db'][$y]['table'] = "v_phonebook_details";
+                // Groups description
+                $apps[$x]['db'][$y]['table'] = "v_phonebook_groups";
                 $apps[$x]['db'][$y]['fields'][$z]['name'] = "domain_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
@@ -87,30 +104,49 @@
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "domain_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
                 $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name'] = "phonebook_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_group_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "primary";
+                $z++;
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "group_name";
+                $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the name.";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Enter the name.";
+                $z++;
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "group_desc";
+                $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the description.";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Enter the description.";
+
+
+                $y = 2; //table array index
+                $z = 0; //field array index
+                // Link between groups and phonebook entries. Classic many-to-many
+                $apps[$x]['db'][$y]['table'] = "v_phonebook_to_groups";
+                $apps[$x]['db'][$y]['fields'][$z]['name'] = "domain_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_domains";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "domain_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
+                $z++;
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_phonebook";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "phonebook_uuid";
-                $apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
                 $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name'] = "phonebook_detail_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_group_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
-                $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "primary";
-                $apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
-                $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonenumber";
-                $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-                $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the phone number.";
-                $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Insira o número de telefone.";
-                $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "contact_group";
-                $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-                $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the contact group.";
-                $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Enter the contact group.";
-                $z++;
+                $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_phonebook_groups";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "phonebook_group_uuid";
 ?>

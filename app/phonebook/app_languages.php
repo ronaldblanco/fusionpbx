@@ -18,6 +18,9 @@ $text['button-add-group']['he'] =  "הוספת קבוצה"; // Hebrew
 //Import Button
 $text['button-import']['en-us'] = "Import";
 
+$text['button-groups']['en-us'] = "Groups";
+
+
 
 // Phonebook edit page title
 $text['phonebook-edit-title']['en-us'] = "Editing phonebook entry: ";
@@ -75,6 +78,8 @@ $text['title-phonebook']['ro'] = "Blocare apel";
 $text['title-phonebook']['de-at'] = "Sperrlisten";
 $text['title-phonebook']['ar-eg'] = "حظر المكالمات";
 $text['title-phonebook']['he'] = "חסימת מספר";
+
+$text['title-groups']['en-us'] = "Phonebook groups";
 
 $text['prompt-block_recent_name']['en-us'] = "Block Recent Call - Edit the Name, if desired...";
 $text['prompt-block_recent_name']['es-cl'] = "Bloqueo de llamadas recientes - Edite el nombre, si lo desea...";
@@ -451,6 +456,8 @@ $text['label-select_a_file']['de-at'] = "";
 $text['label-select_a_file']['ar-eg'] = "";
 $text['label-select_a_file']['he'] = "";
 
+$text['label-phonegroup_group_name']['en-us'] = "Group name";
+
 $text['message-unsupported_file_type']['en-us'] = "Unsupported file type";
 
 $text['description-number']['en-us'] = "Enter the exact number.";
@@ -522,5 +529,7 @@ $text['description-action']['ro'] = "";
 $text['description-action']['de-at'] = "Setzen Sie eine Aktion für Anrufe von dieser Nummer.";
 $text['description-action']['ar-eg'] = "";
 $text['description-action']['he'] = "";
+
+$text['description-groups']['en-us'] = "Groups for organizing phonebook.";
 
 ?>
