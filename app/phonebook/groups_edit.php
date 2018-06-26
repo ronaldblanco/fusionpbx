@@ -33,8 +33,7 @@
 //check permissions
 	if (permission_exists('phonebook_group_add') || permission_exists('phonebook_group_edit')) {
 		//access granted
-	}
-	else {
+	} else {
 		echo "access denied";
 		exit;
 	}
@@ -60,10 +59,10 @@
     if (isset($_REQUEST["id"])) {
         $action = "update";
         $group_id = check_str($_REQUEST["id"]);
-    }
-    else {
+    } else {
         $action = "add";
-    }
+	}
+
 
     if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
@@ -100,7 +99,7 @@
     			//prepare the uuids
     			$group_id = uuid();
     			//add the e911 info
-    			$sql = "insert into v_groups ";
+    			$sql = "insert into v_phonebook_groups ";
     			$sql .= "(";
     			$sql .= "domain_uuid, ";
     			$sql .= "group_uuid, ";
@@ -120,14 +119,13 @@
     			$sql .= "'$e911_callername', ";
     			$sql .= "'$e911_alert_email_enable', ";
     			$sql .= "'$e911_alert_email', ";
-        	        $sql .= "'$e911_validated'";
+        	    $sql .= "'$e911_validated'";
     			$sql .= ")";
     			$db->exec(check_sql($sql));
-                $sql_add = "ADD :".$sql;
     			unset($sql);
     		} //if ($action == "add")
 
-    		if ($action == "update" && permission_exists('e911_edit')) {
+    		if ($action == "update" && permission_exists('phonebook_group_edit')) {
 
                 // Make api calls here
                 if (!isset($_REQUEST["update_from_server"])) {
@@ -286,8 +284,7 @@
             if(strlen($tmp) > 0){
                 if ($e911_did == $tmp) {
                     echo "      <option value='".$tmp."' selected='selected'>".$tmp."</option>\n";
-                }
-                else {
+                } else {
                     echo "      <option value='".$tmp."'>".$tmp."</option>\n";
                 }
             }
@@ -295,8 +292,7 @@
         echo "      </select>\n";
         echo "<br />\n";
         echo $text['description-e911_did']."\n";
-    }
-    else {
+    } else {
         echo "  <input type=\"button\" class=\"btn\" name=\"\" alt=\"".$text['button-add']."\" onclick=\"window.location='".PROJECT_PATH."/app/destinations/destinations.php'\" value='".$text['button-add']."'>\n";
     }
     unset ($prep_statement);
@@ -409,14 +405,12 @@
     echo "    <select class='formfld' name='e911_alert_email_enable'>\n";
     if ($e911_alert_email_enable == "true") {
         echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
-    }
-    else {
+    } else {
         echo "    <option value='true'>".$text['label-true']."</option>\n";
     }
     if ($e911_alert_email_enable == "false") {
         echo "    <option value='false' selected >".$text['label-false']."</option>\n";
-    }
-    else {
+    } else {
         echo "    <option value='false'>".$text['label-false']."</option>\n";
     }
     echo "    </select>\n";

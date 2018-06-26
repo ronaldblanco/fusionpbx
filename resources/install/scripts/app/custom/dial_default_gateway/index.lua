@@ -11,7 +11,7 @@ if (session:ready()) then
     local domain_id = session:getVariable("domain_uuid")
 
     if (domain_id == nil) then
-        domain_id = session:getVariable("domain_name") 
+        domain_id = session:getVariable("domain_name") or session:getVariable("sip_invite_domain")
     else
         sql = "SELECT gateway_uuid FROM v_gateways "
         sql = sql .. "WHERE domain_uuid = '"..domain_id.."' "
