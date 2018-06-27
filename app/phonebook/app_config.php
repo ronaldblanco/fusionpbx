@@ -90,6 +90,10 @@
                 $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the phone number.";
                 $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Insira o número de telefone.";
                 $z++;
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_desc";
+                $apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enter the description.";
+                $apps[$x]['db'][$y]['fields'][$z]['description']['pt-br'] = "Enter the description.";
 
                 $y = 1; //table array index
                 $z = 0; //field array index
@@ -104,7 +108,7 @@
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "domain_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
                 $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_group_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "group_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
@@ -142,11 +146,11 @@
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_phonebook";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "phonebook_uuid";
                 $z++;
-                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_group_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "group_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "foreign";
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = "v_phonebook_groups";
-                $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "phonebook_group_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "group_uuid";
 ?>

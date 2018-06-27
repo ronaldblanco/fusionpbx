@@ -81,6 +81,17 @@ $text['title-phonebook']['he'] = "חסימת מספר";
 
 $text['title-groups']['en-us'] = "Phonebook groups";
 
+$text['title-phonebook_groups-edit']['en-us'] = "Edit phonebook group";
+
+$text['title-phonebook_groups-add']['en-us'] = "Add phonebook group";
+
+$text['title-phonebook-edit']['en-us'] = "Edit phonebook entry";
+
+$text['title-phonebook-add']['en-us'] = "Add phonebook entry";
+
+
+
+
 $text['prompt-block_recent_name']['en-us'] = "Block Recent Call - Edit the Name, if desired...";
 $text['prompt-block_recent_name']['es-cl'] = "Bloqueo de llamadas recientes - Edite el nombre, si lo desea...";
 $text['prompt-block_recent_name']['pt-pt'] = "Bloquear Chamadas Recentes - Edite o nome, se desejar...";
@@ -108,6 +119,8 @@ $text['label-update-complete']['ro'] = "Actualizare completă";
 $text['label-update-complete']['de-at'] = "Aktualisierung abgeschlossen";
 $text['label-update-complete']['ar-eg'] = "اكتمال التحديث";
 $text['label-update-complete']['he'] = "העדכון הושלם";
+
+$text['label-add-complete']['en-us'] = "Add Complete";
 
 $text['label-reject']['en-us'] = "Reject";
 $text['label-reject']['es-cl'] = "Rechazar";
@@ -221,34 +234,6 @@ $text['label-inbound']['de-at'] = "Eingehend";
 $text['label-inbound']['ar-eg'] = "";
 $text['label-inbound']['he'] = "";
 
-$text['label-edit-note']['en-us'] = "Block calls from a number. Edit the name and enable/disable below.";
-$text['label-edit-note']['es-cl'] = "Bloquea llamadas desde un número. Edite el nombre y active/desactive abajo.";
-$text['label-edit-note']['pt-pt'] = "Bloquear chamadas a partir de um número. Edite o nome e active/desactive.";
-$text['label-edit-note']['fr-fr'] = "Bloquer les appels à partir d'un numéro. Editer le nom et activer/désactiver ci-dessous.";
-$text['label-edit-note']['nl-nl'] = "";
-$text['label-edit-note']['pt-br'] = "Bloquear chamadas a partir de um número. Edite o nome e ative ou desative";
-$text['label-edit-note']['pl'] = "Blokowanie połączeń z danego numeru. Edytuj nazwę i włącz/wyłącz poniżej.";
-$text['label-edit-note']['sv-se'] = "Blockera samtal från nummer. Editera namn och Aktiv/Inaktiv nedan.";
-$text['label-edit-note']['uk'] = "Блокувати дзвінки з номера. Змініть ім'я і включіть/відключіть нижче.";
-$text['label-edit-note']['ro'] = "Blocați apelurile de la un număr. Editați numele și activați/dezactivați mai jos.";
-$text['label-edit-note']['de-at'] = "Anrufe von Nummer Blockieren. Bearbeiten Sie den Namen und aktivieren/deaktivieren Sie unten.";
-$text['label-edit-note']['ar-eg'] = "";
-$text['label-edit-note']['he'] = "";
-
-$text['label-edit-edit']['en-us'] = "Call Block";
-$text['label-edit-edit']['es-cl'] = "Bloqueo de llamada";
-$text['label-edit-edit']['pt-pt'] = "Bloqueio de Chamadas";
-$text['label-edit-edit']['fr-fr'] = "Liste noire";
-$text['label-edit-edit']['nl-nl'] = "";
-$text['label-edit-edit']['pt-br'] = "Bloqueio de chamadas";
-$text['label-edit-edit']['pl'] = "Blokowanie rozmów";
-$text['label-edit-edit']['sv-se'] = "Blockera Samtal";
-$text['label-edit-edit']['uk'] = "Блокування дзвінків";
-$text['label-edit-edit']['ro'] = "Blocare apel";
-$text['label-edit-edit']['de-at'] = "Sperrlisten";
-$text['label-edit-edit']['ar-eg'] = "";
-$text['label-edit-edit']['he'] = "חסימת שיחה";
-
 $text['label-edit-add-recent']['en-us'] = "Recent Calls";
 $text['label-edit-add-recent']['es-cl'] = "Llamadas Recientes";
 $text['label-edit-add-recent']['pt-pt'] = "Chamadas Recentes";
@@ -262,20 +247,6 @@ $text['label-edit-add-recent']['ro'] = "Apeluri recente";
 $text['label-edit-add-recent']['de-at'] = "Kürzliche Anrufe";
 $text['label-edit-add-recent']['ar-eg'] = "";
 $text['label-edit-add-recent']['he'] = "שיחות אחרונות";
-
-$text['label-edit-add']['en-us'] = "Call Block";
-$text['label-edit-add']['es-cl'] = "Agregar bloqueo de llamada";
-$text['label-edit-add']['pt-pt'] = "Adicionar Bloqueio de Chamadas";
-$text['label-edit-add']['fr-fr'] = "Ajouter bloquage d'appel";
-$text['label-edit-add']['nl-nl'] = "";
-$text['label-edit-add']['pt-br'] = "Adicionar bloqueio de chamadas";
-$text['label-edit-add']['pl'] = "Blokowaie rozmów";
-$text['label-edit-add']['sv-se'] = "Blockera Samtal";
-$text['label-edit-add']['uk'] = "Блокування дзвінків";
-$text['label-edit-add']['ro'] = "Blocare apel";
-$text['label-edit-add']['de-at'] = "Sperrlisten";
-$text['label-edit-add']['ar-eg'] = "حظر المكالمات";
-$text['label-edit-add']['he'] = "חסימת שיחה";
 
 $text['label-duration']['en-us'] = "Duration";
 $text['label-duration']['es-cl'] = "Duración";
@@ -456,7 +427,18 @@ $text['label-select_a_file']['de-at'] = "";
 $text['label-select_a_file']['ar-eg'] = "";
 $text['label-select_a_file']['he'] = "";
 
-$text['label-phonegroup_group_name']['en-us'] = "Group name";
+$text['label-phonebook_group_name']['en-us'] = "Name";
+
+$text['label-phonebook_group_desc']['en-us'] = "Description";
+
+$text['label-phonebook_name']['en-us'] = "Name";
+
+$text['label-phonebook_phonenumber']['en-us'] = "Number";
+
+$text['label-phonebook_desc']['en-us'] = "Description";
+
+$text['label-phonebook_groups']['en-us'] = "Groups";
+
 
 $text['message-unsupported_file_type']['en-us'] = "Unsupported file type";
 
@@ -531,5 +513,29 @@ $text['description-action']['ar-eg'] = "";
 $text['description-action']['he'] = "";
 
 $text['description-groups']['en-us'] = "Groups for organizing phonebook.";
+
+$text['description-phonebook_group_name']['en-us'] = "Phonebook group name.";
+
+$text['description-phonebook_group_desc']['en-us'] = "Phonebook group description.";
+
+$text['description-phonebook_name']['en-us'] = "Name for phonebook entry.";
+
+$text['description-phonebook_phonenumber']['en-us'] = "Number for phonebook entry.";
+
+$text['description-phonebook_desc']['en-us'] = "Description for phonebook entry.";
+
+$text['description-phonebook_groups']['en-us'] = "Select groups for this phonebook entry.";
+
+
+
+
+
+$text['header-phonebook_groups-edit']['en-us'] = "Edit phonebook group";
+
+$text['header-phonebook_groups-add']['en-us'] = "Add phonebook group";
+
+$text['header-phonebook-edit']['en-us'] = "Edit phonebook entry";
+
+$text['header-phonebook-add']['en-us'] = "Add phonebook entry";
 
 ?>

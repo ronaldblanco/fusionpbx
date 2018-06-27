@@ -28,7 +28,7 @@
 include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-if (permission_exists('phonebook_delete')) {
+if (permission_exists('phonebook_group_delete')) {
 	//access granted
 }
 else {
@@ -42,15 +42,15 @@ else {
 
 //set the variable
 	if (count($_GET) > 0) {
-		$phonebook_uuid = $_GET["id"];
+		$group_id = $_GET["id"];
 	}
 
 //delete the extension
-	if (strlen($phonebook_uuid) > 0) {
+	if (strlen($group_id) > 0) {
         // We need to delete group and group to numbers entires
-        $sql = "DELETE FROM v_phonebook WHERE";
+        $sql = "DELETE FROM v_phonebook_groups WHERE";
         $sql .= " domain_uuid = '$domain_uuid' AND";
-        $sql .= " phonebook_uuid = '$phonebook_uuid'";
+        $sql .= " group_uuid = '$group_id'";
 
         $prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -58,7 +58,7 @@ else {
         
         $sql = "DELETE FROM v_phonebook_to_groups WHERE";
         $sql .= " domain_uuid = '$domain_uuid' AND";
-        $sql .= " phonebook_uuid = '$phonebook_uuid'";
+        $sql .= " group_uuid = '$group_id'";
 
         $prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -67,7 +67,7 @@ else {
 
 	//redirect the browser
 		$_SESSION["message"] = $text['label-delete-complete'];
-		header("Location:  phonebook.php");
+		header("Location:  groups.php");
 		return;
 
 ?>

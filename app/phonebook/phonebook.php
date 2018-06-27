@@ -124,36 +124,42 @@ require_once "resources/require.php";
 	list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
 	$offset = $rows_per_page * $page;
 
-//get the  list
-	// Get all phonebook enties for this domain.
-	$sql = "SELECT * FROM v_phonebook WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	if (strlen($order_by)> 0) { 
-		$sql .= "ORDER BY $order_by $order "; 
+	// Get all phonebook enties for this domain including groups
+	$sql = "SELECT v_phonebook.phonebook_uuid AS phonebook_uuid,";
+	$sql .= " v_phonebook.name AS name,";
+	$sql .= " v_phonebook.phonenumber AS phonenumber,";
+	$sql .= " v_phonebook.phonebook_desc AS phonebook_desc,";
+	$sql .= " ARRAY_TO_STRING(ARRAY_AGG(v_phonebook_groups.group_name), ',') AS groups";
+	$sql .= " FROM v_phonebook JOIN v_phonebook_to_groups";
+	$sql .= " ON v_phonebook.phonebook_uuid = v_phonebook_to_groups.phonebook_uuid";
+	$sql .= " JOIN v_phonebook_groups";
+	$sql .= " ON v_phonebook_groups.group_uuid = v_phonebook_to_groups.group_uuid";
+	$sql .= " WHERE v_phonebook.domain_uuid = '$domain_uuid'";
+	$sql .= " GROUP BY v_phonebook.phonebook_uuid ";
+	if (strlen($order_by) > 0) { 
+		$sql .= "ORDER BY v_phonebook.$order_by $order "; 
 	}else{
-		$sql .= "ORDER BY name ASC, phonenumber ASC ";
+		$sql .= "ORDER BY v_phonebook.name ASC, v_phonebook.phonenumber ASC ";
 	}
-	$sql .= " LIMIT $rows_per_page OFFSET $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
+	$sql_show = $sql;
 	unset ($prep_statement, $sql);
 
-	// TODO - Get group per user
-	foreach ($result as $row) {
-		$row['group'] = "TBD";
-	}
 
-
-//table headers
+	//table headers
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('name', $text['label-name'], $order_by, $order);
-    echo th_order_by('number', $text['label-number'], $order_by, $order);
+    echo th_order_by('phonenumber', $text['label-number'], $order_by, $order);
 	echo "<th>" .$text['label-group']. "</th>";
+    echo th_order_by('phonebook_desc', $text['label-phonebook_desc'], $order_by, $order);
+
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('phonebook_add')) {
 		echo "<a href='phonebook_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
@@ -166,7 +172,6 @@ require_once "resources/require.php";
 
 			$tr_link = (permission_exists('phonebook_edit')) ? "href='phonebook_edit.php?id=".$row['phonebook_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
-		        //echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".($lastcompanyname != $row['name']?$row['name']:'')."</td>\n";
 			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['name']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			if (permission_exists('phonebook_edit')) {
@@ -176,7 +181,8 @@ require_once "resources/require.php";
 				echo $row['phonenumber'];
 			}
 			echo "	</td>\n";
-            echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['group']."</td>\n";
+            echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['groups']."</td>\n";
+            echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['phonebook_desc']."</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('phonebook_edit')) {
 				echo "<a href='phonebook_edit.php?id=".$row['phonebook_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";

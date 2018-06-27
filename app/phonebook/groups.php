@@ -127,16 +127,16 @@ require_once "resources/require.php";
 	if ($result_count > 0) {
 		foreach($result as $row) {
 
-			$tr_link = (permission_exists('phonebook_group_edit')) ? "href='groups_edit.php?id=".$row['phonebook_group_uuid']."'" : null;
+			$tr_link = (permission_exists('phonebook_group_edit')) ? "href='groups_edit.php?id=".$row['group_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
 			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['group_name']."</td>\n";
 			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['group_desc']."</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('phonebook_group_edit')) {
-				echo "<a href='groups_edit.php?id=".$row['phonebook_group_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
+				echo "<a href='groups_edit.php?id=".$row['group_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('phonebook_group_delete')) {
-				echo "<a href='groups_delete.php?id=".$row['phonebook_group_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
+				echo "<a href='groups_delete.php?id=".$row['group_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			};
 			echo "  </td>";
 			echo "</tr>\n";
