@@ -7,8 +7,8 @@ $imported = simplexml_load_file($_FILES['file']['tmp_name']);
 	require_once "resources/check_auth.php";
 
 //add multi-lingual support
-        $language = new text;
-        $text = $language->get();
+    $language = new text;
+    $text = $language->get();
     
     $sql = " select company_name, phonebook_uuid from v_phonebook ";
     $sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
