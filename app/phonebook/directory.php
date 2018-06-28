@@ -2,9 +2,11 @@
 require_once "root.php";
 require_once "resources/require.php";
 
-$is_auth = isset($_SESSION['phonebook']['text']['auth']) ? isset($_SESSION['phonebook']['text']['auth']) : 'true';
+$is_auth = isset($_SESSION['phonebook']['auth']['text']) ? filter_var($_SESSION['phonebook']['auth']['text'], FILTER_VALIDATE_BOOLEAN) : 'true';
+$groupid = isset($_REQUEST["gid"]) ? check_str($_REQUEST["gid"]) : False;
+$vendor  = isset($_REQUEST["vendor"]) ? strtolower(check_str($_REQUEST["vendor"])) : 'yealink';
 
-if (strtolower($is_auth) != 'false') {
+if ($is_auth) {
 	// Check auth (adding more security)
 	require_once "resources/check_auth.php";
 
@@ -12,41 +14,67 @@ if (strtolower($is_auth) != 'false') {
 		echo "Access denied";
 		exit;
 	}
+	
+} else {
+	if (!$groupid) {
+		// Can't get all of phonebook without specifying auth.
+		echo "Access denied";
+		exit;
+	}
 }
 
-$groupid = isset($_REQUEST["gid"]) ? check_str($_REQUEST["gid"]) : 'global';
-$vendor = isset($_REQUEST["vendor"]) ? strtolower(check_str($_REQUEST["vendor"])) : 'yealink';
-
-$sql = "select * from v_phonebook_details INNER JOIN v_phonebook ON v_phonebook_details.phonebook_uuid = v_phonebook.phonebook_uuid ";
-$sql .= "where v_phonebook.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+$sql = "SELECT DISTINCT v_phonebook.phonebook_uuid,";
+$sql .= " v_phonebook.name, v_phonebook.phonenumber, v_phonebook.phonebook_desc FROM v_phonebook ";
+$sql .= " INNER JOIN v_phonebook_to_groups ON";
+$sql .= " v_phonebook.phonebook_uuid = v_phonebook_to_groups.phonebook_uuid";
+$sql .= " WHERE v_phonebook.domain_uuid = '$domain_uuid'";
+if ($groupid) {
+	$sql .= " AND v_phonebook_to_groups.group_uuid = '$groupid'";
+}
 
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 $result = $prep_statement->fetchAll();
-$result_count = count($result);
 unset ($prep_statement, $sql);
+
+$response = '';
 
 if ($vendor == 'yealink') {
 
-	$response = '<PhonebookIPPhoneDirectory>';
+	$response .= '<PhonebookIPPhoneDirectory>' . "\n";
 
 	foreach($result as $row) {
-		$exploded = explode(',', $row['contact_group']);
-		if(in_array($groupid, $exploded)){
-			$response .= '  <DirectoryEntry>';
-			$response .= '    <Name>'.$row['company_name'].'</Name>';
-			$response .= '    <Telephone>'.$row['phonenumber'].'</Telephone>';
-			$response .= '  </DirectoryEntry>';
-		}
-
+		$response .= '  <DirectoryEntry>' . "\n";
+		$response .= '    <Name>' . $row['name'] . '</Name>' . "\n";
+		$response .= '    <Telephone>' . $row['phonenumber'] . '</Telephone>' . "\n";
+		$response .= '  </DirectoryEntry>' . "\n";
 	}
 
-	$response .= '</PhonebookIPPhoneDirectory>';
+	$response .= '</PhonebookIPPhoneDirectory>' . "\n";
 
-	header("Content-type: text/xml; charset=utf-8");
-	header("Content-Length: ".strlen($response));
+	// End Yealink phonebook
+} elseif ($vendor == 'snom') {
 
-	echo $response;
+	$snom_embedded_settings = isset($_SESSION['phonebook']['snom_embedded_settings']['text']) ? filter_var($_SESSION['phonebook']['snom_embedded_settings']['text'], FILTER_VALIDATE_BOOLEAN) : 'true';
+	if (!$snom_embedded_settings) {
+		$response .= '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+	}
+
+	$response .= '<tbook complete="true">' . "\n";
+
+	foreach ($result as $index => $value) {
+		$response .= '<item context="active" type="none" index="'. $index .'">' . "\n";
+		$response .= '<name>' . $value['name'] . '</name>' . "\n";
+		$response .= '<number>' . $value['phonenumber'] . '</number>' . "\n";
+		$response .= '</item>' . "\n";
+	}
+
+	$response .= '</tbook>' . "\n";
 }
+
+header("Content-type: text/xml; charset=utf-8");
+header("Content-Length: ".strlen($response));
+
+echo $response;
 
 ?>

@@ -439,6 +439,7 @@ $text['label-phonebook_desc']['en-us'] = "Description";
 
 $text['label-phonebook_groups']['en-us'] = "Groups";
 
+$text['label-phonebook_all_groups']['en-us'] = "All phonebook";
 
 $text['message-unsupported_file_type']['en-us'] = "Unsupported file type";
 

@@ -145,7 +145,6 @@ require_once "resources/require.php";
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
-	$sql_show = $sql;
 	unset ($prep_statement, $sql);
 
 
@@ -218,12 +217,9 @@ require_once "resources/require.php";
 	echo "<br /><br />";
 
 //include link provider
-// TODO - Modify link provider
-/*
-	if(!$result_count == "0"){
+	if($result_count != "0") {
 		require_once "link_provider.php";
 	}
-*/
 //include the footer
 	require_once "resources/footer.php";
 

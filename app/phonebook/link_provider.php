@@ -18,27 +18,15 @@
 
 // Link Provider
 
-// Select distinct groups from the database
-$sql = "select distinct on (contact_group) contact_group from v_phonebook_details where domain_uuid = '".$_SESSION['domain_uuid']."'";
-// Check SQL
+// Select groups from the database
+$sql = "SELECT * FROM v_phonebook_groups";
+$sql .= " WHERE domain_uuid = '$domain_uuid'";
 $prep_statement = $db->prepare(check_sql($sql));
-// Execute SQL
 $prep_statement->execute();
-// Retrieve result
-$fetchedArray = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-// Loop fetched array and concatenate into a single string
-foreach($fetchedArray as $fetched) {
-	$groupString .= $fetched['contact_group'].",";
-}
-// Trim the comma from that string
-$groupString = rtrim($groupString, ",");
-// Explode the string
-$groupArray = explode(',', $groupString);
-// Remove duplicates from group array
-$groupArray = array_unique($groupArray);
+$groupArray = $prep_statement->fetchAll();
+unset ($prep_statement, $sql);
 
-// Write a copy link button for each group
-$tNum = 1;
+$is_auth = isset($_SESSION['phonebook']['auth']['text']) ? filter_var($_SESSION['phonebook']['auth']['text'], FILTER_VALIDATE_BOOLEAN) : 'true';
 
 //show title
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -53,17 +41,37 @@ echo "      </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-foreach ($groupArray as $group) {
-	$link = "https://".$domain_name."/app/phonebook/directory.php?gid=".$group."&amp;duuid=".$domain_uuid;
-    echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$group."</span></div>";
+// Write a copy link button for each group
+$tNum = 1;
+
+// Show link for global group if auth is enabled
+if ($is_auth) {
+    $link = "https://".$domain_name."/app/phonebook/directory.php?key=&lt;api_key&gt;";
+    echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$text['label-phonebook_all_groups']."</span></div>";
 	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."'> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."' />";
 	echo "<script>";
 		echo "document.getElementById('copyButton".$tNum."').addEventListener('click', function() {";
 		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
 		echo "});";
 	echo "</script>";
-	$tNum++;
+	$tNum += 1;
 }
+
+foreach ($groupArray as $group) {
+    $link = "https://".$domain_name."/app/phonebook/directory.php?gid=".$group['group_uuid'];
+    if ($is_auth) {
+        $link .= "&amp;key=&lt;api_key&gt;";
+    }
+    echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$group['group_name']."</span></div>";
+	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."'> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."' />";
+	echo "<script>";
+		echo "document.getElementById('copyButton".$tNum."').addEventListener('click', function() {";
+		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
+		echo "});";
+	echo "</script>";
+	$tNum += 1;
+}
+
 ?>
 
 <!-- Copy to clipboard script -->
