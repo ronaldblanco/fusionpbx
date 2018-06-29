@@ -275,9 +275,4 @@ $text['description-e911_alert_email_enable']['uk'] = "";
 $text['description-e911_alert_email_enable']['de-at'] = "";
 
 $text['button-update_911']['en-us'] = "Load from server";
-
-$text['message-e911_info_deleted'] = "ED";
-
-$text['message-e911_info_deleted_error'] = "END";
-
 ?>
