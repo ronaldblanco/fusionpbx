@@ -69,5 +69,4 @@ else {
 		$_SESSION["message"] = $text['label-delete-complete'];
 		header("Location:  groups.php");
 		return;
-
 ?>

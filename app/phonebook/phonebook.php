@@ -130,9 +130,9 @@ require_once "resources/require.php";
 	$sql .= " v_phonebook.phonenumber AS phonenumber,";
 	$sql .= " v_phonebook.phonebook_desc AS phonebook_desc,";
 	$sql .= " ARRAY_TO_STRING(ARRAY_AGG(v_phonebook_groups.group_name), ',') AS groups";
-	$sql .= " FROM v_phonebook JOIN v_phonebook_to_groups";
+	$sql .= " FROM v_phonebook FULL OUTER JOIN v_phonebook_to_groups";
 	$sql .= " ON v_phonebook.phonebook_uuid = v_phonebook_to_groups.phonebook_uuid";
-	$sql .= " JOIN v_phonebook_groups";
+	$sql .= " FULL OUTER JOIN v_phonebook_groups";
 	$sql .= " ON v_phonebook_groups.group_uuid = v_phonebook_to_groups.group_uuid";
 	$sql .= " WHERE v_phonebook.domain_uuid = '$domain_uuid'";
 	$sql .= " GROUP BY v_phonebook.phonebook_uuid ";
@@ -145,6 +145,7 @@ require_once "resources/require.php";
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
+	$sql_show = $sql;
 	unset ($prep_statement, $sql);
 
 

@@ -63,7 +63,7 @@
 	$sql = "select count(extension_uuid) as count from v_extensions ";
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	$sql .= "and enabled = 'true' ";
-	if (!(if_group("admin") || if_group("superadmin"))) {
+	if (!(if_group("admin") || if_group("superadmin") || if_group("client_admin"))) {
 		if (count($_SESSION['user']['extension']) > 0) {
 			$sql .= "and (";
 			$x = 0;
