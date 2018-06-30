@@ -94,26 +94,6 @@ if ($vendor == 'yealink') {
         $response .= ' </entry>' . "\n";
     }
     $response .= '</paddrbook>' . "\n";
- 
- 
-    /*
-
-<paddrbook>
-<entry>
-<name>Abc Test</name>
-<homePhone>4081111234</homePhone>
-<workPhone>4082221234</workPhone>
-<mobilePhone>4083331234</mobilePhone>
-<ringToneID>1</ringToneID>
-</entry>
-<entry>
-<name>Def Test</name>
-<homePhone>4081001234</homePhone>
-<ringToneID>1</ringToneID>
-</entry>
-</paddrbook>
-</flat-profile>
-*/
 }
 
 
