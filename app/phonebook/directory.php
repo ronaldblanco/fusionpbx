@@ -70,7 +70,21 @@ if ($vendor == 'yealink') {
 	}
 
 	$response .= '</tbook>' . "\n";
+
+} elseif ($vendor == 'cisco_xml') {
+	$response .= '<?xml version="1.0" encoding="utf-8" ?>';
+	$response .= '	<CiscoIPPhoneDirectory>';
+   	$response .= '		<Title>Phonebook</Title>';
+   	$response .= '		<Prompt>Choose number</Prompt>';
+	foreach($result as $row) {
+		$response .= '			<DirectoryEntry>';
+		$response .= '				<Name>' . $row['name'] . '</Name>';
+		$response .= '				<Telephone>' . $row['phonenumber'] . '</Telephone>';
+		$response .= '			</DirectoryEntry>';
+	}
+	$response .= '	</CiscoIPPhoneDirectory>';
 }
+
 
 header("Content-type: text/xml; charset=utf-8");
 header("Content-Length: ".strlen($response));
