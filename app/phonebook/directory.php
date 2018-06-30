@@ -71,7 +71,7 @@ if ($vendor == 'yealink') {
 
 	$response .= '</tbook>' . "\n";
 
-} elseif ($vendor == 'cisco_xml') {
+} elseif ($vendor == 'cisco_xml_directory_service') {
 	$response .= '<?xml version="1.0" encoding="utf-8" ?>' . "\n";
 	$response .= ' <CiscoIPPhoneDirectory>' . "\n";
    	$response .= '  <Title>Phonebook</Title>' . "\n";
@@ -83,6 +83,37 @@ if ($vendor == 'yealink') {
 		$response .= '    </DirectoryEntry>' . "\n";
 	}
 	$response .= ' </CiscoIPPhoneDirectory>' . "\n";
+} elseif ($vendor == 'cisco_paddrbook') {
+
+    $response .= '<paddrbook>' . "\n";
+    foreach($result as $row) {
+        $response .= ' <entry>' . "\n";
+        $response .= '  <name>' . $row['name'] . '<name>' . "\n";
+        $response .= '  <workPhone>' . $row['phonenumber'] . '<workPhone>' . "\n";
+        $response .= '  <ringToneID>1</ringToneID>' . "\n";
+        $response .= ' </entry>' . "\n";
+    }
+    $response .= '</paddrbook>' . "\n";
+ 
+ 
+    /*
+
+<paddrbook>
+<entry>
+<name>Abc Test</name>
+<homePhone>4081111234</homePhone>
+<workPhone>4082221234</workPhone>
+<mobilePhone>4083331234</mobilePhone>
+<ringToneID>1</ringToneID>
+</entry>
+<entry>
+<name>Def Test</name>
+<homePhone>4081001234</homePhone>
+<ringToneID>1</ringToneID>
+</entry>
+</paddrbook>
+</flat-profile>
+*/
 }
 
 
