@@ -72,17 +72,17 @@ if ($vendor == 'yealink') {
 	$response .= '</tbook>' . "\n";
 
 } elseif ($vendor == 'cisco_xml') {
-	$response .= '<?xml version="1.0" encoding="utf-8" ?>';
-	$response .= '	<CiscoIPPhoneDirectory>';
-   	$response .= '		<Title>Phonebook</Title>';
-   	$response .= '		<Prompt>Choose number</Prompt>';
+	$response .= '<?xml version="1.0" encoding="utf-8" ?>' . "\n";
+	$response .= ' <CiscoIPPhoneDirectory>' . "\n";
+   	$response .= '  <Title>Phonebook</Title>' . "\n";
+   	$response .= '  <Prompt>Choose entry</Prompt>' . "\n";
 	foreach($result as $row) {
-		$response .= '			<DirectoryEntry>';
-		$response .= '				<Name>' . $row['name'] . '</Name>';
-		$response .= '				<Telephone>' . $row['phonenumber'] . '</Telephone>';
-		$response .= '			</DirectoryEntry>';
+		$response .= '    <DirectoryEntry>' . "\n";
+		$response .= '     <Name>' . $row['name'] . '</Name>' . "\n";
+		$response .= '     <Telephone>' . $row['phonenumber'] . '</Telephone>' . "\n";
+		$response .= '    </DirectoryEntry>' . "\n";
 	}
-	$response .= '	</CiscoIPPhoneDirectory>';
+	$response .= ' </CiscoIPPhoneDirectory>' . "\n";
 }
 
 
