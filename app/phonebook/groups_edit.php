@@ -124,7 +124,7 @@
 			
 			if (isset($_REQUEST['is_updated']) || isset($_REQUEST['is_added'])) {
 				//redirect the browser
-				$_SESSION["message"] = isset($_REQUEST['is_updated']) ? $t9ext['label-update-complete'] : $text['label-add-complete'];
+				$_SESSION["message"] = isset($_REQUEST['is_updated']) ? $text['label-update-complete'] : $text['label-add-complete'];
 				header("Location:  groups.php");
 				return;
 			}

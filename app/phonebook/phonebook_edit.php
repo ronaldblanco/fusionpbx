@@ -179,8 +179,16 @@
 
     		} //if ($action == "update")
 
+			if (isset($_REQUEST['is_updated'])) {
+				//redirect the browser
+				$_SESSION["message"] = $text['label-update-complete'];
+				header("Location:  phonebook.php");
+				return;
+			}
+
     	} //if ($_POST["persistformvar"] != "true")
-    } // if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0)
+	} // if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0)
+
 
 	// Get group list
 	$sql = "SELECT * FROM v_phonebook_groups";
@@ -353,6 +361,7 @@
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
 		echo "		<input type='hidden' name='id' value='$phonebook_uuid'>\n";
+		echo "		<input type='hidden' name='is_updated' value='yes'>\n";
 	}
 	echo "			<br>";
 	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
