@@ -2,7 +2,7 @@
 
 	//application details
 		$apps[$x]['name'] = "e911 Info";
-		$apps[$x]['uuid'] = "cd838240-a1a8-4c08-81c6-71ade7cfe101";
+		$apps[$x]['uuid'] = "cd838240-a1a8-4c58-81c6-71ade7cfe111";
 		$apps[$x]['category'] = "Switch";
 		$apps[$x]['subcategory'] = "";
 		$apps[$x]['version'] = "";
@@ -22,7 +22,7 @@
 	//permission details
 		$y = 0;
 		$apps[$x]['permissions'][$y]['name'] = "e911_view";
-		$apps[$x]['permissions'][$y]['menu']['uuid'] = "dcc6ba0b-be07-4b30-be02-0567ebe76794";
+		$apps[$x]['permissions'][$y]['menu']['uuid'] = "dce6ba0b-be07-4b31-be02-0567ebe76794";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$y++;
