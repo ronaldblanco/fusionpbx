@@ -284,10 +284,10 @@
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>";
 	if ($action == "update") {
-		echo $text['header-phonebook-edit'];
+		echo escape($text['header-phonebook-edit']);
 	}
 	if ($action == "add") {
-		echo $text['header-phonebook-add'];
+		echo escape($text['header-phonebook-add']);
 	}
 
 	echo "</b></td>\n";
@@ -303,7 +303,7 @@
 	echo "	".$text['label-phonebook_name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='name' maxlength='255' value=\"$name\">\n";
+	echo "	<input class='formfld' type='text' name='name' maxlength='255' value=\"" . escape($name) . "\">\n";
 	echo "<br />\n";
 	echo $text['description-phonebook_name']."\n";
 	echo "</td>\n";
@@ -315,7 +315,7 @@
     echo "  ".$text['label-phonebook_phonenumber']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='phonenumber' maxlength='255' value=\"$phonenumber\">\n";
+    echo "  <input class='formfld' type='text' name='phonenumber' maxlength='255' value=\"" . escape($phonenumber) . "\">\n";
     echo "<br />\n";
     echo $text['description-phonebook_phonenumber']."\n";
     echo "</td>\n";
@@ -327,7 +327,7 @@
     echo "  ".$text['label-phonebook_desc']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='phonebook_desc' maxlength='255' value=\"$phonebook_desc\">\n";
+    echo "  <input class='formfld' type='text' name='phonebook_desc' maxlength='255' value=\"" . escape($phonebook_desc) . "\">\n";
     echo "<br />\n";
     echo $text['description-phonebook_desc']."\n";
     echo "</td>\n";
@@ -348,19 +348,26 @@
     echo "</tr>\n";
 	
 	foreach ($phonebook_groups_all as $phonebook_group) {
+
+		$phonebook_group = array_map("escape", $phonebook_group);
+
 		$checked = in_array($phonebook_group['group_uuid'], $phonebook_groups) ? "checked" : "";
-		$on_click_text = "(document.getElementById('group_".$phonebook_group['group_uuid']."').checked) ? document.getElementById('group_".$phonebook_group['group_uuid']."').checked = false : document.getElementById('group_".$phonebook_group['group_uuid']."').checked = true;";
-		echo "<tr id='permission_".$phonebook_group['group_uuid']."'>\n";
-		echo "	<td valign='top' style='text-align: right;' nowrap='nowrap' class='".$row_style[$c]."' onclick=\"".$on_click_text."\">".$phonebook_group['group_name']."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' style='text-align: left; vertical-align:middle;' onclick=\"".$on_click_text."\"><input type='checkbox' name='phonebook_groups[]' id='group_".$phonebook_group['group_uuid']."' ".$checked." value='".$phonebook_group['group_uuid']."'>   ".$phonebook_group['group_desc']."&nbsp;</td>\n";
+
+		$on_click_text = "(document.getElementById('group_" . $phonebook_group['group_uuid'] ."').checked)" ;
+		$on_click_text .= " ? document.getElementById('group_" . $phonebook_group['group_uuid'] . "').checked = false";
+		$on_click_text .= " : document.getElementById('group_". $phonebook_group['group_uuid'] . "').checked = true;";
+
+		echo "<tr id='permission_" . $phonebook_group['group_uuid'] . "'>\n";
+		echo "	<td valign='top' style='text-align: right;' nowrap='nowrap' class='".$row_style[$c]."' onclick=\"".$on_click_text."\">" .$phonebook_group['group_name'] . "</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' style='text-align: left; vertical-align:middle;' onclick=\"".$on_click_text."\"><input type='checkbox' name='phonebook_groups[]' id='group_" . $phonebook_group['group_uuid'] ."' ".$checked." value='" . $phonebook_group['group_uuid'] . "'>   " . $phonebook_group['group_desc'] . "&nbsp;</td>\n";
 		echo "</tr>\n";
-		$c = ($c == 0) ? 1 : 0;
+		$c = 1 - $c; // Switch c = 0/1/0/1....
 	}
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "		<input type='hidden' name='id' value='$phonebook_uuid'>\n";
+		echo "		<input type='hidden' name='id' value='" . escape($phonebook_uuid) . "'>\n";
 		echo "		<input type='hidden' name='is_updated' value='yes'>\n";
 	} elseif ($action == "add") {
 		echo "		<input type='hidden' name='is_added' value='yes'>\n";

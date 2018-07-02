@@ -3,8 +3,8 @@ require_once "root.php";
 require_once "resources/require.php";
 
 $is_auth = isset($_SESSION['phonebook']['auth']['text']) ? filter_var($_SESSION['phonebook']['auth']['text'], FILTER_VALIDATE_BOOLEAN) : 'true';
-$groupid = isset($_REQUEST["gid"]) ? check_str($_REQUEST["gid"]) : False;
-$vendor  = isset($_REQUEST["vendor"]) ? strtolower(check_str($_REQUEST["vendor"])) : 'yealink';
+$groupid = isset($_REQUEST["gid"]) ? escape(check_str($_REQUEST["gid"])) : False;
+$vendor  = isset($_REQUEST["vendor"]) ? strtolower(escape(check_str($_REQUEST["vendor"]))) : 'yealink';
 
 if ($is_auth) {
 	// Check auth (adding more security)
@@ -48,6 +48,8 @@ if ($vendor == 'yealink') {
 	$response .= '<PhonebookIPPhoneDirectory>' . "\n";
 
 	foreach($result as $row) {
+		$row = array_map('escape', $row);
+
 		$response .= '  <DirectoryEntry>' . "\n";
 		$response .= '    <Name>' . $row['name'] . '</Name>' . "\n";
 		$response .= '    <Telephone>' . $row['phonenumber'] . '</Telephone>' . "\n";
@@ -68,8 +70,8 @@ if ($vendor == 'yealink') {
 
 	foreach ($result as $index => $value) {
 		$response .= '<item context="active" type="none" index="'. $index .'">' . "\n";
-		$response .= '<name>' . $value['name'] . '</name>' . "\n";
-		$response .= '<number>' . $value['phonenumber'] . '</number>' . "\n";
+		$response .= '<name>' . escape($value['name']) . '</name>' . "\n";
+		$response .= '<number>' . escape($value['phonenumber']) . '</number>' . "\n";
 		$response .= '</item>' . "\n";
 	}
 
@@ -81,6 +83,8 @@ if ($vendor == 'yealink') {
    	$response .= '  <Title>Phonebook</Title>' . "\n";
    	$response .= '  <Prompt>Choose entry</Prompt>' . "\n";
 	foreach($result as $row) {
+		$row = array_map('escape', $row);
+
 		$response .= '    <DirectoryEntry>' . "\n";
 		$response .= '     <Name>' . $row['name'] . '</Name>' . "\n";
 		$response .= '     <Telephone>' . $row['phonenumber'] . '</Telephone>' . "\n";
@@ -91,6 +95,8 @@ if ($vendor == 'yealink') {
 
     $response .= '<paddrbook>' . "\n";
     foreach($result as $row) {
+		$row = array_map('escape', $row);
+		
         $response .= ' <entry>' . "\n";
         $response .= '  <name>' . $row['name'] . '<name>' . "\n";
         $response .= '  <workPhone>' . $row['phonenumber'] . '<workPhone>' . "\n";

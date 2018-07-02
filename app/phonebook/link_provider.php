@@ -58,6 +58,9 @@ if ($is_auth) {
 }
 
 foreach ($groupArray as $group) {
+
+    $group = array_map('escape', $group);
+
     $link = "https://".$domain_name."/app/phonebook/directory.php?gid=".$group['group_uuid'];
     if ($is_auth) {
         $link .= "&amp;key=&lt;api_key&gt;";

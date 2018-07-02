@@ -42,7 +42,7 @@ else {
 
 //set the variable
 	if (count($_GET) > 0) {
-		$group_id = $_GET["id"];
+		$group_id = check_str(escape($_GET["id"]));
 	}
 
 //delete the extension

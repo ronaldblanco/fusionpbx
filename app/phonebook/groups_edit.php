@@ -77,7 +77,7 @@
     		require_once "resources/persist_form_var.php";
     		echo "<div align='center'>\n";
     		echo "<table><tr><td>\n";
-    		echo $msg."<br />";
+    		echo escape($msg) . "<br />";
     		echo "</td></tr></table>\n";
     		persistformvar($_POST);
     		echo "</div>\n";
@@ -124,8 +124,8 @@
 			
 			if (isset($_REQUEST['is_updated']) || isset($_REQUEST['is_added'])) {
 				//redirect the browser
-				$_SESSION["message"] = isset($_REQUEST['is_updated']) ? $text['label-update-complete'] : $text['label-add-complete'];
-				header("Location:  groups.php");
+				$_SESSION["message"] = escape(isset($_REQUEST['is_updated']) ? $text['label-update-complete'] : $text['label-add-complete']);
+				header("Location: groups.php");
 				return;
 			}
 
@@ -153,10 +153,10 @@
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$document['title'] = $text['title-phonebook_groups-edit'];
+		$document['title'] = escape($text['title-phonebook_groups-edit']);
 	}
 	if ($action == "add") {
-		$document['title'] = $text['title-phonebook_groups-add'];
+		$document['title'] = escape($text['title-phonebook_groups-add']);
 	}
 
 	/*
@@ -199,10 +199,10 @@
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>";
 	if ($action == "update") {
-		echo $text['header-phonebook_groups-edit'];
+		echo escape($text['header-phonebook_groups-edit']);
 	}
 	if ($action == "add") {
-		echo $text['header-phonebook_groups-add'];
+		echo escape($text['header-phonebook_groups-add']);
 	}
 
 	echo "</b></td>\n";
@@ -215,24 +215,24 @@
     // Group Name
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-phonebook_group_name']."\n";
+	echo "	" . escape($text['label-phonebook_group_name']) . "\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='group_name' maxlength='255' value=\"$group_name\">\n";
+	echo "	<input class='formfld' type='text' name='group_name' maxlength='255' value=\"" . escape($group_name) . "\">\n";
 	echo "<br />\n";
-	echo $text['description-phonebook_group_name']."\n";
+	echo escape($text['description-phonebook_group_name']) . "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
     // Group Description
     echo "<tr>\n";
     echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-phonebook_group_desc']."\n";
+    echo "  " . escape($text['label-phonebook_group_desc']) . "\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='group_desc' maxlength='255' value=\"$group_desc\">\n";
+    echo "  <input class='formfld' type='text' name='group_desc' maxlength='255' value=\"" . escape($group_desc) . "\">\n";
     echo "<br />\n";
-    echo $text['description-phonebook_group_desc']."\n";
+    echo escape($text['description-phonebook_group_desc']) . "\n";
     echo "</td>\n";
     echo "</tr>\n";
 
@@ -242,7 +242,7 @@
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
 		echo "		<input type='hidden' name='is_updated' value='yes'>\n";
-		echo "		<input type='hidden' name='id' value='$group_id'>\n";
+		echo "		<input type='hidden' name='id' value='" . escape($group_id) . "'>\n";
 	}
 	elseif ($action == "add") {
 		echo "		<input type='hidden' name='is_added' value='yes'>\n";

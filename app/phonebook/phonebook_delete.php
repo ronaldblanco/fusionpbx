@@ -42,7 +42,7 @@ else {
 
 //set the variable
 	if (count($_GET) > 0) {
-		$phonebook_uuid = $_GET["id"];
+		$phonebook_uuid = check_str(escape($_GET["id"]));
 	}
 
 //delete the extension

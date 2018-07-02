@@ -69,7 +69,7 @@ require_once "resources/require.php";
 
 //prepare to page the results
 	$sql = "SELECT count(*) AS num_rows FROM v_phonebook_groups ";
-	$sql .= "WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= "WHERE domain_uuid = '".$domain_uuid."' ";
 	if (strlen($order_by)> 0) { 
 		$sql .= "order by $order_by $order ";
 	}
@@ -119,7 +119,7 @@ require_once "resources/require.php";
     echo th_order_by('group_desc', $text['label-description'], $order_by, $order);
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('phonebook_group_add')) {
-		echo "<a href='groups_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
+		echo "<a href='groups_edit.php' alt='" . $text['button-add'] . "'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -127,10 +127,12 @@ require_once "resources/require.php";
 	if ($result_count > 0) {
 		foreach($result as $row) {
 
+			$row = array_map("escape", $row);
+
 			$tr_link = (permission_exists('phonebook_group_edit')) ? "href='groups_edit.php?id=".$row['group_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
-			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['group_name']."</td>\n";
-			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['group_desc']."</td>\n";
+			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>" . $row['group_name'] . "</td>\n";
+			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>" . $row['group_desc'] . "</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('phonebook_group_edit')) {
 				echo "<a href='groups_edit.php?id=".$row['group_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
@@ -140,7 +142,7 @@ require_once "resources/require.php";
 			};
 			echo "  </td>";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results

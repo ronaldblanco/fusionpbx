@@ -92,15 +92,15 @@ require_once "resources/require.php";
 	echo "</table>\n";
 
 //get variables used to control the order
-	$order_by = $_GET["order_by"];
-	$order = $_GET["order"];
+	$order_by = escape(check_str($_GET["order_by"]));
+	$order = escape(check_str($_GET["order"]));
 
 //set domain variable
 	$domain_name = $_SESSION['domain_name'];
 
 //prepare to page the results
 	$sql = "SELECT count(*) AS num_rows FROM v_phonebook ";
-	$sql .= "WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= "WHERE domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { 
 		$sql .= "order by $order_by $order ";
 	}
@@ -108,18 +108,17 @@ require_once "resources/require.php";
 	if ($prep_statement) {
 	$prep_statement->execute();
 		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+
+		$num_rows = '0';
 		if ($row['num_rows'] > 0) {
 			$num_rows = $row['num_rows'];
-		}
-		else {
-			$num_rows = '0';
 		}
 	}
 
 //prepare to page the results
 	$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50;
 	$param = "";
-	$page = $_GET['page'];
+	$page = escape(check_str($_GET['page']));
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
 	list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
 	$offset = $rows_per_page * $page;
@@ -139,7 +138,7 @@ require_once "resources/require.php";
 	if (strlen($order_by) > 0) { 
 		$sql .= "ORDER BY v_phonebook.$order_by $order "; 
 	}else{
-		$sql .= "ORDER BY v_phonebook.name ASC, v_phonebook.phonenumber ASC ";
+		$sql .= "ORDER BY v_phonebook.name ASC, v_phonebook.phonenumber ASC";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -170,6 +169,8 @@ require_once "resources/require.php";
 	if ($result_count > 0) {
 		foreach($result as $row) {
 
+			$row = array_map("escape", $row);
+
 			$tr_link = (permission_exists('phonebook_edit')) ? "href='phonebook_edit.php?id=".$row['phonebook_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
 			echo "  <td valign='top' class='".$row_style[$c]."' style='text-align: left;'>".$row['name']."</td>\n";
@@ -192,7 +193,7 @@ require_once "resources/require.php";
 			};
 			echo "  </td>";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
