@@ -23,13 +23,17 @@ if ($is_auth) {
 	}
 }
 
-$sql = "SELECT DISTINCT v_phonebook.phonebook_uuid,";
-$sql .= " v_phonebook.name, v_phonebook.phonenumber, v_phonebook.phonebook_desc FROM v_phonebook ";
-$sql .= " INNER JOIN v_phonebook_to_groups ON";
-$sql .= " v_phonebook.phonebook_uuid = v_phonebook_to_groups.phonebook_uuid";
-$sql .= " WHERE v_phonebook.domain_uuid = '$domain_uuid'";
 if ($groupid) {
-	$sql .= " AND v_phonebook_to_groups.group_uuid = '$groupid'";
+    $sql = "SELECT DISTINCT v_phonebook.phonebook_uuid,";
+    $sql .= " v_phonebook.name, v_phonebook.phonenumber, v_phonebook.phonebook_desc FROM v_phonebook ";
+    $sql .= " INNER JOIN v_phonebook_to_groups ON";
+    $sql .= " v_phonebook.phonebook_uuid = v_phonebook_to_groups.phonebook_uuid";
+    $sql .= " WHERE v_phonebook.domain_uuid = '$domain_uuid'";
+    $sql .= " AND v_phonebook_to_groups.group_uuid = '$groupid'";
+} else {
+    $sql = "SELECT name, phonenumber, phonebook_desc";
+    $sql .= " FROM v_phonebook";
+    $sql .= " WHERE domain_uuid = '$domain_uuid'";
 }
 
 $prep_statement = $db->prepare(check_sql($sql));
