@@ -351,8 +351,7 @@
 		$checked = in_array($phonebook_group['group_uuid'], $phonebook_groups) ? "checked" : "";
 		echo "<tr id='permission_".$phonebook_group['group_uuid']."'>\n";
 		echo "	<td valign='top' style='text-align: right;' nowrap='nowrap' class='".$row_style[$c]."' onclick=\"(document.getElementById('group_".$phonebook_group['group_uuid']."').checked) ? document.getElementById('group_".$phonebook_group['group_uuid']."').checked = false : document.getElementById('group_".$phonebook_group['group_uuid']."').checked = true;\">".$phonebook_group['group_name']."</td>\n";
-		echo "	<td valign='top' class='row_stylebg' onclick=\"(document.getElementById('group_".$phonebook_group['group_uuid']."').checked) ? document.getElementById('group_".$phonebook_group['group_uuid']."').checked = false : document.getElementById('group_".$phonebook_group['group_uuid']."').checked = true;\">".$phonebook_group['group_desc']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' style='text-align: center; padding: 3px 0px 0px 0px;'><input type='checkbox' name='phonebook_groups[]' id='group_".$phonebook_group['group_uuid']."' ".$checked." value='".$phonebook_group['group_uuid']."'></td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' style='text-align: left; vertical-align:middle;'><input type='checkbox' name='phonebook_groups[]' id='group_".$phonebook_group['group_uuid']."' ".$checked." value='".$phonebook_group['group_uuid']."'>   ".$phonebook_group['group_desc']."&nbsp;</td>\n";
 		echo "</tr>\n";
 		$c = ($c == 0) ? 1 : 0;
 	}
