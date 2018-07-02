@@ -249,7 +249,7 @@
 		echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$key."&nbsp;</td>\n";
 		echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 		echo "</tr>\n";
-		if ($c==0) { $c=1; } else { $c=0; }
+		$c = 1 - $c;  // Switch $c = 0/1/0...
 	}
 	echo "</table>";
 	echo "<br /><br />\n";
@@ -310,7 +310,7 @@
 			}
 			echo "</tr>\n";
 		}
-		if ($c==0) { $c=1; } else { $c=0; }
+		$c = 1 - $c;  // Switch $c = 0/1/0...
 	}
 	echo "</table>";
 	echo "<br /><br />\n";
@@ -340,7 +340,7 @@
 		echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$app_name."&nbsp;</td>\n";
 		echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 		echo "</tr>\n";
-		if ($c==0) { $c=1; } else { $c=0; }
+		$c = 1 - $c;  // Switch $c = 0/1/0...
 	}
 	echo "</table>";
 	echo "<br /><br />\n";
@@ -374,7 +374,7 @@
 				echo "				<td valign='top' align='left' class='".$row_style[$c]."'>".$key."&nbsp;</td>\n";
 				echo "				<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
@@ -400,7 +400,7 @@
 				echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".$key."&nbsp;</td>\n";
 				echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
@@ -427,7 +427,7 @@
 				echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".$app_name."&nbsp;</td>\n";
 				echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
@@ -477,7 +477,7 @@
 					echo "			</td>\n";
 				}
 				echo "</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
@@ -501,7 +501,7 @@
 				echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".$key."&nbsp;</td>\n";
 				echo "			<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 
 			echo "		<tr>\n";

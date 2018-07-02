@@ -144,7 +144,7 @@
 			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='call_center_queue_delete.php?id=".$row[call_center_queue_uuid]."' }\" value='x'>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results

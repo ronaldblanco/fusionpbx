@@ -195,7 +195,7 @@ for ($y=0; $y<4; $y++) {
                         echo "<td valign='top' class='".$row_style[$c]."'>".$rate."</td>";
                         echo "<td valign='top' class='".$row_style[$c]."'>$".round($tot_cost,2)."</td>";
 
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 
 
                 }

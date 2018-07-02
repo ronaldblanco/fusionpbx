@@ -579,7 +579,7 @@
 										echo "			<td valign='top' class='".$row_style[$c]."'>".$tmp_user['password']."</td>\n";
 										echo "		</tr>\n";
 									}
-									if ($c==0) { $c=1; } else { $c=0; }
+									$c = 1 - $c;  // Switch $c = 0/1/0...
 									echo "	</table>";
 									echo "</div>\n";
 									require_once "resources/footer.php";

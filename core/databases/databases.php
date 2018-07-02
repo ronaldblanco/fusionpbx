@@ -130,7 +130,7 @@ else {
 			echo 		"<a href='database_delete.php?id=".$row['database_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results

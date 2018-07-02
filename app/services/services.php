@@ -262,7 +262,7 @@ if (is_array($services)) {
 		}
 		echo "	</td>\n";
 		echo "</tr>\n";
-		if ($c==0) { $c=1; } else { $c=0; }
+		$c = 1 - $c;  // Switch $c = 0/1/0...
 	} //end foreach
 	unset($sql, $services);
 } //end if results

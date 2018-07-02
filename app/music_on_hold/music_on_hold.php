@@ -604,7 +604,7 @@
 					$previous_name = $music_on_hold_name;
 
 				//toggle the light highlighting
-					if ($c==0) { $c=1; } else { $c=0; }
+					$c = 1 - $c;  // Switch $c = 0/1/0...
 			} //end foreach
 			unset($sql, $result, $row_count);
 

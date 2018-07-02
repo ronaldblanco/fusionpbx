@@ -126,7 +126,7 @@
                 echo "	</td>\n";
                 echo "  <td valign='top' class='".$row_style[$c]."'></td>";
                 echo "</tr>";
-                if ($c==0) { $c=1; } else { $c=0; }
+                $c = 1 - $c;  // Switch $c = 0/1/0...
         }
 
         echo "  <tr>\n";

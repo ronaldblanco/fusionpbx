@@ -267,7 +267,7 @@
 			echo 		"<a href='contact_delete.php?id=".escape($row['contact_uuid'])."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		} //end foreach
 		unset($sql, $contacts);
 	} //end if results

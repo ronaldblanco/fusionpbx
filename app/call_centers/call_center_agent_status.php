@@ -292,12 +292,12 @@
 		if (count($_SESSION['domains']) > 1) {
 			if ($row['domain_name'] == $_SESSION['domain_name']) {
 				echo $html;
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 		}
 		else {
 			echo $html;
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		}
 		$x++;
 	} //end foreach

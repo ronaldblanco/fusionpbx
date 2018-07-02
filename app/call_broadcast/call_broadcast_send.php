@@ -354,7 +354,7 @@ require_once "resources/header.php";
 					cmd_async($cmd);
 				}
 
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results

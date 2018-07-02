@@ -425,7 +425,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					echo 		"<a href='javascript:void(0);' onclick=\"call_block_recent('".escape($row['uuid'])."','".urlencode(escape($row['caller_id_name']))."');\" alt='".$text['button-add']."'>".$v_link_label_add."</a>";
 					echo "  </td>";
 					echo "</tr>\n";
-					if ($c==0) { $c=1; } else { $c=0; }
+					$c = 1 - $c;  // Switch $c = 0/1/0...
 				}
 			} //end foreach
 			unset($sql, $result, $row_count);

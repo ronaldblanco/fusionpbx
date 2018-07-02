@@ -185,7 +185,7 @@ else {
 				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_status &nbsp;</td>\n";
 				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_duration_formatted &nbsp;</td>\n";
 				echo "</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 			echo "</table>\n";
 
@@ -233,7 +233,7 @@ else {
 				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_total_inbound_calls &nbsp;</td>\n";
 				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_duration_formatted &nbsp;</td>\n";
 				echo "</tr>\n";
-				if ($c==0) { $c=1; } else { $c=0; }
+				$c = 1 - $c;  // Switch $c = 0/1/0...
 			}
 			echo "</table>\n";
 		}

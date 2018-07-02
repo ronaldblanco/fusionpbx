@@ -177,7 +177,7 @@ if ($_GET['a'] == "download") {
 			echo "	<td class='".$row_style[$c]."'>".$row->state."</td>\n";
 			echo "	<td class='".$row_style[$c]."'>&nbsp;</td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		}
 		foreach ($xml_gateways->gateway as $row) {
 			$gateway_name = '';
@@ -205,7 +205,7 @@ if ($_GET['a'] == "download") {
 			echo "	<td class='".$row_style[$c]."'>".$row->state."</td>\n";
 			echo "	<td class='".$row_style[$c]."'><a onclick=\"document.location.href='cmd.php?cmd=api+sofia+profile+".$row->profile."+killgw+".$row->name."';\" />".$text['button-stop']."</a></td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		}
 		foreach ($xml->alias as $row) {
 			//print_r($row);
@@ -216,7 +216,7 @@ if ($_GET['a'] == "download") {
 			echo "	<td class='".$row_style[$c]."'>".$row->state."</td>\n";
 			echo "	<td class='".$row_style[$c]."'>&nbsp;</td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;  // Switch $c = 0/1/0...
 		}
 		echo "</table>\n";
 		echo "</div>\n";
