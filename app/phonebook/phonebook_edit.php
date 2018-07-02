@@ -115,7 +115,6 @@
     			$sql .= "'$phonebook_desc'";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
-				$sql_show = $sql;
 				unset($sql);
 
 				foreach ($phonebook_groups as $phonebook_group) {
@@ -147,7 +146,6 @@
 				$sql .= "AND phonebook_uuid = '$phonebook_uuid'";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$sql_show = $sql;
 				unset($prep_statement, $sql);
 				
 				// Add group relations
@@ -157,7 +155,6 @@
 				$sql .= " phonebook_uuid = '$phonebook_uuid'";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$sql_show = $sql;
 				unset($prep_statement, $sql);
 
 				foreach ($phonebook_groups as $phonebook_group) {
@@ -172,7 +169,6 @@
 						$sql .= "'".$phonebook_group."')";
 						$prep_statement = $db->prepare(check_sql($sql));
 						$prep_statement->execute();
-						$sql_show = $sql;
 						unset($prep_statement, $sql);
 					}
 				} // End adding phonebook to group relations
