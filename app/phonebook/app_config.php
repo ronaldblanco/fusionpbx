@@ -59,6 +59,15 @@
                 $apps[$x]['permissions'][$y]['groups'][] = "admin";
                 $y += 1;
 
+                $y = 0;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "e44b276a-1b64-4d10-9a70-ff3ead977147e";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "phonebook";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "auth";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set if you don't want to use API-key for authorization. Less secure";
+
 	        //schema details
                 $y = 0; //table array index
                 $z = 0; //field array index
