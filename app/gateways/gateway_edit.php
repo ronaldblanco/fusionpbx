@@ -635,15 +635,10 @@
 	echo "		<option value=''></option>\n";
 	if ($caller_id_in_from == "true") {
 		echo "		<option value='true' selected='selected'>".$text['label-true']."</option>\n";
-	}
-	else {
-		echo "		<option value='true'>".$text['label-true']."</option>\n";
-	}
-	if ($caller_id_in_from == "false") {
+	} elseif ($caller_id_in_from == "false") {
 		echo "		<option value='false' selected='selected'>".$text['label-false']."</option>\n";
-	}
-	else {
-		echo "		<option value='false'>".$text['label-false']."</option>\n";
+	} else {
+		echo "		<option value='true'>".$text['label-true']."</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
