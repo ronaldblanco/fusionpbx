@@ -158,7 +158,7 @@ require_once "resources/paging.php";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
+			$c = 1 - $c;
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
