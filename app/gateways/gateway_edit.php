@@ -633,12 +633,15 @@
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<select class='formfld' name='caller_id_in_from'>\n";
 	echo "		<option value=''></option>\n";
-	if ($caller_id_in_from == "true") {
+	if ($caller_id_in_from == "true" || strlen($caller_id_in_from) == 0) {
 		echo "		<option value='true' selected='selected'>".$text['label-true']."</option>\n";
-	} elseif ($caller_id_in_from == "false") {
-		echo "		<option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	} else {
 		echo "		<option value='true'>".$text['label-true']."</option>\n";
+	}
+	if ($caller_id_in_from == "false") {
+		echo "		<option value='false' selected='selected'>".$text['label-false']."</option>\n";
+	} else {
+		echo "		<option value='false'>".$text['label-false']."</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
