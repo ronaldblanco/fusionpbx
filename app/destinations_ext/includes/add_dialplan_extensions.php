@@ -224,8 +224,8 @@ $p->add("dialplan_detail_edit", 'temp');
 
 //save the dialplan
 $database = new database;
-$database->app_name = 'destinations';
-$database->app_uuid = '5ec89622-b19c-3559-64f0-afde802ab139';
+$database->app_name = 'destinations_ext';
+$database->app_uuid = 'cd838240-a1a6-4808-81c6-74ade7cfe100';
 if (isset($dialplan["dialplan_uuid"])) {
     $database->uuid($dialplan["dialplan_uuid"]);
 }

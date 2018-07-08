@@ -163,7 +163,7 @@
             // Adding invalid handler dialplan part
             if ($add_dialplan_invalid) {
 
-                //require_once "app/destinations_ext/includes/add_dialplan_invalid.php";
+                require_once "app/destinations_ext/includes/add_dialplan_invalid.php";
 
             }
         // End of invalid handler part -----------------
@@ -179,7 +179,7 @@
             //add or update the main dialplan part if the destination number is set
             if ($add_dialplan_main) {
 
-                //require_once "app/destinations_ext/includes/add_dialplan_main.php";
+                require_once "app/destinations_ext/includes/add_dialplan_main.php";
 
             } else {
                 //add or update the dialplan if the destination number is set 
