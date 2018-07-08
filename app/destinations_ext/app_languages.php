@@ -45,4 +45,9 @@ $text['description-destination_ext_enabled']['en-us'] = "Enable or disable curre
 
 $text['description-destination_ext_description']['en-us'] = "Destination description";
 
+
+$text['message-maximum_destinations']['en-us'] = "Maximum Destinations:";
+
+$text['message-duplicate']['en-us'] = "Duplicate detected";
+
 ?>
