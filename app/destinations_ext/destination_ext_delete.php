@@ -60,22 +60,44 @@ if (strlen($id) > 0) {
 		$destination_ext_dialplan_main_uuid = isset($result['destination_ext_dialplan_main_uuid'])?$result['destination_ext_dialplan_main_uuid']:"";
 		$destination_ext_dialplan_extensions_uuid = isset($result['destination_ext_dialplan_extensions_uuid'])?$result['destination_ext_dialplan_extensions_uuid']:"";
 
+
+
+		// Get v_invalid_ext uuid
+		$invalid_name_id = explode("-", $destination_ext_uuid)[0];
+		// Get dialplan details for invalid ext
+		$sql = "SELECT dialplan_uuid FROM v_dialplans WHERE";
+		$sql .= " dialplan_name = '_invalid_ext_handler_$invalid_name_id'";
+		$sql .= " AND domain_uuid = '$domain_uuid'";
+
+		$prep_statement = $db->prepare(check_sql($sql));
+        $prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		
+		$destination_ext_dialplan_invalid_uuid = isset($result[0]['dialplan_uuid']) ? $result[0]['dialplan_uuid'] : False;
+
+		// Delete dialplan_details for main, extensions and invalid
+
 		$db->beginTransaction();
 
-		// Delete dialplan_details for main and extensions
 
 		$sql = "DELETE FROM v_dialplan_details WHERE";
 		$sql .= " dialplan_uuid = '".$destination_ext_dialplan_main_uuid."'";
 		$sql .= " OR dialplan_uuid = '".$destination_ext_dialplan_extensions_uuid."'";
+		if ($destination_ext_dialplan_invalid_uuid) {
+			$sql .= " OR dialplan_uuid = '".$destination_ext_dialplan_invalid_uuid."'";
+		}
 
 		$db->exec(check_sql($sql));
 		unset($sql);
 
-		// Delete dialplans for main and ext
+		// Delete dialplans for main, extensions and invalid
 
 		$sql = "DELETE FROM v_dialplans WHERE";
 		$sql .= " dialplan_uuid = '".$destination_ext_dialplan_main_uuid."'";
 		$sql .= " OR dialplan_uuid = '".$destination_ext_dialplan_extensions_uuid."'";
+		if ($destination_ext_dialplan_invalid_uuid) {
+			$sql .= " OR dialplan_uuid = '".$destination_ext_dialplan_invalid_uuid."'";
+		}
 
 		$db->exec(check_sql($sql));
 		unset($sql);

@@ -5,18 +5,26 @@
  * - lfile sets path and name of log file
  * - lwrite writes message to the log file (and implicitly opens log file)
  * - lclose closes log file
+ * - console_log - logs to browser console
  * - first call of lwrite method will open log file implicitly
  * - message is written with the following format: [d/M/Y:H:i:s] (script name) message
  */
 class Logging
 {
 	// declare log file and file pointer as private properties
-	private $log_file, $fp;
+	private $log_file, $fp, $is_log_enabled;
 
 	// set log file (path and name)
 
+	function __construct($is_log_enabled = True) {
+		$this->is_log_enabled = $is_log_enabled;
+	}
+
 	public function lfile($path)
 	{
+		if (!$this->is_log_enabled) {
+			return;
+		}
 		$this->log_file = $path;
 	}
 
@@ -24,6 +32,10 @@ class Logging
 
 	public function lwrite($message)
 	{
+
+		if (!$this->is_log_enabled) {
+			return;
+		}
 		// if file pointer doesn't exist, then open log file
 		if (!$this->fp) {
 			$this->lopen();
@@ -59,10 +71,17 @@ class Logging
 
 	public function lclose()
 	{
+		if (!$this->is_log_enabled) {
+			return;
+		}
 		fclose($this->fp);
 	}
 
 	public function log($level, $msg){
+
+		if (!$this->is_log_enabled) {
+			return;
+		}
 
 		$log_file = $_SESSION['logging']['log']['logfile'];
 		$log_level = $_SESSION['logging']['log']['loglevel'];
@@ -82,6 +101,15 @@ class Logging
 		//close handle
 		$this->lclose();
 	}
+
+	public function console_log($data) {
+		if (!$this->is_log_enabled) {
+			return;
+		}
+		echo '<script>';
+		echo 'console.log('. json_encode( $data ) .')';
+		echo '</script>';
+	} 
 }
 
 //$log = new Logging();
