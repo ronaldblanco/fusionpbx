@@ -441,6 +441,8 @@ $text['label-phonebook_groups']['en-us'] = "Groups";
 
 $text['label-phonebook_all_groups']['en-us'] = "All phonebook";
 
+$text['label-phonebook_directory']['en-us'] = "Directory";
+
 $text['message-unsupported_file_type']['en-us'] = "Unsupported file type";
 
 $text['description-number']['en-us'] = "Enter the exact number.";

@@ -54,7 +54,18 @@ if ($is_auth) {
 		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
 		echo "});";
 	echo "</script>";
-	$tNum += 1;
+    $tNum += 1;
+
+    $link = "https://".$domain_name."/app/phonebook/directory.php?key=&lt;api_key&gt;&amp;gid=directory";
+    echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$text['label-phonebook_directory']."</span></div>";
+	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."'> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."' />";
+	echo "<script>";
+		echo "document.getElementById('copyButton".$tNum."').addEventListener('click', function() {";
+		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
+		echo "});";
+	echo "</script>";
+    $tNum += 1;
+    
 }
 
 foreach ($groupArray as $group) {

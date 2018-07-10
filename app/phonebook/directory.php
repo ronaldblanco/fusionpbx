@@ -3,7 +3,7 @@ require_once "root.php";
 require_once "resources/require.php";
 
 $is_auth = isset($_SESSION['phonebook']['auth']['text']) ? filter_var($_SESSION['phonebook']['auth']['text'], FILTER_VALIDATE_BOOLEAN) : 'true';
-$groupid = isset($_REQUEST["gid"]) ? escape(check_str($_REQUEST["gid"])) : False;
+$groupid = isset($_REQUEST["gid"]) ? strtolower(escape(check_str($_REQUEST["gid"]))) : False;
 $vendor  = isset($_REQUEST["vendor"]) ? strtolower(escape(check_str($_REQUEST["vendor"]))) : 'yealink';
 
 if ($is_auth) {
@@ -16,14 +16,20 @@ if ($is_auth) {
 	}
 	
 } else {
-	if (!$groupid) {
-		// Can't get all of phonebook without specifying auth.
+	if (!$groupid or $groupid == 'directory') {
+		// Can't get all of phonebook or directory without specifying auth.
 		echo "Access denied";
 		exit;
 	}
 }
 
-if ($groupid) {
+if ($groupid == 'directory') {
+	$sql = "SELECT directory_full_name AS name,";
+	$sql .= " extension AS phonenumber, description AS phonebook_desc";
+	$sql .= " FROM v_extensions";
+	$sql .= " WHERE directory_visible = 'true'";
+	$sql .= " AND domain_uuid = '$domain_uuid'";
+} elseif ($groupid) {
     $sql = "SELECT DISTINCT v_phonebook.phonebook_uuid,";
     $sql .= " v_phonebook.name, v_phonebook.phonenumber, v_phonebook.phonebook_desc FROM v_phonebook ";
     $sql .= " INNER JOIN v_phonebook_to_groups ON";
