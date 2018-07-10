@@ -24,7 +24,8 @@ if ($is_auth) {
 }
 
 if ($groupid == 'directory') {
-	$sql = "SELECT directory_full_name AS name,";
+	// Select Directory First name/Last name, if empty - use extension column
+	$sql = "SELECT COALESCE(NULLIF(TRIM(CONCAT(directory_first_name, ' ', directory_last_name)), ''), extension)  AS name,";
 	$sql .= " extension AS phonenumber, description AS phonebook_desc";
 	$sql .= " FROM v_extensions";
 	$sql .= " WHERE directory_visible = 'true'";
