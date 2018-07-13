@@ -26,4 +26,16 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$y++;
+
+		//default settings
+		$y = 0;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = '44fe8455-6c5c-4772-a1b7-e3827f32b520';
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = 'import_extensions';
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = 'rows_to_show';
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = 'numeric';
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = '3';
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = 'true';
+		$apps[$x]['default_settings'][$y]['default_setting_order'] = '0';
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = 'Set the maximum rows to show';
+		$y++;
 ?>
