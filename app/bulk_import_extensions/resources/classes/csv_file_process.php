@@ -76,6 +76,10 @@ if (!class_exists('csv_file_process')) {
             $this->csv_file->rewind();
             return $result;
         }
+
+        public function delete() {
+            // Delete CSV file here
+        }
     }
 }
 ?>

@@ -22,6 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Igor Olhovskiy <igorolhovskiy@gmail.com>
 */
 require_once "root.php";
 require_once "resources/require.php";
@@ -36,8 +37,7 @@ else {
 }
 
 //add multi-lingual support
-$language = new text;
-$text = $language->get();
+$text = (new text)->get();
 
 //$csv_file_path = '/var/www/fusionpbx/app/bulk_import_extensions/';
 $csv_file_path = '';
@@ -49,7 +49,11 @@ require_once "resources/paging.php";
 
 // Get variables here
 
-$rows_to_show =isset($_SESSION['import_extensions']['rows_to_show']['numeric']) ? (int) $_SESSION['import_extensions']['rows_to_show']['numeric'] : 3;
+$rows_to_show =isset($_SESSION['import_extensions']['rows_to_show']['numeric']) ? (int) $_SESSION['import_extensions']['rows_to_show']['numeric'] : 4;
+$is_import = isset($_REQUEST['is_import']) ? ($_REQUEST['is_import'] == 'true') : False;
+
+// Show the content
+
 // Get table row width. 90 - cause 10% is always to show selector.
 $table_row_width = (int) 90 / $rows_to_show;
 
@@ -74,7 +78,16 @@ $row_style["1"] = "row_style1";
 // Check if we have CSV file on place
 $import_file = new csv_file_process($csv_file_path."import.csv");
 
-if ($import_file->is_valid()) {
+
+if ($import_file->is_valid() && $is_import) {
+	// Import data to database
+	echo "<pre>";
+	var_dump($_POST);
+	echo "</pre>";
+
+	// Unlink the file!
+	$import_file->delete();
+} elseif ($import_file->is_valid()) {
 
 	// Here we got first 4 lines of file. As usual, CSV holds first line as a fields desccription.
 	// And we will use it to count number of fields in file.
@@ -95,10 +108,9 @@ if ($import_file->is_valid()) {
 
 	$selector = new bulk_import_extensions_options_selector();
 
-	//echo "<select name='test' id='test' class='formfld'>";
-	//echo $selector->draw_selector();
-	//echo "</select>";
 
+	// Show content in a case of valid file
+	echo "<form method='post' name='frm' action=''>\n";
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "<tr class='" . $row_style[$c] . "'>\n";
 	echo "<th width='10%' align='center' nowrap='nowrap'>" . $text['description-selector'] . "</th>\n";
@@ -122,35 +134,17 @@ if ($import_file->is_valid()) {
 		$c = 1 - $c;
 	}
 	echo "</table>\n";
+	echo "<input type='hidden' name='is_import' value='true'>\n";
+	echo "<br/>";
+	echo "<input type='submit' name='submit' style='float: right;' class='btn' value='".$text['button-import']."'>\n";
+	echo "<br/><br/>";
+	echo "</form>";
+	
+ } // End show content for CSV file is present
+
+// Paging controls?
 /*
-if ($result_count > 0) {
-	foreach($result as $row) {
-		$tr_link = (permission_exists('e911_edit')) ? "href='e911_edit.php?id=".$row['e911_uuid']."'" : null;
-		echo "<tr ".$tr_link.">\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_did']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_callername']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_city']."&nbsp;</td>\n";
-		if ($row['e911_validated'] == '') {
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$text['label-false']."&nbsp;</td>\n";
-		} else {
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_validated']."&nbsp;</td>\n";
-		}
-		//echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['call_flow_description']."&nbsp;</td>\n";
-		echo "	<td class='list_control_icons'>";
-		if (permission_exists('e911_edit')) {
-			echo "<a href='e911_edit.php?id=".$row['e911_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
-		}
-		if (permission_exists('e911_delete')) {
-			echo "<a href='e911_delete.php?id=".$row['e911_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
-		}
-		echo "	</td>\n";
-		echo "</tr>\n";
-		if ($c==0) { $c=1; } else { $c=0; }
-	} //end foreach
-	unset($sql, $result, $row_count);
-} //end if results
-*/
-}
+echo "<table>\n";
 echo "<tr>\n";
 echo "<td colspan='10' align='left'>\n";
 echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -163,9 +157,8 @@ echo "	</tr>\n";
 echo "	</table>\n";
 echo "</td>\n";
 echo "</tr>\n";
-
 echo "</table>";
-echo "<br /><br />";
+*/
 
 //include the footer
 require_once "resources/footer.php";

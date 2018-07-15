@@ -82,4 +82,6 @@ $text['label-voicemail_description']['en-us'] = "Description";
 $text['description-selector']['en-us'] = "Select field to use";
 
 $text['description-file_column']['en-us'] = "File line #";
+
+$text['button-import']['en-us'] = "Import extensions and devices";
 ?>

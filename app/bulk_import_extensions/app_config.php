@@ -33,7 +33,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = 'import_extensions';
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = 'rows_to_show';
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = 'numeric';
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = '3';
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = '4';
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = 'true';
 		$apps[$x]['default_settings'][$y]['default_setting_order'] = '0';
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = 'Set the maximum rows to show';
