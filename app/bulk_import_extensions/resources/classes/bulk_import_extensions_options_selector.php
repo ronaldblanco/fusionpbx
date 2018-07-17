@@ -11,8 +11,11 @@ if (!class_exists('bulk_import_extensions_options_selector')) {
             $this->optgroups = array(
                 $this->text['label-extensions'] => array(
                     'extension' => $this->text['label-extension'],
+                    'password' => $this->text['label-password'],
                     'number_alias' => $this->text['label-number_alias'],
+                    'extension_user' => $this->text['label-extension_user'],
                     'accountcode' => $this->text['label-accountcode'],
+                    'call_timeout' => $this->text['label-call_timeout'],
                     'effective_caller_id_name' => $this->text['label-effective_caller_id_name'],
                     'effective_caller_id_number' => $this->text['label-effective_caller_id_number'],
                     'outbound_caller_id_name' => $this->text['label-outbound_caller_id_name'],

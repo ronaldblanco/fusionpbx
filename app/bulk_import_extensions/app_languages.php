@@ -13,9 +13,15 @@ $text['label-extensions']['en-us'] = "Extensions";
 
 $text['label-extension']['en-us'] = "Extension";
 
+$text['label-password']['en-us'] = "Password";
+
 $text['label-number_alias']['en-us'] = "Number Alias";
 
+$text['label-extension_user']['en-us'] = "User";
+
 $text['label-accountcode']['en-us'] = "Account Code";
+
+$text['label-call_timeout']['en-us'] = "Call Timeout";
 
 $text['label-effective_caller_id_name']['en-us'] = "Effective Caller ID Name";
 
@@ -83,5 +89,23 @@ $text['description-selector']['en-us'] = "Select field to use";
 
 $text['description-file_column']['en-us'] = "File line #";
 
-$text['button-import']['en-us'] = "Import extensions and devices";
+
+$text['button-process']['en-us'] = "Process uploaded extensions and devices";
+
+// File upload section
+
+$text['message-unsupported_file_type']['en-us'] = "File format is not supported. Please use .csv";
+
+$text['label-select_a_file']['en-us'] = "Please, select a file to import";
+
+$text['button-reset']['en-us'] = "Reset file";
+
+$text['button-import']['en-us'] = "Import";
+
+$text['message-extensions_not_found']['en-us'] = "Extension (number) field not found";
+
+$text['message-csv_info_missing']['en-us'] = "Cannot process file. CSV fields info is missing";
+
+$text['label-skip_first_line']['en-us'] = "Skip first line of file";
+
 ?>
