@@ -142,6 +142,7 @@ if (!class_exists('csv_file_process')) {
             $result['voicemail_enabled'] = isset($result['voicemail_enabled']) ? $result['voicemail_enabled'] : 'true';
             $result['voicemail_description'] = $result['description'];
             $result['device_label'] = isset($result['device_label']) ? $result['device_label'] : $result['extension'];
+            $result['device_template'] = isset($result['device_template']) ? strtolower($result['device_template']) : '';
             
             // Set various defaults that is not controlled by user
             
