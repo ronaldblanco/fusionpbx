@@ -1,11 +1,11 @@
 <?php
 $text['title-import_extensions']['en-us'] = "Import Extensions";
 
-
 $text['header-import_extensions']['en-us'] = "Import Extensions";
 
-
 $text['description-import_extensions']['en-us'] = "Here you can upload CSV file and bulk add extensions and devices to system";
+
+$text['label-skip_first_line']['en-us'] = "Skip first line of file";
 
 
 // Extension part
@@ -104,8 +104,20 @@ $text['button-import']['en-us'] = "Import";
 
 $text['message-extensions_not_found']['en-us'] = "Extension (number) field not found";
 
+// Messages to process window
+
 $text['message-csv_info_missing']['en-us'] = "Cannot process file. CSV fields info is missing";
 
-$text['label-skip_first_line']['en-us'] = "Skip first line of file";
+$text['message-process_csv_file_start']['en-us'] = "Start processing CSV file...";
+
+$text['message-process_csv_file_skip_first_line']['en-us'] = "Skipping first line...";
+
+$text['message-process_csv_file_end']['en-us'] = "End processing CSV file. Operation completed successfully";
+
+$text['message-process_csv_file_stats']['en-us'] = "Statistics:";
+
+$text['message-process_csv_file_added_lines']['en-us'] = "Processed added/updated lines:";
+
+$text['message-process_csv_file_skipped_lines']['en-us'] = "Skipped lines:";
 
 ?>

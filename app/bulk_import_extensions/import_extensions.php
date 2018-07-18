@@ -143,7 +143,7 @@ if ($action == 'import') {
 
 	$csv_fields_order = array_map('check_str', $csv_fields_order);
 
-	echo "<pre>";
+	
 	$import_file->set_csv_fields_order($csv_fields_order);
 
 	$process_csv_file_options = array(
@@ -157,13 +157,14 @@ if ($action == 'import') {
 		'line_register_expires' => $_SESSION['provision']['line_register_expires']['numeric'],
 	);
 	
-	$import_file->process_csv_file($process_csv_file_options);
 
+	// Show debug messages of processing file
+	echo "<pre>";
+	echo $import_file->process_csv_file($process_csv_file_options);
 	echo "</pre>";
 
-	//TODO Delete the file!
 	unset($import_file);
-	//unlink($csv_file_name); 
+	unlink($csv_file_name); 
 
 } elseif ($action == 'show') {
 

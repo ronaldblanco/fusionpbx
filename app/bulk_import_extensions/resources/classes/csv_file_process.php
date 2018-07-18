@@ -153,6 +153,7 @@ if (!class_exists('csv_file_process')) {
             $result['voicemail_file'] = 'attach';
             $result['voicemail_local_after_email'] = 'true';
             $result['device_enabled'] = 'true';
+            $result['device_vendor'] = explode('/', $result['device_template'])[0];
 
             return $result;
         }
@@ -204,6 +205,7 @@ if (!class_exists('csv_file_process')) {
 
             $prep_statement = $this->db->prepare(check_sql($sql));
             if (!$prep_statement) {
+                // Not that efficient logging for errors, but better than nothing
                 echo $sql . "\n";
                 echo "Prepare error: ". json_encode($this->db->errorInfo()) . "\n" . json_encode($prep_statement->errorInfo()) . "\n";
                 return;
@@ -463,12 +465,13 @@ if (!class_exists('csv_file_process')) {
             if ($this->is_import_devices) {
                 $this->is_add_device_profile = in_array('device_profile',  $csv_fields_order);
             }
-            echo json_encode($csv_fields_order) . "\n";
         }
 
         public function process_csv_file($options) {
 
-            echo "Start processing extensions...\n";
+            // Increase running time to 5 min
+            set_time_limit(5 * 60);
+            $result_message = '';
 
             $text = (new text)->get();
             $this->vm_password_length = $options['vm_password_length'];
@@ -482,39 +485,53 @@ if (!class_exists('csv_file_process')) {
             $skip_first_line = $options['skip_first_line'];
 
             if (!$this->csv_fields_order) {
-                echo $text['message-csv_info_missing'];
-                return;
+                $result_message .= $text['message-csv_info_missing'] . "\n";
+                return $result_message;
             }
 
             // Read file line by line
             $this->csv_file->rewind();
+            $result_message .= $text['message-process_csv_file_start'] . "\n";
             // Skip first line if applied
             if ($skip_first_line) {
-                echo "Skipping first line...\n";
+                $result_message .= $text['message-process_csv_file_skip_first_line'] . "\n";
                 $this->csv_file->current();
                 $this->csv_file->next();
-            } else {
-                echo "Not skipping first line...\n";
             }
+
+            $added_lines_count = 0;
+            $skipped_lines_count = 0;
+            $skipped_lines_array = array();
 
             while (!$this->csv_file->eof()) {
 
-                echo "Processing line...\n";
                 // Read CSV line and sterialize it
                 $csv_line = array_map('check_str', $this->csv_file->fgetcsv());
-                echo "Normalizing line...\n";
                 $csv_line = $this->normalize_line($csv_line);
-                echo json_encode($csv_line) . "\n";
                 
                 if ($csv_line) { // CSV line is correct and extension is present
-                    echo "Adding extension...\n";
                     $this->add_extension($csv_line);
                     $this->add_voicemail($csv_line);
                     $this->add_device($csv_line);
+                    $added_lines_count += 1;
+                } else {
+                    $skipped_lines_count += 1;
+                    $skipped_lines_array[] = $csv_line;
                 }
 
             }
-            echo "End processing extensions...\n";
+            $result_message .= $text['message-process_csv_file_end'] . "\n\n";
+            // Add statistics to result message
+            $result_message .= $text['message-process_csv_file_stats'] . "\n";
+            $result_message .= " " . $text['message-process_csv_file_added_lines'] . " " . $added_lines_count . "\n";
+            $result_message .= " " . $text['message-process_csv_file_skipped_lines'] . " " . $skipped_lines_count . "\n";
+            if ($skipped_lines > 0) {
+                foreach ($skipped_lines_array as $skipped_line) {
+                    $result_message .= "   " . implode(',', $skipped_line) . "\n";
+                }
+            }
+
+            return $result_message;
 
         }
     }
