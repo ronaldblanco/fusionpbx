@@ -229,26 +229,6 @@ if ($action == 'import') {
 	
  } // End show content for CSV file is present
 
-// Paging controls?
-/*
-echo "<table>\n";
-echo "<tr>\n";
-echo "<td colspan='10' align='left'>\n";
-echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
-echo "	<tr>\n";
-echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-echo "		<td class='list_control_icons'>";
-echo "		</td>\n";
-echo "	</tr>\n";
-echo "	</table>\n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>";
-*/
-
-// Show POST for the greater good!
-
 //include the footer
 require_once "resources/footer.php";
 ?>
