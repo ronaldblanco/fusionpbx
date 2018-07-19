@@ -529,7 +529,7 @@ $text['description-phonebook_desc']['en-us'] = "Description for phonebook entry.
 
 $text['description-phonebook_groups']['en-us'] = "Select groups for this phonebook entry.";
 
-$text['description-phonebook_urls']['en-us'] = "You can specify multiple groups with <i>'gid_&lt;number&gt;'</i> format. Also you may specify special keyword <i>'directory'</i> along with gid";
+$text['description-phonebook_urls']['en-us'] = "You can specify multiple groups with <i>'gid_&lt;number&gt;'</i> format. Also you may specify special keyword <i>'directory'</i> along with gid. Plus, in a case of <i>'directory'</i> you can additionally specify <i>'call_group'</i> parameter.";
 
 
 $text['header-phonebook_groups-edit']['en-us'] = "Edit phonebook group";
