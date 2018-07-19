@@ -445,8 +445,8 @@ if (!class_exists('csv_file_process')) {
                 if (!$this->csv_file->valid()) {
                     break;
                 }
-                // $result[] = array_map('escape',$this->csv_file->fgetcsv()); // 4.4 flavour
-                $result[] = $this->csv_file->fgetcsv();
+                $result[] = array_map('escape',$this->csv_file->fgetcsv());
+                //$result[] = $this->csv_file->fgetcsv();
             }
             $this->csv_file->rewind();
             return $result;
