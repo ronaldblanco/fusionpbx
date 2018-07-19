@@ -221,6 +221,7 @@ require_once "resources/require.php";
 //include link provider
 	if($result_count != "0") {
 		require_once "link_provider.php";
+		echo "<br/><br/> " . $text['description-phonebook_urls'] . "<br>";
 	}
 //include the footer
 	require_once "resources/footer.php";

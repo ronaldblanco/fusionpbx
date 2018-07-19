@@ -20,7 +20,6 @@ $vendor  = isset($_REQUEST["vendor"]) ? strtolower(escape(check_str($_REQUEST["v
 
 $groupid_array_keys = preg_grep('/^(gid)|(gid_\d+)$/', array_keys($_REQUEST));
 
-
 if ($is_auth) {
 	// Check auth (adding more security)
 	require_once "resources/check_auth.php";
@@ -40,7 +39,7 @@ if ($is_auth) {
 
 $result = array();
 
-if (count($groupid_array) == 0) {
+if (count($groupid_array_keys) == 0) {
 	$sql = "SELECT name, phonenumber, phonebook_desc";
 	$sql .= " FROM v_phonebook";
 	$sql .= " WHERE domain_uuid = '$domain_uuid'";
@@ -51,6 +50,7 @@ if (count($groupid_array) == 0) {
 } else {
 
 	foreach ($groupid_array_keys as $groupid_key) {
+		
 		$groupid = strtolower(check_str($_REQUEST[$groupid_key]));
 		if ($groupid == 'directory') {
 			// Select Directory First name/Last name, if empty - use extension column
