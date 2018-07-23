@@ -55,6 +55,7 @@
 	$prep_statement->execute();
 	$gateways = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($gateways as &$row) {
+		$domain_uuid = $row["domain_uuid"];
 		$gateway = $row["gateway"];
 		$username = $row["username"];
 		$password = $row["password"];
@@ -127,7 +128,7 @@
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	if (strlen($domain_uuid) == 0) {
+	if (strlen($domain_uuid) > 0) {
 		$sql .= "'$domain_uuid', ";
 	}
 	else {
