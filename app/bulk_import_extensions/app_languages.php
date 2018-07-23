@@ -102,7 +102,7 @@ $text['label-select_a_file']['en-us'] = "Please, select a file to import";
 
 $text['button-reset']['en-us'] = "Reset file";
 
-$text['button-import']['en-us'] = "Import";
+$text['button-preview']['en-us'] = "Preview";
 
 $text['message-extensions_not_found']['en-us'] = "Extension (number) field not found";
 

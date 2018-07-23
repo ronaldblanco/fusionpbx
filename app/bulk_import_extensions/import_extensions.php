@@ -130,7 +130,7 @@ echo "			<form name='frmimport' method='POST' enctype='multipart/form-data' styl
 echo "				<input name='file' id='file' type='file' style='display: none;' onchange='check_filetype(this);'>";
 echo "				<label id='file_label' for='file' class='txt' style='width: 200px; overflow: hidden; white-space: nowrap;'>".$text['label-select_a_file']."</label>\n";
 echo " 				<input id='button_reset' type='reset' class='btn' style='display: none;' value='".$text['button-reset']."' onclick=\"reset_file_input('file'); document.getElementById('file_label').innerHTML = '".$text['label-select_a_file']."'; this.style.display='none'; return true;\">\n";
-echo "				<input name='upload' type='submit' class='btn' id='upload' value=\"".$text['button-import']."\">\n";
+echo "				<input name='upload' type='submit' class='btn' id='upload' value=\"".$text['button-preview']."\">\n";
 echo "			</form>";
 echo "		</td>";
 echo "	</tr>\n";
