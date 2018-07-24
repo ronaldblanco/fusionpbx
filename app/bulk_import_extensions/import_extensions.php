@@ -51,7 +51,9 @@ $csv_file_name = $csv_file_path . "import.csv";
 
 // Get variables here
 
-$rows_to_show =isset($_SESSION['import_extensions']['rows_to_show']['numeric']) ? (int) $_SESSION['import_extensions']['rows_to_show']['numeric'] : 4;
+$rows_to_show = isset($_SESSION['import_extensions']['rows_to_show']['numeric']) ? (int) $_SESSION['import_extensions']['rows_to_show']['numeric'] : 4;
+$csv_delimiter = isset($_SESSION['import_extensions']['csv_delimiter']['text']) ? (int) $_SESSION['import_extensions']['csv_delimiter']['text'] : False;
+
 $is_import = isset($_REQUEST['is_import']) ? filter_var($_REQUEST['is_import'], FILTER_VALIDATE_BOOLEAN) : False;
 $skip_first_line = isset($_REQUEST['skip_first_line']) ? filter_var($_REQUEST['skip_first_line'], FILTER_VALIDATE_BOOLEAN) : False;
 $csv_fields_order = isset($_REQUEST['csv_field']) ? $_REQUEST['csv_field'] : False;
@@ -69,14 +71,15 @@ $row_style["1"] = "row_style1";
 // File operations
 
 if (isset($_FILES['file'])) {
-	if ($_FILES["file"]["error"] == UPLOAD_ERR_OK && ($_FILES["file"]["type"] == 'text/csv' || $_FILES["file"]["type"] == 'application/octet-stream')) {
+	//if ($_FILES["file"]["error"] == UPLOAD_ERR_OK && ($_FILES["file"]["type"] == 'text/csv' || $_FILES["file"]["type"] == 'application/octet-stream')) {
+	if ($_FILES["file"]["error"] == UPLOAD_ERR_OK) {
 		move_uploaded_file($_FILES["file"]["tmp_name"], $csv_file_name);
 	}
 }
 
 
 // Check if we have CSV file on place
-$import_file = new csv_file_process($csv_file_name);
+$import_file = new csv_file_process($csv_file_name, $csv_delimiter);
 
 $action = '';
 if ($import_file->is_valid() && $is_import && $csv_fields_order) {

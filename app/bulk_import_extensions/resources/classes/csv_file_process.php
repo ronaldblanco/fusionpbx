@@ -21,7 +21,7 @@ if (!class_exists('csv_file_process')) {
         private $line_sip_port;
         private $line_register_expires;
 
-        public function __construct($file_path) {
+        public function __construct($file_path, $csv_delimiter = False) {
             if (!file_exists($file_path)) {
                 $this->csv_file = False;
                 return;
@@ -37,6 +37,12 @@ if (!class_exists('csv_file_process')) {
 
             $this->csv_file = new SplFileObject($file_path);
             
+
+            if ($csv_delimiter) {
+                $this->csv_file->setCsvControl($csv_delimiter);
+                return;
+            }
+
             // Guessing CSV delimiter
 
             if (count($this->csv_file->fgetcsv()) != 1) {
