@@ -128,7 +128,7 @@ echo "			".$text['description-import_extensions']."<br /><br />\n";
 echo "		</td>\n";
 echo "		<td>";
 echo "			<form name='frmimport' method='POST' enctype='multipart/form-data' style='float: right;' action=''>\n";
-echo "				<input name='file' id='file' type='file' style='display: none;' onchange='check_filetype(this);'>";
+echo "				<input name='file' id='file' type='file' style='display: none;' accept='.csv' onchange='check_filetype(this);'>";
 echo "				<label id='file_label' for='file' class='txt' style='width: 200px; overflow: hidden; white-space: nowrap;'>".$text['label-select_a_file']."</label>\n";
 echo " 				<input id='button_reset' type='reset' class='btn' style='display: none;' value='".$text['button-reset']."' onclick=\"reset_file_input('file'); document.getElementById('file_label').innerHTML = '".$text['label-select_a_file']."'; this.style.display='none'; return true;\">\n";
 echo "				<input name='upload' type='submit' class='btn' id='upload' value=\"".$text['button-import']."\">\n";
