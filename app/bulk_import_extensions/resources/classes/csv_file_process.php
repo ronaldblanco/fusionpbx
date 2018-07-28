@@ -146,8 +146,6 @@ if (!class_exists('csv_file_process')) {
             $result['voicemail_mail_to'] = isset($result['voicemail_mail_to']) ? $result['voicemail_mail_to'] : '';
             $result['voicemail_enabled'] = isset($result['voicemail_enabled']) ? $result['voicemail_enabled'] : 'true';
             $result['voicemail_description'] = $result['description'];
-            $result['device_label'] = isset($result['device_label']) ? $result['device_label'] : $result['extension'];
-            $result['device_template'] = isset($result['device_template']) ? strtolower($result['device_template']) : '';
             
             // Set various defaults that is not controlled by user
             
@@ -157,8 +155,20 @@ if (!class_exists('csv_file_process')) {
             $result['enabled'] = 'true';
             $result['voicemail_file'] = 'attach';
             $result['voicemail_local_after_email'] = 'true';
-            $result['device_enabled'] = 'true';
-            $result['device_vendor'] = explode('/', $result['device_template'])[0];
+
+            // Device section
+            if ($this->is_add_device) {
+
+                // Normalize mac address
+                $result['device_mac_address'] = strtolower($result['device_mac_address']);
+                $result['device_mac_address'] = preg_replace("/[^a-f0-9]+/", "", $result['device_mac_address']);
+
+                $result['device_label'] = isset($result['device_label']) ? $result['device_label'] : $result['extension'];
+                $result['device_template'] = isset($result['device_template']) ? strtolower($result['device_template']) : '';
+
+                $result['device_enabled'] = 'true';
+                $result['device_vendor'] = explode('/', $result['device_template'])[0];
+            }
 
             return $result;
         }
@@ -344,17 +354,15 @@ if (!class_exists('csv_file_process')) {
                 return;
             }
 
-            // Normalize mac address
-            $device_mac_address = strtolower($csv_line['device_mac_address']);
-            $device_mac_address = preg_replace("/[^a-f0-9]+/", "", $device_mac_address);
-            if (strlen($device_mac_address) != 12) {
+            // Check if it is MAC address actually
+            if (strlen($csv_line['device_mac_address']) != 12) {
                 return;
             }
 
             // First - check if device exists
             $sql = "SELECT device_uuid FROM v_devices";
             $sql .= " WHERE domain_uuid = '" . $this->domain_uuid . "'";
-            $sql .= " AND device_mac_address = '" . $device_mac_address . "'";
+            $sql .= " AND device_mac_address = '" . $csv_line['device_mac_address'] . "'";
             $sql .= " LIMIT 1";
             
             $device_csv_line = array();
@@ -367,8 +375,6 @@ if (!class_exists('csv_file_process')) {
                     $device_csv_line[$key] = $value;
                 }
             }
-            // Overwrite prvided mac address with filtered one.
-            $device_csv_line['device_mac_address'] = $device_mac_address;
 
             // Check for profile UUID
             if (isset($device_csv_line['device_profile'])) {
