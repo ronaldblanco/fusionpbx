@@ -343,10 +343,18 @@ if (!class_exists('csv_file_process')) {
             if (!$this->is_add_device) {
                 return;
             }
+
+            // Normalize mac address
+            $device_mac_address = strtolower($csv_line['device_mac_address']);
+            $device_mac_address = preg_replace("/[^a-f0-9]+/", "", $device_mac_address);
+            if (strlen($device_mac_address) != 12) {
+                return;
+            }
+
             // First - check if device exists
             $sql = "SELECT device_uuid FROM v_devices";
             $sql .= " WHERE domain_uuid = '" . $this->domain_uuid . "'";
-            $sql .= " AND device_mac_address = '" . $csv_line['device_mac_address'] . "'";
+            $sql .= " AND device_mac_address = '" . $device_mac_address . "'";
             $sql .= " LIMIT 1";
             
             $device_csv_line = array();
@@ -359,6 +367,8 @@ if (!class_exists('csv_file_process')) {
                     $device_csv_line[$key] = $value;
                 }
             }
+            // Overwrite prvided mac address with filtered one.
+            $device_csv_line['device_mac_address'] = $device_mac_address;
 
             // Check for profile UUID
             if (isset($device_csv_line['device_profile'])) {
