@@ -99,7 +99,7 @@ switch ($vendor) {
 	
 	case 'snom': // Snom tbook
 
-		$snom_embedded_settings = isset($_SESSION['phonebook']['snom_embedded_settings']['text']) ? filter_var($_SESSION['phonebook']['snom_embedded_settings']['text'], FILTER_VALIDATE_BOOLEAN) : 'true';
+		$snom_embedded_settings = isset($_SESSION['phonebook']['snom_embedded_settings']['text']) ? filter_var($_SESSION['phonebook']['snom_embedded_settings']['text'], FILTER_VALIDATE_BOOLEAN) : True;
 		if (!$snom_embedded_settings) {
 			$response .= '<?xml version="1.0" encoding="utf-8"?>' . "\n";
 		}
@@ -148,7 +148,11 @@ switch ($vendor) {
 		$response .= '</paddrbook>' . "\n";
         break;
         
-	case 'polycom': // Polycom phonebook. It's actually up to template to imitate XXXXXX-directory.xml
+    case 'polycom': // Polycom phonebook. It's actually up to template to imitate XXXXXX-directory.xml
+        
+        // Is show contacts on main screen as speed dial
+        $is_speed_dial = isset($_SESSION['phonebook']['polycom_speed_dial_show']['text']) ? filter_var($_SESSION['phonebook']['polycom_speed_dial_show']['text'], FILTER_VALIDATE_BOOLEAN) : False;
+        
 		$response .= '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n";
 		$response .= '<directory>' . "\n";
 		$response .= '	<item_list>' . "\n";
@@ -156,8 +160,10 @@ switch ($vendor) {
 			$row = array_map('escape', $value);
 			$response .= '		<item>' . "\n";
 			$response .= '			<ln>' . $value['name'] . "</ln>\n";
-			$response .= '			<ct>' . $value['phonenumber'] . "</ct>\n";
-			$response .= '			<sd>' . ($index + 1) . "</sd>\n";
+            $response .= '			<ct>' . $value['phonenumber'] . "</ct>\n";
+            if ($is_speed_dial) {
+                $response .= '			<sd>' . ($index + 1) . "</sd>\n";
+            }
 			$response .= '		</item>' . "\n";
 		}
 		$response .= '	</item_list>' . "\n";

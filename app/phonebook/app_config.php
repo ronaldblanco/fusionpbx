@@ -66,7 +66,24 @@
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set if you don't want to use API-key for authorization. Less secure";
+                $apps[$x]['default_settings'][$y]['default_setting_description'] = "Set if you don't want to use API-key for authorization. Less secure";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = 'e90cdfeb-8360-4f36-b826-4a2feb470066';
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = 'phonebook';
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = 'snom_embedded_settings';
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = 'text';
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = 'false';
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = 'false';
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = 'Include XML header on result answer or not';
+                $y++;
+                $apps[$x]['default_settings'][$y]['default_setting_uuid'] = '060d1dba-2151-4d54-ba15-b3c5f4a8d09b';
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = 'phonebook';
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = 'polycom_speed_dial_show';
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = 'text';
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = 'false';
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = 'false';
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = 'Add speed dial entity into phonebook. With enabling this you will see your contact list on a main screen on free buttons';
+		$y++;
 
 	        //schema details
                 $y = 0; //table array index
