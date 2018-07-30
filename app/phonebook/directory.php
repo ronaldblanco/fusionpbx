@@ -116,7 +116,8 @@ switch ($vendor) {
 		}
 
 		$response .= '</tbook>' . "\n";
-		break;
+        break;
+        
 	case 'cisco_xml_directory_service': // Cisco XML directory - one is working for me
 		$response .= '<?xml version="1.0" encoding="utf-8" ?>' . "\n";
 		$response .= ' <CiscoIPPhoneDirectory>' . "\n";
@@ -131,7 +132,8 @@ switch ($vendor) {
 			$response .= '    </DirectoryEntry>' . "\n";
 		}
 		$response .= ' </CiscoIPPhoneDirectory>' . "\n";
-		break;
+        break;
+        
 	case 'cisco_paddrbook': // PAddr book. Couldn't get it to work
 		$response .= '<paddrbook>' . "\n";
 		foreach($result as $row) {
@@ -144,7 +146,8 @@ switch ($vendor) {
 			$response .= ' </entry>' . "\n";
 		}
 		$response .= '</paddrbook>' . "\n";
-		break;
+        break;
+        
 	case 'polycom': // Polycom phonebook. It's actually up to template to imitate XXXXXX-directory.xml
 		$response .= '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n";
 		$response .= '<directory>' . "\n";
