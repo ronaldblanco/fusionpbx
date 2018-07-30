@@ -107,9 +107,11 @@ switch ($vendor) {
 		$response .= '<tbook complete="true">' . "\n";
 
 		foreach ($result as $index => $value) {
+			$row = array_map('escape', $value);
+
 			$response .= '<item context="active" type="none" index="'. $index .'">' . "\n";
-			$response .= '<name>' . escape($value['name']) . '</name>' . "\n";
-			$response .= '<number>' . escape($value['phonenumber']) . '</number>' . "\n";
+			$response .= '<name>' . $value['name'] . '</name>' . "\n";
+			$response .= '<number>' . $value['phonenumber'] . '</number>' . "\n";
 			$response .= '</item>' . "\n";
 		}
 
@@ -142,6 +144,21 @@ switch ($vendor) {
 			$response .= ' </entry>' . "\n";
 		}
 		$response .= '</paddrbook>' . "\n";
+		break;
+	case 'polycom': // Polycom phonebook. It's actually up to template to imitate XXXXXX-directory.xml
+		$response .= '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n";
+		$response .= '<directory>' . "\n";
+		$response .= '	<item_list>' . "\n";
+		foreach($result as $index => $value) {
+			$row = array_map('escape', $value);
+			$response .= '		<item>' . "\n";
+			$response .= '			<ln>' . $value['name'] ."</ln>\n";
+			$response .= '			<ct>' . $value['phonenumber'] ."</ct>\n";
+			$response .= '			<sd>' . $index ."</sd>\n";
+			$response .= '		</item>' . "\n";
+		}
+		$response .= '	</item_list>' . "\n";
+		$response .= '</directory>' . "\n";
 		break;
 }
 
