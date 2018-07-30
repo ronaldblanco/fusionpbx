@@ -155,9 +155,9 @@ switch ($vendor) {
 		foreach($result as $index => $value) {
 			$row = array_map('escape', $value);
 			$response .= '		<item>' . "\n";
-			$response .= '			<ln>' . $value['name'] ."</ln>\n";
-			$response .= '			<ct>' . $value['phonenumber'] ."</ct>\n";
-			$response .= '			<sd>' . $index ."</sd>\n";
+			$response .= '			<ln>' . $value['name'] . "</ln>\n";
+			$response .= '			<ct>' . $value['phonenumber'] . "</ct>\n";
+			$response .= '			<sd>' . ($index + 1) . "</sd>\n";
 			$response .= '		</item>' . "\n";
 		}
 		$response .= '	</item_list>' . "\n";
