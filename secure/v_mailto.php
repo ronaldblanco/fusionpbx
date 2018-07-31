@@ -330,8 +330,16 @@
 		$mail->AltBody = $body_plain."\n\n$transcription";
 	}
 
-//send the email
-	if(!$mail->Send()) {
+//send the email 3 times (means try to resend it 3 times if it failed)
+
+	for ($i = 1; $i <= 3; $i++) {
+		$mail_send_result = $mail->Send();
+		if ($mail_send_result) {
+			break;
+		}
+	}
+
+	if(!$mail_send_result) {
 		$mailer_error = $mail->ErrorInfo;
 		echo "Mailer Error: ".$mailer_error."\n\n";
 
