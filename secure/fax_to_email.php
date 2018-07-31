@@ -653,8 +653,16 @@ if (!function_exists('fax_split_dtmf')) {
 				//$mail->AddStringAttachment(base64_decode($strfax),$filename,$encoding,$type);
 			}
 
-		//send the email
-			if (!$mail->Send()) {
+		//send the email with 3 times trying to resend
+
+			for ($i = 1; $i <= 3; $i++) {
+				$mail_send_result = $mail->Send();
+				if ($mail_send_result) {
+					break;
+				}
+			}
+
+			if (!$mail_send_result) {
 				echo "Mailer Error: " . $mail->ErrorInfo;
 				$email_status=$mail;
 			}
