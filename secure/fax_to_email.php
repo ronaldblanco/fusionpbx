@@ -660,6 +660,7 @@ if (!function_exists('fax_split_dtmf')) {
 				if ($mail_send_result) {
 					break;
 				}
+				sleep(1);
 			}
 
 			if (!$mail_send_result) {

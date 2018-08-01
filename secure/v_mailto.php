@@ -337,6 +337,7 @@
 		if ($mail_send_result) {
 			break;
 		}
+		sleep(1);
 	}
 
 	if(!$mail_send_result) {
