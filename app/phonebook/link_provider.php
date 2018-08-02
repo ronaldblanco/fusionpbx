@@ -48,7 +48,7 @@ $tNum = 1;
 if ($is_auth) {
     $link = "https://".$domain_name."/app/phonebook/directory.php?key=&lt;api_key&gt;";
     echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$text['label-phonebook_all_groups']."</span></div>";
-	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."'> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."' />";
+	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."' readonly> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."'/>";
 	echo "<script>";
 		echo "document.getElementById('copyButton".$tNum."').addEventListener('click', function() {";
 		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
@@ -58,7 +58,7 @@ if ($is_auth) {
 
     $link = "https://".$domain_name."/app/phonebook/directory.php?key=&lt;api_key&gt;&amp;gid=directory";
     echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$text['label-phonebook_directory']."</span></div>";
-	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."'> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."' />";
+	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."' readonly> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."'/>";
 	echo "<script>";
 		echo "document.getElementById('copyButton".$tNum."').addEventListener('click', function() {";
 		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
@@ -77,7 +77,7 @@ foreach ($groupArray as $group) {
         $link .= "&amp;key=&lt;api_key&gt;";
     }
     echo "<div class='rpbLinkTitle'>".$text['phonebook-links-label']."<span>".$group['group_name']."</span></div>";
-	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."'> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."' />";
+	echo "<input type='text' class='formfld rpbLink' id='copyTarget".$tNum."' value='".$link."' readonly> <input type='button' class='btn' id='copyButton".$tNum."' value='".$text['phonebook-links-copy-text']."'/>";
 	echo "<script>";
 		echo "document.getElementById('copyButton".$tNum."').addEventListener('click', function() {";
 		echo "copyToClipboard(document.getElementById('copyTarget".$tNum."'));";
