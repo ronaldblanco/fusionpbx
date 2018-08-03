@@ -653,9 +653,12 @@ if (!function_exists('fax_split_dtmf')) {
 				//$mail->AddStringAttachment(base64_decode($strfax),$filename,$encoding,$type);
 			}
 
-		//send the email with 3 times trying to resend
+		//send the email with 1-10 times trying to resend
 
-			for ($i = 1; $i <= 3; $i++) {
+			$max_email_retries = isset($_SESSION['email']['send_retry_number']['numeric']) ? (int) $_SESSION['email']['send_retry_number']['numeric'] : 1;
+			$max_email_retries = ($max_email_retries > 0 && $max_email_retries < 10) ? $max_email_retries : 1;
+
+			for ($i = 1; $i <= $max_email_retries; $i++) {
 				$mail_send_result = $mail->Send();
 				if ($mail_send_result) {
 					break;

@@ -253,6 +253,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "set to false to ignore SSL certificate warnings e.g. for self-signed certificates";
 		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "a987d8f6-5796-4b6f-996a-d4c26e2c1ddb";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "email";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "send_retry_number";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "1";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "How many retries before consider email is failed. Could be from 1 to 10";
+		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "8a07ab78-f386-482c-85dd-7ce8127597d6";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "login";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "password_reset_key";

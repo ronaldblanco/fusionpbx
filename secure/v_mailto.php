@@ -330,9 +330,12 @@
 		$mail->AltBody = $body_plain."\n\n$transcription";
 	}
 
-//send the email 3 times (means try to resend it 3 times if it failed)
+//send the email 1-10 times (means try to resend it 1-10 times if it failed)
 
-	for ($i = 1; $i <= 3; $i++) {
+	$max_email_retries = isset($_SESSION['email']['send_retry_number']['numeric']) ? (int) $_SESSION['email']['send_retry_number']['numeric'] : 1;
+	$max_email_retries = ($max_email_retries > 0 && $max_email_retries < 10) ? $max_email_retries : 1;
+
+	for ($i = 1; $i <= $max_email_retries; $i++) {
 		$mail_send_result = $mail->Send();
 		if ($mail_send_result) {
 			break;
