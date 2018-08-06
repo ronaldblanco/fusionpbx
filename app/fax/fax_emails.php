@@ -172,7 +172,10 @@ if (sizeof($result) != 0) {
 				$metadata[0]['from'] = $tmp[0]['mailbox']."@".$tmp[0]['host'];
 
 				//check sender
-				$sender_authorized = false;
+				$all_senders_auth = isset($_SESSION['fax']['email_to_fax_preform_sender_auth']['boolean']) ? filter_var($_SESSION['fax']['preform_sender_auth']['boolean'], FILTER_VALIDATE_BOOLEAN) : true;
+				// If we authorize all senders, than sender by default is not authorized.
+				$sender_authorized = !$all_senders_auth;
+
 				if (in_array($metadata[0]['from'],$authorized_senders)) { $sender_authorized = true; }
 
 				if ($sender_authorized) {
