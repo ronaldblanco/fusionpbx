@@ -379,7 +379,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "Error";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed with errors. Accompany with error description in json";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed with errors";
 
 	//schema details
 		$y=0;
