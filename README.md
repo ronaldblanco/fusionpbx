@@ -78,7 +78,7 @@ apt-get update && apt-get upgrade && apt-get install -y git
 cd /usr/src
 ```
 ```bash
-git clone https://github.com/fusionpbx/fusionpbx-install.sh.git
+git clone https://github.com/samael33/fusionpbx-install.sh.git
 ```
 ```bash
 chmod 755 -R /usr/src/fusionpbx-install.sh
