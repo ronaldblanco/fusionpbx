@@ -354,8 +354,32 @@
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_preform_sender_auth";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Preform sender authentification in a case of email2fax. By default - true";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "fd9b6fdb-55d1-4874-b18c-396f23b1ef73";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_verbose_level";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "1";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Preform sender authentification in a case of email2fax";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Verbosity level for email2fax script. 0 - DISABLE. 1 - INFO. 2 - ERROR. 3 - DEBUG. By default - 0";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "8d98fe67-1ad6-4080-a077-5bcbbea1e433";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_verbose_info_success_string";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "AllGood";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed succesfully";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "8be00838-4726-4dca-9550-4e6645f97fec";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_verbose_info_error_string";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "Error";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed with errors. Accompany with error description in json";
 
 	//schema details
 		$y=0;

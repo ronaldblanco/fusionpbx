@@ -40,6 +40,10 @@ $prep_statement->execute();
 $result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 unset($sql, $prep_statement);
 
+$email_to_fax_result = '';
+$email_to_fax_verbose_level = isset($_SESSION['fax']['email_to_fax_verbose_level']['numeric']) ? (int) $_SESSION['fax']['email_to_fax_verbose_level']['numeric'] : 0;
+$email_to_fax_success_run = true;
+
 function arr_to_map(&$arr){
 	if(is_array($arr)){
 		$map = Array();
@@ -148,7 +152,10 @@ if (sizeof($result) != 0) {
 		$fax_email_connection .= "/".(($fax_email_connection_validate == 'false') ? "no" : null)."validate-cert";
 		$fax_email_connection .= "}".$fax_email_connection_mailbox;
 		if (!$connection = imap_open($fax_email_connection, $fax_email_connection_username, $fax_email_connection_password)) {
-			print_r(imap_errors());
+			if ($email_to_fax_verbose_level >= 2) {
+				$email_to_fax_result .= json_encode(imap_errors()) . "\n";
+			}
+			$email_to_fax_success_run = false;
 			continue; // try next account
 		}
 
@@ -172,7 +179,7 @@ if (sizeof($result) != 0) {
 				$metadata[0]['from'] = $tmp[0]['mailbox']."@".$tmp[0]['host'];
 
 				//check sender
-				$all_senders_auth = isset($_SESSION['fax']['email_to_fax_preform_sender_auth']['boolean']) ? filter_var($_SESSION['fax']['preform_sender_auth']['boolean'], FILTER_VALIDATE_BOOLEAN) : true;
+				$all_senders_auth = isset($_SESSION['fax']['email_to_fax_preform_sender_auth']['boolean']) ? filter_var($_SESSION['fax']['email_to_fax_preform_sender_auth']['boolean'], FILTER_VALIDATE_BOOLEAN) : true;
 				// If we authorize all senders, than sender by default is not authorized.
 				$sender_authorized = !$all_senders_auth;
 
@@ -208,15 +215,17 @@ if (sizeof($result) != 0) {
 					$fax_message = '';
 
 					//Debug print
-					print('attachments:' . "\n");
-					foreach($message['attachments'] as &$attachment){
-						print(' - ' . $attachment['type'] . ' - ' . $attachment['name'] . ': ' . $attachment['size'] . ' disposition: ' . $attachment['disposition'] . "\n");
-					}
-					print('messages:' . "\n");
-					foreach($message['messages'] as &$msg){
-						print(' - ' . $msg['type'] . ' - ' . $msg['size'] . "\n");
-						// print($msg['data']);
-						// print("\n--------------------------------------------------------\n");
+					if ($email_to_fax_verbose_level >= 3) {
+						$email_to_fax_result .= 'attachments:' . "\n";
+						foreach($message['attachments'] as &$attachment){
+							$email_to_fax_result .= ' - ' . $attachment['type'] . ' - ' . $attachment['name'] . ': ' . $attachment['size'] . ' disposition: ' . $attachment['disposition'] . "\n";
+						}
+						$email_to_fax_result .= 'messages:' . "\n";
+						foreach($message['messages'] as &$msg){
+							$email_to_fax_result .= ' - ' . $msg['type'] . ' - ' . $msg['size'] . "\n";
+							// print($msg['data']);
+							// print("\n--------------------------------------------------------\n");
+						}
 					}
 
 					foreach($message['messages'] as &$msg){
@@ -263,15 +272,16 @@ if (sizeof($result) != 0) {
 					}
 
 					//Debug print
-					print('***********************' . "\n");
-					print('fax message:' . "\n");
-					print(' - length: ' . strlen($fax_message) . "\n");
-					print('fax files [' . sizeof($emailed_files['name']) . ']:' . "\n");
-					for($i = 0; $i < sizeof($emailed_files['name']);++$i){
-						print(' - ' . $emailed_files['name'][$i] . ' - ' . $emailed_files['size'][$i] . "\n");
+					if ($email_to_fax_verbose_level >= 3) {
+						$email_to_fax_result .= '***********************' . "\n";
+						$email_to_fax_result .= 'fax message:' . "\n";
+						$email_to_fax_result .= ' - length: ' . strlen($fax_message) . "\n";
+						$email_to_fax_result .= 'fax files [' . sizeof($emailed_files['name']) . ']:' . "\n";
+						for($i = 0; $i < sizeof($emailed_files['name']);++$i){
+							$email_to_fax_result .= ' - ' . $emailed_files['name'][$i] . ' - ' . $emailed_files['size'][$i] . "\n";
+						}
+						$email_to_fax_result .= '***********************' . "\n";
 					}
-					print('***********************' . "\n");
-
 					//send fax
 					$cwd = getcwd();
 					$included = true;
@@ -295,6 +305,16 @@ if (sizeof($result) != 0) {
 		//close account connection
 		imap_close($connection);
 	}
+}
+
+if ($email_to_fax_success_run) {
+	$email_to_fax_result .= $_SESSION['fax']['email_to_fax_success_string']['text'];
+} else {
+	$email_to_fax_result .= $_SESSION['fax']['email_to_fax_error_string']['text'];
+}
+
+if ($email_to_fax_verbose_level >= 1) {
+	echo $email_to_fax_result;
 }
 
 //functions used above
