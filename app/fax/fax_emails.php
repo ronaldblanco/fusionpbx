@@ -308,9 +308,9 @@ if (sizeof($result) != 0) {
 }
 
 if ($email_to_fax_success_run) {
-	$email_to_fax_result .= $_SESSION['fax']['email_to_fax_success_string']['text'];
+	$email_to_fax_result .= $_SESSION['fax']['email_to_fax_verbose_info_success_string']['text'];
 } else {
-	$email_to_fax_result .= $_SESSION['fax']['email_to_fax_error_string']['text'];
+	$email_to_fax_result .= $_SESSION['fax']['email_to_fax_verbose_info_error_string']['text'];
 }
 
 if ($email_to_fax_verbose_level >= 1) {
