@@ -1,3 +1,6 @@
+{if isset($polycom_phonebook_url)}
+{fetch file=''|cat:$polycom_phonebook_url|cat:'&vendor=polycom'}
+{else}
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <directory>
 	<item_list>
@@ -27,3 +30,4 @@
 		{/foreach}
 	</item_list>
 </directory>
+{/if}
