@@ -361,7 +361,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_verbose_level";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "1";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "3";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Verbosity level for email2fax script. 0 - DISABLE. 1 - INFO. 2 - ERROR. 3 - DEBUG. By default - 0";
 		$y++;
@@ -369,7 +369,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_verbose_info_success_string";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "AllGood";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed succesfully";
 		$y++;
@@ -377,7 +377,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_verbose_info_error_string";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "Error";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed with errors";
 
