@@ -60,12 +60,12 @@
                 $y += 1;
 
                 $y = 0;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "e44b276a-1b64-4d10-9a70-ff3ead977147e";
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "1810d79c-c371-497d-9f13-b52a0879d2da";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "phonebook";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "auth";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
                 $apps[$x]['default_settings'][$y]['default_setting_description'] = "Set if you don't want to use API-key for authorization. Less secure";
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = 'e90cdfeb-8360-4f36-b826-4a2feb470066';
