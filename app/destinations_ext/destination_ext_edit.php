@@ -44,8 +44,6 @@
     $language = new text;
     $text = $language->get();
 
-    $log = new Logging();
-
 //action add or update
     if (isset($_REQUEST["id"])) {
         $action = "update";
@@ -322,8 +320,6 @@
             //add or update the main dialplan part if the destination number is set
             if ($add_dialplan_main) {
 
-                //$log->console_log("Add dialplan Main");
-
                 //get the array
                 $dialplan_details = $destination_ext_dialplan_main_details;
                 $dialplan_uuid = $destination_ext_dialplan_main_uuid;
@@ -563,8 +559,6 @@
 
             //add or update the main dialplan part if the destination number is set
             if ($add_dialplan_extensions) {
-
-                //$log->console_log("Add dialplan Extensions");
 
                 $dialplan_details = $destination_ext_dialplan_extensions_details;
                 $dialplan_uuid = $destination_ext_dialplan_extensions_uuid;
@@ -859,8 +853,6 @@
                 echo "</pre>";
                 exit(0);
             }
-
-            //$log->console_log("Main Dest UUID is:" . $destination_ext_uuid);
         //redirect the user
             if ($action == "add") {
                 $_SESSION["message"] = $text['message-add'];
@@ -1124,8 +1116,6 @@
 
 
 // Invalid destiantions set
-
-    //$log->console_log($destination_ext_dialplan_invalid_details);
 
     echo "<tr id='tr_actions_invalid'>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
