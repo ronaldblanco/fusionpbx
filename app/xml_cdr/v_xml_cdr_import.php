@@ -585,6 +585,28 @@
 
 			}
 
+		// Call VTiger API
+			$vtiger_crm_connector_enable = isset($_SESSION['vtiger_connector']['enable']['boolean']) ? filter_var($_SESSION['vtiger_connector']['enable']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
+			if ($vtiger_crm_connector_enable && strlen($start_stamp) > 0) {
+				$vtiger_url = strlen($xml->variables->vtiger_url) > 0 ? base64_decode(urldecode($xml->variables->vtiger_url), true) : False;
+				$vtiger_api_key = strlen($xml->variables->vtiger_api_key) > 0 ? base64_decode(urldecode($xml->variables->vtiger_api_key), true) : False;
+
+				$vtiger_record_path = False;
+
+				if (isset($database->fields['recording_file']) and strlen($xml->variables->vtiger_record_path) > 0) { 
+					$vtiger_record_path = base64_decode(urldecode($xml->variables->vtiger_record_path)).$recording_relative_path.'/'.$uuid.$recording_extension;
+				}
+
+				$vtiger_api_call = new vtiger_connector($vtiger_url, $vtiger_api_key, $database->fields, $vtiger_record_path);
+				if ($vtiger_api_call) {
+					$vtiger_api_call->send();
+				}
+				unset($vtiger_url);
+				unset($vtiger_api_key);
+				unset($vtiger_record_path);
+				unset($vtiger_api_call);
+			}
+
 		//insert xml_cdr into the db
 			if (strlen($start_stamp) > 0) {
 				$database->add();
