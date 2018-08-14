@@ -140,38 +140,20 @@ include "root.php";
 		//set the mac address in the correct format for the specific vendor
 		public function format_mac($mac, $vendor) {
 			switch (strtolower($vendor)) {
-			case "algo":
-				$mac = strtoupper($mac);
-				break;
-			case "aastra":
-				$mac = strtoupper($mac);
-				break;
-			case "cisco":
-				$mac = strtoupper($mac);
-				break;
-			case "linksys":
-				$mac = strtolower($mac);
-				break;
-			case "mitel":
-				$mac = strtoupper($mac);
-				break;
-			case "polycom":
-				$mac = strtolower($mac);
-				break;
-			case "snom":
-				$mac = strtolower($mac);
-				break;
-			case "escene":
-				$mac = strtolower($mac);
-				break;
-			case "grandstream":
-				$mac = strtolower($mac);
-				break;
-			case "yealink":
-				$mac = strtolower($mac);
-				break;
-			default:
-				$mac = strtolower($mac);
+				case "algo":
+				case "aastra":
+				case "cisco":
+				case "mitel":
+					$mac = strtoupper($mac);
+					break;
+				case "linksys":
+				case "polycom":
+				case "snom":
+				case "escene":
+				case "grandstream":
+				case "yealink":
+				default:
+					$mac = strtolower($mac);
 			}
 			return $mac;
 		}
