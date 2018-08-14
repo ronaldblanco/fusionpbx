@@ -101,16 +101,22 @@ include "root.php";
 		}
 
 		//define the function which checks to see if the mac address exists in devices
-		private function mac_exists($mac) {
+		private function mac_exists($mac, $http_domain_filter) {
 			//normalize the mac address
 				$mac = strtolower(preg_replace('#[^a-fA-F0-9./]#', '', $mac));
 			//check in the devices table for a specific mac address
 				$sql = "SELECT count(*) as count FROM v_devices ";
 				$sql .= "WHERE device_mac_address=:mac ";
+				if ($http_domain_filter == 'true') {
+					$sql .= "AND domain_uuid=:domain_uuid ";
+				}
 				$prep_statement = $this->db->prepare(check_sql($sql));
 				if ($prep_statement) {
 					//$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 					$prep_statement->bindParam(':mac', $mac);
+					if ($http_domain_filter == 'true') {
+						$prep_statement->bindParam(':domain_uuid', $this->domain_uuid);
+					}
 					$prep_statement->execute();
 					$row = $prep_statement->fetch();
 					$count = $row['count'];
@@ -494,7 +500,7 @@ include "root.php";
 
 			//check to see if the mac_address exists in devices
 				if (strlen($_REQUEST['user_id']) == 0 || strlen($_REQUEST['userid']) == 0) {
-					if ($this->mac_exists($mac)) {
+					if ($this->mac_exists($mac, $provision['http_domain_filter'])) {
 						//get the device_template
 							if (strlen($device_template) == 0) {
 								$sql = "SELECT * FROM v_devices ";
