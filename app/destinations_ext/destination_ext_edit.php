@@ -919,7 +919,7 @@
         $sql = "SELECT * FROM v_dialplan_details ";
         $sql .= "WHERE (domain_uuid = '".$domain_uuid."' OR domain_uuid IS NULL) ";
         $sql .= "AND dialplan_uuid = '".$destination_ext_dialplan_extensions_uuid."' ";
-        $sql .= "OEDER BY dialplan_detail_group ASC, dialplan_detail_order ASC";
+        $sql .= "ORDER BY dialplan_detail_group ASC, dialplan_detail_order ASC";
         $prep_statement = $db->prepare(check_sql($sql));
         $prep_statement->execute();
         $destination_ext_dialplan_extensions_details = $prep_statement->fetchAll(PDO::FETCH_NAMED);
