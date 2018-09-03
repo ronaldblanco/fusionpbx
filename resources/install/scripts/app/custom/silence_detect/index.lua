@@ -3,7 +3,7 @@
 -- argv3 - max detect silence in seconds
 -- argv4 - sample file length. Best if would be length of ringback-tone
 
-require "app.custom.silence_detect.resources.functions.silence_detect_funcions"
+require "app.custom.silence_detect.resources.functions.silence_detect_functions"
 
 if session:ready() then
 
