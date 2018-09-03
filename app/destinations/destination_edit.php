@@ -272,6 +272,7 @@
 							$dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"tone_detect_hits=1\" inline=\"true\"/>\n";
 							$dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"execute_on_tone_detect=transfer ".$fax_extension." XML \${domain_name}\" inline=\"true\"/>\n";
 							$dialplan["dialplan_xml"] .= "		<action application=\"tone_detect\" data=\"fax 1100 r +5000\"/>\n";
+							$dialplan["dialplan_xml"] .= "		<action application=\"answer\" data=\"\"/>\n";
 							$dialplan["dialplan_xml"] .= "		<action application=\"sleep\" data=\"3000\"/>\n";
 						}
 						$dialplan["dialplan_xml"] .= "		<action application=\"".$destination_app."\" data=\"".$destination_data."\"/>\n";
@@ -405,6 +406,17 @@
 									$dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
 									$dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "tone_detect";
 									$dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "fax 1100 r +5000";
+									$dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+									$y++;
+
+								//increment the dialplan detail order
+									$dialplan_detail_order = $dialplan_detail_order + 10;
+
+								//answer
+									$dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+									$dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+									$dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "answer";
+									$dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "";
 									$dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
 									$y++;
 
@@ -700,6 +712,9 @@
 			unset($dialplan_details[$x]);
 		}
  		if ($row['dialplan_detail_type'] == "tone_detect") {
+			unset($dialplan_details[$x]);
+		}
+ 		if ($row['dialplan_detail_type'] == "answer") {
 			unset($dialplan_details[$x]);
 		}
  		if ($row['dialplan_detail_type'] == "sleep") {

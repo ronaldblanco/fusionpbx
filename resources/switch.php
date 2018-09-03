@@ -93,11 +93,15 @@ function event_socket_request_cmd($cmd) {
 	return $response;
 }
 
-function byte_convert($bytes, $decimals = 2) {
-	if ($bytes <= 0) { return '0 Bytes'; }
-	$convention = 1024;
-	$formattedbytes = array_reduce( array(' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', 'ZB'), create_function( '$a,$b', 'return is_numeric($a)?($a>='.$convention.'?$a/'.$convention.':number_format($a,'.$decimals.').$b):$a;' ), $bytes );
-	return $formattedbytes;
+function byte_convert($bytes, $precision = 2) {
+	static $units = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+	$step = 1024;
+	$i = 0;
+	while (($bytes / $step) > 0.9) {
+		$bytes = $bytes / $step;
+		$i++;
+	}
+	return round($bytes, $precision).' '.$units[$i];
 }
 
 function remove_config_from_cache($name) {
