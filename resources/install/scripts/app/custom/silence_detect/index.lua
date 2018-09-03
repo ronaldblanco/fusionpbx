@@ -3,7 +3,7 @@
 -- argv3 - max detect silence in seconds
 -- argv4 - sample file length. Best if would be length of ringback-tone
 
-require "app.custom.detect_silence.resources.functions.get_vtiger_settings"
+require "app.custom.silence_detect.resources.functions.silence_detect_funcions"
 
 if session:ready() then
 
@@ -32,7 +32,7 @@ if session:ready() then
             session:execute("record_session", tmp_file_name)
             session:execute("playback", 'tone_stream://$${ringback}')
             session:execute("stop_record_session", tmp_file_name)
-            silence_detect(tmp_file_name)
+            silence_detect_in_file(tmp_file_name)
         end
         -- Restore variables
         session:execute("unset", "RECORD_READ_ONLY")
