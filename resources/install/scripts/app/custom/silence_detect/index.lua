@@ -15,6 +15,7 @@ if session:ready() then
         local sample_file_length = tonumber(argv[4]) or 1
 
         local record_append = session:getVariable('RECORD_APPEND') or nil
+        local record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
 
         local loop_count = math.floor(max_detect_length / sample_file_length)
 
@@ -34,10 +35,14 @@ if session:ready() then
             session:execute("stop_record_session", tmp_file_name)
             silence_detect_in_file(tmp_file_name)
         end
+        
         -- Restore variables
         session:execute("unset", "RECORD_READ_ONLY")
         if record_append then
             session:setVariable('RECORD_APPEND', record_append)
+        end
+        if record_read_only then
+            session:setVariable('RECORD_READ_ONLY', record_read_only)
         end
     end
 end
