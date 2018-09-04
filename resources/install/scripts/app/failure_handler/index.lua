@@ -152,8 +152,11 @@
 
 		if (originate_disposition ~= nil) then
 
+			local email_not_sent = true
+
 			if (missed_call_send_email_force == 'true') then
 				missed();
+				email_sent = false
 			end
 
 			if (originate_disposition == 'USER_BUSY') then
@@ -182,7 +185,9 @@
 								end
 							else
 								--send missed call notification
-								missed();
+								if (email_not_sent) then
+									missed()
+								end
 
 								--handle USER_BUSY - hangup
 								freeswitch.consoleLog("NOTICE", "[failure_handler] forward on busy with empty destination: hangup(USER_BUSY)\n");
@@ -206,7 +211,9 @@
 					end
 				else
 					--send missed call notification
-					missed();
+					if (email_not_sent) then
+						missed()
+					end
 				end
 				if (debug["info"] ) then
 					freeswitch.consoleLog("NOTICE", "[failure_handler] - NO_ANSWER\n");
@@ -227,7 +234,9 @@
 					end
 				else
 					--send missed call notification
-					missed();
+					if (email_not_sent) then
+						missed()
+					end
 				end
 
 				--send missed call notification
@@ -240,7 +249,10 @@
 
 			elseif (originate_disposition == "SUBSCRIBER_ABSENT" and hangup_on_subscriber_absent == "true") then
 				--send missed call notification
-				missed();
+				
+				if (email_not_sent) then
+					missed()
+				end
 
 				--handle SUBSCRIBER_ABSENT
 				freeswitch.consoleLog("NOTICE", "[failure_handler] - SUBSCRIBER_ABSENT - hangup(UNALLOCATED_NUMBER)\n");
@@ -248,7 +260,9 @@
 
 			elseif (originate_disposition == "CALL_REJECTED" and hangup_on_call_reject =="true") then
 				--send missed call notification
-				missed();
+				if (email_not_sent) then
+					missed()
+				end
 
 				--handle CALL_REJECT
 				freeswitch.consoleLog("NOTICE", "[failure_handler] - CALL_REJECT - hangup()\n");
