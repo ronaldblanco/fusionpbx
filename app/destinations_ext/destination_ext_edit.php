@@ -402,7 +402,7 @@
                     else {
                         $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "destination_number";
                     }
-                    $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_number;
+                    $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_number_regex;
                     $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                     $y =+ 1;
 
