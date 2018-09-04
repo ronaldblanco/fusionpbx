@@ -131,6 +131,7 @@
 		dialed_user = session:getVariable("dialed_user");
 		missed_call_app = session:getVariable("missed_call_app");
 		missed_call_data = session:getVariable("missed_call_data");
+		missed_call_send_email_force = session:getVariable("missed_call_send_email_force") or 'false'
 		sip_code = session:getVariable("last_bridge_proto_specific_hangup_cause");
 
 		if (debug["info"] == true) then
@@ -150,6 +151,11 @@
 		end
 
 		if (originate_disposition ~= nil) then
+
+			if (missed_call_send_email_force == 'true') then
+				missed();
+			end
+
 			if (originate_disposition == 'USER_BUSY') then
 
 				--handle USER_BUSY
