@@ -37,8 +37,15 @@
 --load libraries
 	require 'resources.functions.send_mail'
 
+	local email_is_sent = false
+
 --check the missed calls
 	function missed()
+
+		if email_is_sent then
+			return
+		end
+
 		if (missed_call_app ~= nil and missed_call_data ~= nil) then
 			if (missed_call_app == "email") then
 				--set the sounds path for the language, dialect and voice
@@ -104,6 +111,8 @@
 						{subject, body}
 					);
 
+					email_is_sent = true
+
 					if (debug["info"]) then
 						freeswitch.consoleLog("notice", "[missed call] " .. caller_id_number .. "->" .. sip_to_user .. "emailed to " .. missed_call_data .. "\n");
 					end
@@ -152,11 +161,8 @@
 
 		if (originate_disposition ~= nil) then
 
-			local email_not_sent = true
-
 			if (missed_call_send_email_force == 'true') then
 				missed();
-				email_sent = false
 			end
 
 			if (originate_disposition == 'USER_BUSY') then
@@ -185,9 +191,7 @@
 								end
 							else
 								--send missed call notification
-								if (email_not_sent) then
-									missed()
-								end
+								missed()
 
 								--handle USER_BUSY - hangup
 								freeswitch.consoleLog("NOTICE", "[failure_handler] forward on busy with empty destination: hangup(USER_BUSY)\n");
@@ -211,9 +215,7 @@
 					end
 				else
 					--send missed call notification
-					if (email_not_sent) then
-						missed()
-					end
+					missed()
 				end
 				if (debug["info"] ) then
 					freeswitch.consoleLog("NOTICE", "[failure_handler] - NO_ANSWER\n");
@@ -234,9 +236,7 @@
 					end
 				else
 					--send missed call notification
-					if (email_not_sent) then
-						missed()
-					end
+					missed()
 				end
 
 				--send missed call notification
@@ -250,9 +250,7 @@
 			elseif (originate_disposition == "SUBSCRIBER_ABSENT" and hangup_on_subscriber_absent == "true") then
 				--send missed call notification
 				
-				if (email_not_sent) then
-					missed()
-				end
+				missed()
 
 				--handle SUBSCRIBER_ABSENT
 				freeswitch.consoleLog("NOTICE", "[failure_handler] - SUBSCRIBER_ABSENT - hangup(UNALLOCATED_NUMBER)\n");
@@ -260,9 +258,7 @@
 
 			elseif (originate_disposition == "CALL_REJECTED" and hangup_on_call_reject =="true") then
 				--send missed call notification
-				if (email_not_sent) then
-					missed()
-				end
+				missed()
 
 				--handle CALL_REJECT
 				freeswitch.consoleLog("NOTICE", "[failure_handler] - CALL_REJECT - hangup()\n");
