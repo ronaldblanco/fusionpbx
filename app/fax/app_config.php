@@ -380,6 +380,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "String to return if email2fax is completed with errors";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "961faada-a4ee-4c4c-97c3-e72651b6b081";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "email_to_fax_use_to_field";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use \"To\" address part as a destination instead of \"Subject\" in email2fax";
 
 	//schema details
 		$y=0;
