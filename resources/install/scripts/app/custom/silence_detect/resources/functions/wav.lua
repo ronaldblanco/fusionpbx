@@ -46,7 +46,8 @@ wav = {
 		-- Audio file handle
 		local file = io.open(filename, mode == "r" and "rb" or "wb")
 		if not file then
-			error(string.format("couldn't open file %q", filename), 2)
+			return false
+			--error(string.format("couldn't open file %q", filename), 2)
 		end
 		-- Byte-string(unsigend integer,little endian)<->Lua-number converters
 		local function bton(s)

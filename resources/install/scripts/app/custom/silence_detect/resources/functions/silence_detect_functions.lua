@@ -16,8 +16,18 @@ function silence_detect_samples(samples)
 end
 
 
+function file_exists(name)
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+
 function silence_detect_file(filename)
-    local file_reader = wav.create_context(filename, 'r')
+
+	local file_reader = wav.create_context(filename, 'r')
+	
+	if (file_reader == false) then
+		return true
+	end
 
     file_reader.set_position(0)
 
