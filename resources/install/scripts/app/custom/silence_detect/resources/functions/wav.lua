@@ -267,7 +267,7 @@ wav = {
 					return output
 				end,
 				close_context = function()
-					io.close(filename)
+					file:close()
 				end
 			}
 			return obj
