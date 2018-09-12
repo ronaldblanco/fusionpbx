@@ -1,7 +1,30 @@
-function silence_detect_in_file(file)
-    if session:ready() then
-        local file_duration = session:getVariable('record_ms')
-        session:execute("wait_for_silence", "200 15 10 " .. file_duration .. " " .. file)
-        session:execute("info")
-    end
+function silence_detect_samples(samples) 
+	local first_sample = samples[1]
+	local hits = 0
+
+	for i = 2, #samples do
+		if (math.abs(first_sample - samples[i]) > silence_threshold) then
+			if (hits >= threshold_total_hits) then
+				return false
+			end
+			hits = hits + 1
+		end
+		first_sample = samples[i]
+	end
+
+	return true
+end
+
+
+function silence_detect_file(filename)
+    local file_reader = wav.create_context(filename, 'r')
+
+    file_reader.set_position(0)
+
+    -- Read only channel 1
+    local samples = file_reader.get_samples(math.floor(file_reader.get_samples_per_channel()) - 1)[1]
+
+    file_reader.close_context()
+
+    return silence_detect_samples(samples)
 end
