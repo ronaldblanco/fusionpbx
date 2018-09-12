@@ -13,7 +13,7 @@ silence_threshold = 100
 threshold_total_hits = 3
 
 -- Where to store temp files. Default = memory
-tmp_dir = '/dev/shv/'
+tmp_dir = '/dev/shm/'
 
 if session:ready() then
 
