@@ -295,14 +295,14 @@
 	from_address = env:getHeader("mailfrom_address") or email_address
 	--email_address = api:execute("system", "/bin/echo -n "..email_address.." | /bin/sed -e s/\,/\\\\,/g");
 	
-	email_address = email_address:gsub(",", "\\,");
+	email_address = email_address:gsub(",", "\\,")
 	from_address = explode(',', from_address)[1]
 
 	uri_array = explode("/",fax_uri);
 	if (uri_array[1] == 'user') then
-        number_dialed = uri_array[2];
+        number_dialed = uri_array[2]
     else
-        number_dialed = uri_array[4];
+        number_dialed = uri_array[4]
     end
 	--do not use apostrophies in message, they are not escaped and the mail will fail.
 	email_message_fail = "We are sorry the fax failed to go through.  It has been attached. Please check the number "..number_dialed..", and if it was correct you might consider emailing it instead."
