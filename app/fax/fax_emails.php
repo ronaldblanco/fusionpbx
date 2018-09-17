@@ -203,8 +203,7 @@ if (sizeof($result) != 0) {
 
 					if ($email_to_fax_use_to_field) {
 						$tmp = object_to_array(imap_rfc822_parse_adrlist($metadata[0]['to'], null));
-						var_dump($tmp);
-						$fax_numbers[] = $metadata[0]['to'];
+                        $fax_numbers[] = $tmp[0]['mailbox'];
 					} else {
 						//parse recipient fax number(s)
 						$fax_subject = $metadata[0]['subject'];
@@ -308,9 +307,9 @@ if (sizeof($result) != 0) {
 				}
 
 				//TODO - delete email 
-				//if (imap_delete($connection, $email_id, FT_UID)) {
-				//	imap_expunge($connection);
-				//}
+				if (imap_delete($connection, $email_id, FT_UID)) {
+					imap_expunge($connection);
+				}
 			}
 			unset($authorized_senders);
 		}
