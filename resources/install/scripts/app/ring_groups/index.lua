@@ -129,6 +129,18 @@
 		end
 	end
 
+	-- A bit shitty function not to add more levels of if/else to future statements.
+	-- Added (if set) outbound_redirect_fatal to ring group bridge statement
+
+	local function add_app_data_ignore_redirect(ignore_redirects_ring_group, form_of_insert)
+		if (ignore_redirects_ring_group) then
+			if (form_of_insert) then
+				return "{outbound_redirect_fatal=true}"
+			end
+			return ",outbound_redirect_fatal=true"
+		end
+		return ""
+	end
 --set the hangup hook function
 	if (session:ready()) then
 		session:setHangupHook("session_hangup_hook");
@@ -156,6 +168,7 @@
 		context = session:getVariable("context");
 		call_direction = session:getVariable("call_direction");
 		accountcode = session:getVariable("accountcode");
+		ignore_redirects_ring_group = session:getVariable("ignore_redirects_ring_group");
 	end
 
 --default to local if nil
@@ -678,16 +691,16 @@
 						--freeswitch.consoleLog("notice", "[ring group] dial_string: " .. dial_string .. "\n");
 						if (x == 0) then
 							if (ring_group_strategy == "enterprise") then
-								app_data = dial_string;
+								app_data = add_app_data_ignore_redirect(ignore_redirects_ring_group, true) .. dial_string;
 							else
-								app_data = "{ignore_early_media=true}"..dial_string;
+								app_data = "{ignore_early_media=true" .. add_app_data_ignore_redirect(ignore_redirects_ring_group, false) .. "}" .. dial_string;
 							end
 						else
 							if (app_data == nil) then
 								if (ring_group_strategy == "enterprise") then
-									app_data = dial_string;
+									app_data = add_app_data_ignore_redirect(ignore_redirects_ring_group, true) .. dial_string;
 								else
-									app_data = "{ignore_early_media=true}"..dial_string;
+									app_data = "{ignore_early_media=true" .. add_app_data_ignore_redirect(ignore_redirects_ring_group, false) .. "}"..dial_string;
 								end
 							else
 								app_data = app_data .. delimiter .. dial_string;
@@ -732,7 +745,7 @@
 						for key, row in pairs(destinations) do
 
 							--set the app data
-								app_data = '{ignore_early_media=true}';
+								app_data = "{ignore_early_media=true" .. add_app_data_ignore_redirect(ignore_redirects_ring_group, false) .. "}";
 
 							--set the values from the database as variables
 								user_exists = row.user_exists;
