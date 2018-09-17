@@ -931,15 +931,49 @@ include "root.php";
 
 				//get the extensions and add them to the contacts array
 					if (strlen($device_uuid) > 0 and strlen($domain_uuid) > 0 and $_SESSION['provision']['contact_extensions']['boolean'] == "true") {
-						//get contacts from the database
-							$sql = "select extension_uuid as contact_uuid, directory_first_name, directory_last_name, ";
-							$sql .= "effective_caller_id_name, effective_caller_id_number, ";
-							$sql .= "number_alias, extension ";
-							$sql .= "from v_extensions ";
-							$sql .= "where domain_uuid = '".$domain_uuid."' ";
-							$sql .= "and enabled = 'true' ";
-							$sql .= "and directory_visible = 'true' ";
-							$sql .= "order by number_alias, extension asc ";
+
+							$sql = "Select group_uuid 
+									from v_phonebook_to_groups 
+									where phonebook_uuid IN 
+									( Select phonebook_uuid from v_phonebook where phonenumber IN 
+										( Select user_id from v_device_lines where device_uuid IN 
+											( Select device_uuid from v_devices where device_mac_address = '". $mac. "') 
+										) 
+									)";
+
+							$prep_statement = $this->db->prepare($sql);
+
+							$group_uuid = "";
+
+							if ($prep_statement) {
+								$prep_statement->execute();
+								$groups_uuid = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+								if (is_array($groups_uuid)) {
+									foreach ($groups_uuid as $row) {
+										$group_uuid = $row['group_uuid'];
+									}
+								}
+							}
+
+                     
+							#$sql = "select phonebook_uuid as contact_uuid,name as effective_caller_id_name,phonenumber as extension,phonebook_desc from v_phonebook where phonebook_uuid IN (Select phonebook_uuid from v_phonebook_to_groups where group_uuid IN  ( Select group_uuid from v_phonebook_to_groups where phonebook_uuid IN ( Select phonebook_uuid from v_phonebook where phonenumber IN ( Select user_id from v_device_lines where device_uuid IN ( Select device_uuid from v_devices where device_mac_address = '"+$mac+"'  ) ) ) ))"
+
+							if (strlen($group_uuid) > 0) {
+
+							$sql = "select phonebook_uuid as contact_uuid,name as effective_caller_id_name,phonenumber as extension,phonebook_desc from v_phonebook where phonebook_uuid IN (Select phonebook_uuid from v_phonebook_to_groups where group_uuid = '". $group_uuid ."' )";
+
+							} else {
+								//get contacts from the database
+								$sql = "select extension_uuid as contact_uuid, directory_first_name, directory_last_name, ";
+								$sql .= "effective_caller_id_name, effective_caller_id_number, ";
+								$sql .= "number_alias, extension ";
+								$sql .= "from v_extensions ";
+								$sql .= "where domain_uuid = '". $domain_uuid ."' ";
+								$sql .= "and enabled = 'true' ";
+								$sql .= "and directory_visible = 'true' ";
+								$sql .= "order by number_alias, extension asc ";
+							}
+
 							$prep_statement = $this->db->prepare($sql);
 							if ($prep_statement) {
 								$prep_statement->execute();
