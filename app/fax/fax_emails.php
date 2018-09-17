@@ -151,6 +151,12 @@ if (sizeof($result) != 0) {
 		$fax_email_connection .= ($fax_email_connection_security != '') ? "/".$fax_email_connection_security : "/notls";
 		$fax_email_connection .= "/".(($fax_email_connection_validate == 'false') ? "no" : null)."validate-cert";
 		$fax_email_connection .= "}".$fax_email_connection_mailbox;
+
+		echo "Connecting to box...\n";
+		var_dump($fax_email_connection);
+		var_dump($fax_email_connection_username);
+		var_dump($fax_email_connection_password);
+
 		if (!$connection = imap_open($fax_email_connection, $fax_email_connection_username, $fax_email_connection_password)) {
 			if ($email_to_fax_verbose_level >= 2) {
 				$email_to_fax_result .= json_encode(imap_errors()) . "\n";
@@ -159,6 +165,7 @@ if (sizeof($result) != 0) {
 			continue; // try next account
 		}
 
+		echo "Connected successfully\n";
 		//get emails
 		if ($emails = imap_search($connection, "SUBJECT \"[".$fax_email_outbound_subject_tag."]\"", SE_UID)) {
 
@@ -171,6 +178,9 @@ if (sizeof($result) != 0) {
 			}
 
 			sort($emails); // oldest first
+
+			var_dump($emails);
+
 			foreach ($emails as $email_id) {
 				$metadata = object_to_array(imap_fetch_overview($connection, $email_id, FT_UID));
 
@@ -294,10 +304,10 @@ if (sizeof($result) != 0) {
 					unset($fax_numbers);
 				}
 
-				//delete email
-				if (imap_delete($connection, $email_id, FT_UID)) {
-					imap_expunge($connection);
-				}
+				//TODO - delete email 
+				//if (imap_delete($connection, $email_id, FT_UID)) {
+				//	imap_expunge($connection);
+				//}
 			}
 			unset($authorized_senders);
 		}
