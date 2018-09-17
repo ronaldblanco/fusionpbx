@@ -323,7 +323,7 @@ function fax_split_dtmf(&$fax_number, &$fax_dtmf){
 
 				//block unauthorized files
 
-				$disallowed_file_extensions = isset($_SESSION['fax']['disallowed_upload_extensions']['text']) ? $_SESSION['fax']['disallowed_upload_extensions']['text'] : 'sh,ssh,so,dll,exe,bat,vbs,zip,rar,z,tar,tbz,tgz,gz';
+				$disallowed_file_extensions = isset($_SESSION['fax']['disallowed_upload_extensions']['text']) ? $_SESSION['fax']['disallowed_upload_extensions']['text'] : ;
 				$disallowed_file_extensions = explode(',',$disallowed_file_extensions);
 				if (in_array($fax_file_extension, $disallowed_file_extensions) || $fax_file_extension == '') { continue; }
 
@@ -723,7 +723,7 @@ function fax_split_dtmf(&$fax_number, &$fax_dtmf){
 		}
 
 		if ($mailto_address_fax != '' && $mailto_address_user != $mailto_address_fax) {
-			$mailto_address = $mailto_address_fax.",".$mailto_address_user;
+			$mailto_address = $mailto_address_fax."\\,".$mailto_address_user;
 		}
 		else {
 			$mailto_address = $mailto_address_user;
