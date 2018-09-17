@@ -291,18 +291,19 @@
 	dbh:query(sql, params);
 
 --for email
-	email_address = env:getHeader("mailto_address");
+	email_address = env:getHeader("mailto_address") or ''
+	from_address = env:getHeader("mailfrom_address") or email_address
 	--email_address = api:execute("system", "/bin/echo -n "..email_address.." | /bin/sed -e s/\,/\\\\,/g");
-	if (not email_address) then
-		email_address = '';
-	end
+	
 	email_address = email_address:gsub(",", "\\,");
-	from_address = env:getHeader("mailfrom_address");
-	if (from_address == nil) then
-		from_address = email_address;
-	end
+	from_address = explode(',', from_address)[1]
+
 	uri_array = explode("/",fax_uri);
-	number_dialed = uri_array[4];
+	if (uri_array[1] == 'user') then
+        number_dialed = uri_array[2];
+    else
+        number_dialed = uri_array[4];
+    end
 	--do not use apostrophies in message, they are not escaped and the mail will fail.
 	email_message_fail = "We are sorry the fax failed to go through.  It has been attached. Please check the number "..number_dialed..", and if it was correct you might consider emailing it instead."
 	email_message_success = "We are happy to report the fax was sent successfully.  It has been attached for your records."

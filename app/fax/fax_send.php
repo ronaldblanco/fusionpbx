@@ -721,7 +721,7 @@ function fax_split_dtmf(&$fax_number, &$fax_dtmf){
 		}
 
 		if ($mailto_address_fax != '' && $mailto_address_user != $mailto_address_fax) {
-			$mailto_address = $mailto_address_fax.",".$mailto_address_user;
+			$mailto_address = $mailto_address_fax."\\,".$mailto_address_user;
 		}
 		else {
 			$mailto_address = $mailto_address_user;
