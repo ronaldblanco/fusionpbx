@@ -41,7 +41,10 @@ $result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 unset($sql, $prep_statement);
 
 $email_to_fax_result = '';
+// Verbosity level
 $email_to_fax_verbose_level = isset($_SESSION['fax']['email_to_fax_verbose_level']['numeric']) ? (int) $_SESSION['fax']['email_to_fax_verbose_level']['numeric'] : 0;
+// Possibility to use To field instead of subject. Like +11222333@myfaxbox.com
+$email_to_fax_use_to_field = isset($_SESSION['fax']['email_to_fax_use_to_field']['boolean']) ? filter_var($_SESSION['fax']['email_to_fax_use_to_field']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
 $email_to_fax_success_run = true;
 
 function arr_to_map(&$arr){
@@ -177,6 +180,7 @@ if (sizeof($result) != 0) {
 				$metadata = object_to_array(imap_fetch_overview($connection, $email_id, FT_UID));
 
 				var_dump($metadata);
+
 				//format from address
 				$tmp = object_to_array(imap_rfc822_parse_adrlist($metadata[0]['from'], null));
 				$metadata[0]['from'] = $tmp[0]['mailbox']."@".$tmp[0]['host'];
@@ -197,20 +201,26 @@ if (sizeof($result) != 0) {
 					//sent sender address (used in api call)
 					$mailto_address_user = $metadata[0]['from'];
 
-					//parse recipient fax number(s)
-					$fax_subject = $metadata[0]['subject'];
-					$tmp = explode(']', $fax_subject); //closing bracket of subject tag
-					$tmp = $tmp[1];
-					$tmp = str_replace(':', ',', $tmp);
-					$tmp = str_replace(';', ',', $tmp);
-					$tmp = str_replace('|', ',', $tmp);
-					if (substr_count($tmp, ',') > 0) {
-						$fax_numbers = explode(',', $tmp);
+					if ($email_to_fax_use_to_field) {
+						$tmp = object_to_array(imap_rfc822_parse_adrlist($metadata[0]['to'], null));
+						var_dump($tmp);
+						$fax_numbers[] = $metadata[0]['to'];
+					} else {
+						//parse recipient fax number(s)
+						$fax_subject = $metadata[0]['subject'];
+						$tmp = explode(']', $fax_subject); //closing bracket of subject tag
+						$tmp = $tmp[1];
+						$tmp = str_replace(':', ',', $tmp);
+						$tmp = str_replace(';', ',', $tmp);
+						$tmp = str_replace('|', ',', $tmp);
+						if (substr_count($tmp, ',') > 0) {
+							$fax_numbers = explode(',', $tmp);
+						}
+						else {
+							$fax_numbers[] = $tmp;
+						}
+						unset($fax_subject); //clear so not on cover page
 					}
-					else {
-						$fax_numbers[] = $tmp;
-					}
-					unset($fax_subject); //clear so not on cover page
 
 					$message = parse_message($connection, $email_id, FT_UID);
 
