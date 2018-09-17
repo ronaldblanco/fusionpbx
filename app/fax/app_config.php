@@ -387,7 +387,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use \"To\" address part as a destination instead of \"Subject\" in email2fax";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use To address part as a destination instead of Subject in email2fax";
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d6b64905-ddb6-455d-bbeb-d641a1e504ac";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
