@@ -152,11 +152,6 @@ if (sizeof($result) != 0) {
 		$fax_email_connection .= "/".(($fax_email_connection_validate == 'false') ? "no" : null)."validate-cert";
 		$fax_email_connection .= "}".$fax_email_connection_mailbox;
 
-		echo "Connecting to box...\n";
-		var_dump($fax_email_connection);
-		var_dump($fax_email_connection_username);
-		var_dump($fax_email_connection_password);
-
 		if (!$connection = imap_open($fax_email_connection, $fax_email_connection_username, $fax_email_connection_password)) {
 			if ($email_to_fax_verbose_level >= 2) {
 				$email_to_fax_result .= json_encode(imap_errors()) . "\n";
@@ -165,7 +160,6 @@ if (sizeof($result) != 0) {
 			continue; // try next account
 		}
 
-		echo "Connected successfully\n";
 		//get emails
 		if ($emails = imap_search($connection, "SUBJECT \"[".$fax_email_outbound_subject_tag."]\"", SE_UID)) {
 
@@ -179,11 +173,10 @@ if (sizeof($result) != 0) {
 
 			sort($emails); // oldest first
 
-			var_dump($emails);
-
 			foreach ($emails as $email_id) {
 				$metadata = object_to_array(imap_fetch_overview($connection, $email_id, FT_UID));
 
+				var_dump($metadata);
 				//format from address
 				$tmp = object_to_array(imap_rfc822_parse_adrlist($metadata[0]['from'], null));
 				$metadata[0]['from'] = $tmp[0]['mailbox']."@".$tmp[0]['host'];
