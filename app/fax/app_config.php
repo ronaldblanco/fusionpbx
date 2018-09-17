@@ -388,6 +388,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use \"To\" address part as a destination instead of \"Subject\" in email2fax";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d6b64905-ddb6-455d-bbeb-d641a1e504ac";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "disallowed_upload_extensions";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "sh,ssh,so,dll,exe,bat,vbs,zip,rar,z,tar,tbz,tgz,gz";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Extensions, that are not disallowed to upload";
 
 	//schema details
 		$y=0;

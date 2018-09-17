@@ -306,7 +306,7 @@ if (sizeof($result) != 0) {
 					unset($fax_numbers);
 				}
 
-				//TODO - delete email 
+				//delete email 
 				if (imap_delete($connection, $email_id, FT_UID)) {
 					imap_expunge($connection);
 				}
