@@ -87,6 +87,8 @@ $text['label-voicemail_description']['en-us'] = "Description";
 
 // -- Voicemail part end
 
+$text['label-ignore']['en-us'] = "Ignore";
+
 $text['description-selector']['en-us'] = "Select field to use";
 
 $text['description-file_column']['en-us'] = "File line #";
