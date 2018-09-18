@@ -529,6 +529,10 @@ if (!class_exists('csv_file_process')) {
                 // Read CSV line and sterialize it
                 $csv_line = array_map('check_str', $this->csv_file->fgetcsv());
                 $csv_line = $this->normalize_line($csv_line);
+
+                if (isset($csv_file['ignore'])) {
+                    unset($csv_file['ignore']);
+                }
                 
                 if ($csv_line) { // CSV line is correct and extension is present
                     $this->add_extension($csv_line);
