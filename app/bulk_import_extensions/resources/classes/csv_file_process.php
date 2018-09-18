@@ -463,7 +463,7 @@ if (!class_exists('csv_file_process')) {
                 return False;
             }
             $result = array();
-            for ($i = 1; $i < $number_to_read; $i++) {
+            for ($i = 1; $i <= $number_to_read; $i++) {
                 if (!$this->csv_file->valid()) {
                     break;
                 }

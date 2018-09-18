@@ -173,7 +173,7 @@ if ($action == 'import') {
 
 	// Here we got first 4 lines of file. As usual, CSV holds first line as a fields desccription.
 	// And we will use it to count number of fields in file.
-	$import_lines = $import_file->read_first($rows_to_show + 1);
+	$import_lines = $import_file->read_first($rows_to_show);
 	$row_count = count($import_lines[0]);
 
 	// Initialize array if not full for normal show after.
