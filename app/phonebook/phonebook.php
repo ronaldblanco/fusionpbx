@@ -22,7 +22,8 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Jamie Sorensen <jamie@directvoip.co.uk>
+	Darren Williams (https://github.com/DigiDaz)
+	Igor Olhovskiy <igorolhovskiy@gmail.com>
 */
 require_once "root.php";
 require_once "resources/require.php";

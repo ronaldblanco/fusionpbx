@@ -22,7 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Jamie Sorensen <jamie@directvoip.co.uk>
+	Igor Olhovskiy <igorolhovskiy@gmail.com>
 */
 require_once "root.php";
 require_once "resources/require.php";
