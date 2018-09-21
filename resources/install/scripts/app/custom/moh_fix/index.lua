@@ -1,5 +1,5 @@
 -- modify MOH from local_stream to file_stream
-require "resources.functions.local_to_file_stream"
+require "app.custom.moh_fix.resources.functions.local_to_file_stream"
 
 if (session:ready()) then
     hold_music = session:getVariable("hold_music")
