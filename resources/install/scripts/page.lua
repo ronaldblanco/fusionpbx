@@ -199,38 +199,12 @@
 					--get the destination required for number-alias
 					destination = api:execute("user_data", destination .. "@" .. domain_name .. " attr id");
 
-					--prevent calling the user that initiated the page
-					if (sip_from_user ~= destination) then
-						--cmd = "username_exists id "..destination.."@"..domain_name;
-						--reply = trim(api:executeString(cmd));
-						--if (reply == "true") then
-							if (member_available(destination)) then
-								if destination == sip_from_user then
-									--this destination is the caller that initated the page
-								else
-									--originate the call
-										cmd_string = "bgapi originate {sip_auto_answer=true,sip_h_Alert-Info='Ring Answer',hangup_after_bridge=false,rtp_secure_media="..rtp_secure_media..",origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..destination.."@"..domain_name.." conference:"..conference_name.."+"..flags.." inline";
-									api:executeString(cmd_string);
-									destination_count = destination_count + 1;
-								end
-								--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
-							else
- 								--look inside the reply to check for the correct domain_name
-								if string.find(reply, domain_name) then
-									--found: user is busy
-								else
- 									--not found
-									if (destination == tonumber(sip_from_user)) then
-										--this destination is the caller that initated the page
-									else
-										--originate the call
-										cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,rtp_secure_media="..rtp_secure_media..",origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..destination.."@"..domain_name.." conference:"..conference_name.."+"..flags.." inline";
-										api:executeString(cmd_string);
-										destination_count = destination_count + 1;
-									end
-								end
-							end
-						--end
+					--prevent calling the user that initiated the page and to non-existing destinations
+					if ((sip_from_user ~= destination) and member_available(destination)) then
+						--originate the call
+						cmd_string = "bgapi originate {sip_auto_answer=true,sip_h_Alert-Info='Ring Answer',hangup_after_bridge=false,rtp_secure_media="..rtp_secure_media..",origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..destination.."@"..domain_name.." conference:"..conference_name.."+"..flags.." inline";
+						api:executeString(cmd_string);
+						destination_count = destination_count + 1;
 					end
 				end
 			end
