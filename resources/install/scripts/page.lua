@@ -111,49 +111,35 @@
 		--answer the call
 			session:answer();
 		--get the dialplan variables and set them as local variables
-			destination_number = session:getVariable("destination_number");
-			pin_number = session:getVariable("pin_number");
-			domain_name = session:getVariable("domain_name");
-			sounds_dir = session:getVariable("sounds_dir");
-			destinations = session:getVariable("destinations");
-			rtp_secure_media = session:getVariable("rtp_secure_media");
-			page_skip_active_users = session:getVariable("page_skip_active_users")
-			if (destinations == nil) then
-				destinations = session:getVariable("extension_list");
-			end
-			destination_table = explode(",",destinations);
-			caller_id_name = session:getVariable("caller_id_name");
-			caller_id_number = session:getVariable("caller_id_number");
-			sip_from_user = session:getVariable("sip_from_user");
-			mute = session:getVariable("mute");
-
+			destination_number = session:getVariable("destination_number")
+			pin_number = session:getVariable("pin_number")
+			domain_name = session:getVariable("domain_name")
+			sounds_dir = session:getVariable("sounds_dir")
+			destinations = session:getVariable("destinations") or session:getVariable("extension_list")
+			rtp_secure_media = session:getVariable("rtp_secure_media") or 'false'
+			page_skip_active_users = (session:getVariable("page_skip_active_users") == 'true') and true or false
+			caller_id_name = session:getVariable("caller_id_name")
+			caller_id_number = session:getVariable("caller_id_number")
+			sip_from_user = session:getVariable("sip_from_user")
+			mute = session:getVariable("mute")
 		--set the sounds path for the language, dialect and voice
-			default_language = session:getVariable("default_language");
-			default_dialect = session:getVariable("default_dialect");
-			default_voice = session:getVariable("default_voice");
-			if (not default_language) then default_language = 'en'; end
-			if (not default_dialect) then default_dialect = 'us'; end
-			if (not default_voice) then default_voice = 'callie'; end
+			default_language = session:getVariable("default_language") or 'en'
+			default_dialect = session:getVariable("default_dialect") or 'us'
+			default_voice = session:getVariable("default_voice") or 'callie'
 
-		--set rtp_secure_media to an empty string if not provided.
-			if (rtp_secure_media == nil) then
-				rtp_secure_media = 'false';
-			end
-
+			destination_table = explode(",",destinations)
+			
 		--define the conference name
 			local conference_name = "page-"..destination_number.."@"..domain_name.."@page"
 
 		--set the caller id
-			if (caller_id_name) then
+			if (not caller_id_name) then
 				--caller id name provided do nothing
-			else
 				effective_caller_id_name = session:getVariable("effective_caller_id_name");
 				caller_id_name = effective_caller_id_name;
 			end
 
-			if (caller_id_number) then
-				--caller id number provided do nothing
-			else
+			if (not caller_id_number) then
 				effective_caller_id_number = session:getVariable("effective_caller_id_number");
 				caller_id_number = effective_caller_id_number;
 			end
