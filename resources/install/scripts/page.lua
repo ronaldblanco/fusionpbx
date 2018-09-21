@@ -40,7 +40,7 @@
 
 --define database connection
 	local Database = require "resources.functions.database"
-	local dbh = Database.new('switch')
+	local dbh = database_handle('switch');
 
 --iterator over numbers.
 	local function each_number(value)
@@ -93,9 +93,10 @@
 		sql = sql .. " OR presence_id = '" .. member_full_name .. "'"
 		sql = sql .. " LIMIT 1" -- We don't need more than 1 result at all
 		
-		dbh:query(sql, params, function(row)
+		dbh:query(sql, function(row)
 			local chan_state = row.state
-		end);
+		end)
+
 		if (chan_state) then
 			freeswitch.consoleLog("NOTICE", "[page] destination " .. member_full_name .. " is in " .. chan_state .. " state\n")
 			return false
