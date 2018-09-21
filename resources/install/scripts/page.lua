@@ -37,9 +37,10 @@
 
 --define the split function
 	require "resources.functions.split";
-
+	
 --define database connection
-	local Database = require "resources.functions.database"
+	require "resources.functions.config"
+	require "resources.functions.database_handle"
 	local dbh = database_handle('switch');
 
 --iterator over numbers.
@@ -94,7 +95,7 @@
 		sql = sql .. " LIMIT 1" -- We don't need more than 1 result at all
 		
 		dbh:query(sql, function(row)
-			local chan_state = row.state
+			chan_state = row.state
 		end)
 
 		if (chan_state) then
