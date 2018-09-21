@@ -40,7 +40,7 @@
 
 --define database connection
 	local Database = require "resources.functions.database"
-	local dbh = Database.new('system')
+	local dbh = Database.new('switch')
 
 --iterator over numbers.
 	local function each_number(value)
@@ -88,9 +88,9 @@
 
 		--local sql = "SELECT state, name, cid_name, cid_num, presence_id FROM channels"
 		local sql = "SELECT state FROM channels"
-		sql = sql .. " WHERE application_data LIKE %" .. member_full_name .. "%"
-		sql = sql .. " OR name LIKE %" .. member_full_name .. "%"
-		sql = sql .. " OR presence_id = " .. member_full_name
+		sql = sql .. " WHERE application_data LIKE '%" .. member_full_name .. "%'"
+		sql = sql .. " OR name LIKE '%" .. member_full_name .. "%'"
+		sql = sql .. " OR presence_id = '" .. member_full_name .. "'"
 		sql = sql .. " LIMIT 1" -- We don't need more than 1 result at all
 		
 		dbh:query(sql, params, function(row)
