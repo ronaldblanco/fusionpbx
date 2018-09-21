@@ -91,6 +91,7 @@
 		sql = sql .. " WHERE application_data LIKE %" .. member_full_name .. "%"
 		sql = sql .. " OR name LIKE %" .. member_full_name .. "%"
 		sql = sql .. " OR presence_id = " .. member_full_name
+		sql = sql .. " LIMIT 1" -- We don't need more than 1 result at all
 		
 		dbh:query(sql, params, function(row)
 			local chan_state = row.state
