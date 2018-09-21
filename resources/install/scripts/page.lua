@@ -38,6 +38,10 @@
 --define the split function
 	require "resources.functions.split";
 
+--define database connection
+	local Database = require "resources.functions.database"
+	local dbh = Database.new('system')
+
 --iterator over numbers.
 	local function each_number(value)
 		local begin_value, end_value = split_first(value, "-", true)
@@ -64,6 +68,41 @@
 		end
 	end
 
+	-- Function to get if member is available. 
+	local function member_available(member)
+
+		local member_full_name = member .. '@' .. domain_name
+
+		-- Check if user exists at all.
+		local user_exists = api:executeString('sofia_contact ' .. member_full_name)
+		if (user_exists == 'error/user_not_registered') then
+			freeswitch.consoleLog("NOTICE", "[page] destination " .. member_full_name .. " is not registered or exist\n")
+			return false
+		end
+
+		-- Skip talking users
+		if (not page_skip_active_users) then
+			freeswitch.consoleLog("NOTICE", "[page] destination " .. member_full_name .. " available\n")
+			return true
+		end
+
+		--local sql = "SELECT state, name, cid_name, cid_num, presence_id FROM channels"
+		local sql = "SELECT state FROM channels"
+		sql = sql .. " WHERE application_data LIKE %" .. member_full_name .. "%"
+		sql = sql .. " OR name LIKE %" .. member_full_name .. "%"
+		sql = sql .. " OR presence_id = " .. member_full_name
+		
+		dbh:query(sql, params, function(row)
+			local chan_state = row.state
+		end);
+		if (chan_state) then
+			freeswitch.consoleLog("NOTICE", "[page] destination " .. member_full_name .. " is in " .. chan_state .. " state\n")
+			return false
+		end
+		freeswitch.consoleLog("NOTICE", "[page] destination " .. member_full_name .. " available\n")
+		return true
+	end
+
 --make sure the session is ready
 	if ( session:ready() ) then
 		--answer the call
@@ -75,6 +114,7 @@
 			sounds_dir = session:getVariable("sounds_dir");
 			destinations = session:getVariable("destinations");
 			rtp_secure_media = session:getVariable("rtp_secure_media");
+			page_skip_active_users = session:getVariable("page_skip_active_users")
 			if (destinations == nil) then
 				destinations = session:getVariable("extension_list");
 			end
@@ -164,10 +204,7 @@
 						--cmd = "username_exists id "..destination.."@"..domain_name;
 						--reply = trim(api:executeString(cmd));
 						--if (reply == "true") then
-							destination_status = "show channels like "..destination.."@";
-							reply = trim(api:executeString(destination_status));
-							if (reply == "0 total.") then
-								freeswitch.consoleLog("NOTICE", "[page] destination "..destination.." available\n");
+							if (member_available(destination)) then
 								if destination == sip_from_user then
 									--this destination is the caller that initated the page
 								else
