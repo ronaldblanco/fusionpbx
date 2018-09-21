@@ -203,7 +203,7 @@
 					destination = api:execute("user_data", destination .. "@" .. domain_name .. " attr id");
 
 					--prevent calling the user that initiated the page and to non-existing destinations
-					if ((sip_from_user ~= destination) and member_available(destination)) then
+					if ((sip_from_user ~= destination) and #destination ~= 0 and member_available(destination)) then
 						--originate the call
 						cmd_string = "bgapi originate {sip_auto_answer=true,sip_h_Alert-Info='Ring Answer',hangup_after_bridge=false,rtp_secure_media="..rtp_secure_media..",origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..destination.."@"..domain_name.." conference:"..conference_name.."+"..flags.." inline";
 						api:executeString(cmd_string);
