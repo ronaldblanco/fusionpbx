@@ -530,8 +530,8 @@ if (!class_exists('csv_file_process')) {
                 $csv_line = array_map('check_str', $this->csv_file->fgetcsv());
                 $csv_line = $this->normalize_line($csv_line);
 
-                if (array_key_exists('ignore', $csv_file)) {
-                    unset($csv_file['ignore']);
+                if (array_key_exists('ignore', $csv_line)) {
+                    unset($csv_line['ignore']);
                 }
                 
                 if ($csv_line) { // CSV line is correct and extension is present
