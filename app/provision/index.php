@@ -42,6 +42,8 @@
 	$mac = check_str($_REQUEST['mac']);
 	$file = check_str($_REQUEST['file']);
 	$ext = check_str($_REQUEST['ext']);
+	$auth_type = check_str($_REQUEST['auth_type']);
+
 	//if (strlen(check_str($_REQUEST['template'])) > 0) {
 	//	$device_template = check_str($_REQUEST['template']);
 	//}
@@ -308,8 +310,17 @@
 		}
 	}
 
+	// Override auth_type for this device
+	if(strlen($auth_type) != 0) {
+		$provision["http_auth_type"] = $auth_type;
+	}
+
+	if (strlen($provision["http_auth_username"]) > 0 && strlen($provision["http_auth_type"]) == 0) { 
+		$provision["http_auth_type"] = "digest"; 
+	}
+
 //http authentication - digest
-	if (strlen($provision["http_auth_username"]) > 0 && strlen($provision["http_auth_type"]) == 0) { $provision["http_auth_type"] = "digest"; }
+
 	if (strlen($provision["http_auth_username"]) > 0 && $provision["http_auth_type"] === "digest" && $provision["http_auth_disable"] !== "true") {
 		//function to parse the http auth header
 			function http_digest_parse($txt) {
