@@ -311,7 +311,7 @@
 	}
 
 	// Override auth_type for this device
-	if(strlen($auth_type) != 0) {
+	if(!empty($auth_type)) {
 		$provision["http_auth_type"] = $auth_type;
 	}
 
