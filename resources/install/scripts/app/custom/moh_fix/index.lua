@@ -6,19 +6,19 @@ if (session:ready()) then
     --freeswitch.consoleLog("notice", "[FIX_MOH] Got moh "..hold_music.."\n")
     if (hold_music ~= nil) then
         hold_music = local_to_file_stream(hold_music)
-        session:setVariable("hold_music", hold_music)
+        session:execute("export", "hold_music=" .. hold_music)
     end
 
     transfer_ringback = session:getVariable("transfer_ringback")
     if (transfer_ringback ~= nil) then
         transfer_ringback = local_to_file_stream(transfer_ringback)
-        session:setVariable("transfer_ringback", transfer_ringback)
+        session:execute("export", "transfer_ringback=" .. transfer_ringback)
     end
 
     ringback = session:getVariable("ringback")
     if (ringback ~= nil) then
         ringback = local_to_file_stream(ringback)
-        session:setVariable("ringback", ringback)
+        session:export("export", "ringback=" .. ringback)
     end
     --freeswitch.consoleLog("notice", "[FIX_MOH] Set moh "..hold_music.."\n")
     session:setVariable("fix_moh", "true")
