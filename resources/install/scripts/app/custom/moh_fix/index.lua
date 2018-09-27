@@ -18,7 +18,7 @@ if (session:ready()) then
     ringback = session:getVariable("ringback")
     if (ringback ~= nil) then
         ringback = local_to_file_stream(ringback)
-        session:export("export", "ringback=" .. ringback)
+        session:execute("export", "ringback=" .. ringback)
     end
     --freeswitch.consoleLog("notice", "[FIX_MOH] Set moh "..hold_music.."\n")
     session:setVariable("fix_moh", "true")
