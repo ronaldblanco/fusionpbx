@@ -66,7 +66,7 @@
 
 		-- search for the phone number in database using the speed dial
 			local sql = [[
-				-- find all contacts with correct user or withot users and groups at all
+				-- find all contacts with correct user or without users and groups at all
 				select t0.phone_number --, t6.extension, 'GROUP:' || t3.group_name as user_name
 				from v_contact_phones t0
 				inner join v_contacts t1 on t0.contact_uuid = t1.contact_uuid
