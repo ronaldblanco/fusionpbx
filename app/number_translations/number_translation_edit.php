@@ -160,7 +160,7 @@
 	if (strlen($number_translation_uuid) > 0) {
 		$sql = "select * from v_number_translation_details ";
 		$sql .= "where number_translation_uuid = '".$number_translation_uuid."' ";
-		$sql .= "order by NULLIF(number_translation_detail_order,''):int";
+		$sql .= "order by number_translation_detail_order";
 		$prep_statement = $db->prepare($sql);
 		$prep_statement->execute();
 		$number_translation_details = $prep_statement->fetchAll(PDO::FETCH_NAMED);
