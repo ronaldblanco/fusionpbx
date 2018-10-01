@@ -690,7 +690,7 @@ include "root.php";
 							unset($templates);
 
 						//mac address does not exist in the table so add it
-							if ($_SESSION['provision']['auto_insert_enabled']['boolean'] == "true" and strlen($domain_uuid) > 0) {
+							if ($_SESSION['provision']['auto_insert_enabled']['boolean'] == "true" and strlen($domain_uuid) > 0 and $mac != '000000000000') {
 								$device_uuid = uuid();
 								$sql = "INSERT INTO v_devices ";
 								$sql .= "(";
