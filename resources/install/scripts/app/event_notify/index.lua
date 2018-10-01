@@ -66,8 +66,8 @@
 			event:addHeader('event-string', 'check-sync;reboot=true');
 		end
 
---cisco, polycom
-	elseif (vendor == "cisco" or vendor == "polycom") then
+--cisco, polycom, algo
+	elseif (vendor == "cisco" or vendor == "polycom" or vendor == "algo") then
 		if (command == "reboot") then
 			event:addHeader('event-string', 'check-sync');
 		end
