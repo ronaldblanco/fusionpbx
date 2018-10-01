@@ -169,6 +169,9 @@ include "root.php";
 					if (preg_match('/^.*?htek.*$/i', $agent)) {
 						return "htek";
 					}
+					if (preg_match('/^.*[aA]lgo.*$/i', $agent)) {
+						return "algo";
+					}
 					if (preg_replace('/^.*?(fanvil).*$/i', '$1', $agent) == "fanvil") {
 						return "fanvil";
 					}
