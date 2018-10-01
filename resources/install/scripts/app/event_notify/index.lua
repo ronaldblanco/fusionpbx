@@ -66,8 +66,8 @@
 			event:addHeader('event-string', 'check-sync;reboot=true');
 		end
 
---cisco
-	elseif (vendor == "cisco") then
+--cisco, polycom
+	elseif (vendor == "cisco" or vendor == "polycom") then
 		if (command == "reboot") then
 			event:addHeader('event-string', 'check-sync');
 		end
@@ -75,8 +75,8 @@
 			event:addHeader('event-string', 'check-sync');
 		end
 
---cisco-spa
-	elseif (vendor == "cisco-spa") then
+--cisco-spa, linksys
+	elseif (vendor == "cisco-spa" or vendor == "linksys") then
 		if (command == "reboot") then
 			event:addHeader('event-string', 'reboot=true');
 		end
@@ -84,60 +84,14 @@
 			event:addHeader('event-string', 'reboot=true');
 		end
 
---fanvil
-	elseif (vendor == "fanvil") then
+--fanvil, grandstream, htek, sangoma
+	elseif (vendor == "fanvil" or vendor == "grandstream" or vendor == "htek" or vendor == "sangoma") then
 		if (command == "reboot") then
 			event:addHeader('event-string', 'check-sync;reboot=true');
 		end
 		if (command == "check_sync") then
 			event:addHeader('event-string', 'resync');
 		end
-
---grandstream
-	elseif (vendor == "grandstream") then
-		if (command == "reboot") then
-			event:addHeader('event-string', 'check-sync;reboot=true');
-		end
-		if (command == "check_sync") then
-			event:addHeader('event-string', 'resync');
-		end
-
---htek
-	elseif (vendor == "htek") then
-		if (command == "reboot") then
-			event:addHeader('event-string', 'check-sync;reboot=true');
-		end
-		if (command == "check_sync") then
-			event:addHeader('event-string', 'resync');
-		end
-
---sangoma
-	elseif (vendor == "sangoma") then
-		if (command == "reboot") then
-			event:addHeader('event-string', 'check-sync;reboot=true');
-		end
-		if (command == "check_sync") then
-			event:addHeader('event-string', 'resync');
-		end
-
---linksys
-	elseif (vendor == "linksys") then
-		if (command == "reboot") then
-			event:addHeader('event-string', 'reboot=true');
-		end
-		if (command == "check_sync") then
-			event:addHeader('event-string', 'reboot=true');
-		end
-
---polycom
-	elseif (vendor == "polycom") then
-		if (command == "reboot") then
-			event:addHeader('event-string', 'check-sync');
-		end
-		if (command == "check_sync") then
-			event:addHeader('event-string', 'check-sync');
-		end
-
 
 -- Generic rule. Includes yealink, snom, panasonic
 	else
