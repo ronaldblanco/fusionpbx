@@ -7,10 +7,10 @@ require "app.custom.silence_detect.resources.functions.wav"
 
 
 -- Differece in 2 close samples to say, that change was done
-silence_threshold = 100
+silence_threshold = 20
 
 -- How many silence_threshold to consider, that it's silence and not false-positive
-threshold_total_hits = 3
+threshold_total_hits = 10
 
 -- Where to store temp files. Default = memory
 tmp_dir = '/dev/shm/'
@@ -46,6 +46,7 @@ if session:ready() then
         is_silence_detected = silence_detect_file(tmp_file_name)
         os.remove(tmp_file_name)
         if (is_silence_detected == false) then
+            loop_detected = i
             break
         end
     end
@@ -63,7 +64,7 @@ if session:ready() then
     end
 
     if (is_silence_detected) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected for this call. Transferring to " .. transfer_on_silence)
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected. Transferring to " .. transfer_on_silence)
         if (transfer_on_silence == 'hangup') then
             session:execute("hangup")
         else
@@ -71,6 +72,6 @@ if session:ready() then
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
         end
     else
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected for this call. Continue dialplan")
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected on loop " .. loop_detected .. ". Continue dialplan")
     end    
 end

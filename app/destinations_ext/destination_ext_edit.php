@@ -89,6 +89,7 @@
         $destination_ext_number = escape(check_str($_POST["destination_ext_number"]));
         $db_destination_ext_number = escape(check_str($_POST["db_destination_ext_number"]));
         $destination_ext_variable = escape(check_str($_POST["destination_ext_variable"]));
+        $destination_ext_silence_detect = escape(check_str($_POST["destination_ext_silence_detect"]));
         $destination_ext_enabled = escape(check_str($_POST["destination_ext_enabled"]));
         $destination_ext_description = escape(check_str($_POST["destination_ext_description"]));
         
@@ -377,8 +378,12 @@
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"hangup_after_bridge=true\" inline=\"true\"/>\n";
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"continue_on_fail=true\" inline=\"true\"/>\n";
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"accountcode=" . $destination_ext_domain . "\"/>\n";
+
                     if (strlen($destination_ext_variable) > 0 and isset($invalid_ext_transfer)) {
                         $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable . "=" . $invalid_ext_transfer . "\"/>\n";
+                    }
+                    if ($destination_ext_silence_detect == 'true') {
+                        $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect hangup 5\"/>\n";
                     }
 
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
@@ -467,6 +472,16 @@
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $dialplan_detail_order += 10;
                         $y += 1;
+                    }
+
+                    if ($destination_ext_silence_detect == 'true') {
+                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "lua";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "app_custom.lua silence_detect hangup 5";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                        $y += 1;
+                        $dialplan_detail_order += 10;
                     }
 
                     $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
@@ -625,8 +640,13 @@
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"continue_on_fail=true\" inline=\"true\"/>\n";
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"accountcode=" . $destination_ext_domain . "\"/>\n";
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"invalid_ext_id=" . $invalid_name_id . "\"/>\n";
+
                     if (strlen($destination_ext_variable) > 0) {
                         $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable . "=$1\"/>\n";
+                    }
+
+                    if ($destination_ext_silence_detect == 'true') {
+                        $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect hangup 5\"/>\n";
                     }
 
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
@@ -728,6 +748,16 @@
                         $dialplan_detail_order += 10;
                     }
 
+                    if ($destination_ext_silence_detect == 'true') {
+                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "lua";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "app_custom.lua silence_detect hangup 5";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                        $y += 1;
+                        $dialplan_detail_order += 10;
+                    }
+
                     //add the actions
 
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
@@ -815,6 +845,7 @@
                 $sql .= " destination_ext_dialplan_extensions_uuid,";
                 $sql .= " destination_ext_number,";
                 $sql .= " destination_ext_variable,";
+                $sql .= " destination_ext_silence_detect,";
                 $sql .= " destination_ext_enabled,";
                 $sql .= " destination_ext_description";
                 $sql .= ") VALUES (";
@@ -824,6 +855,7 @@
                 $sql .= " '".$destination_ext_dialplan_extensions_uuid."',";
                 $sql .= " '".$destination_ext_number."',";
                 $sql .= " '".$destination_ext_variable."',";
+                $sql .= " '".$destination_ext_silence_detect."',";
                 $sql .= " '".$destination_ext_enabled."',";
                 $sql .= " '".$destination_ext_description."')";
 
@@ -837,10 +869,12 @@
                 $sql .= " destination_ext_dialplan_extensions_uuid = '".$destination_ext_dialplan_extensions_uuid."',";
                 $sql .= " destination_ext_number = '".$destination_ext_number."',";
                 $sql .= " destination_ext_variable = '".$destination_ext_variable."',";
+                $sql .= " destination_ext_silence_detect = '".$destination_ext_silence_detect."',";
                 $sql .= " destination_ext_enabled = '".$destination_ext_enabled."',";
                 $sql .= " destination_ext_description = '".$destination_ext_description."'";
                 $sql .= " WHERE destination_ext_uuid = '".$destination_ext_uuid."'";
                 $sql .= " AND domain_uuid = '".$domain_uuid."'";
+
                 $db->exec(check_sql($sql));
                 unset($sql);
 
@@ -887,6 +921,7 @@
             $destination_ext_dialplan_extensions_uuid = $result[0]["destination_ext_dialplan_extensions_uuid"];
             $destination_ext_number = $result[0]["destination_ext_number"];
             $destination_ext_variable = $result[0]["destination_ext_variable"];
+            $destination_ext_silence_detect = $result[0]["destination_ext_silence_detect"];
             $destination_ext_enabled = $result[0]["destination_ext_enabled"];
             $destination_ext_description = $result[0]["destination_ext_description"];
         }
@@ -1019,7 +1054,11 @@
 
         if ($row["dialplan_detail_tag"] != "condition") {
             if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
-                // Exclude all set's.
+                // Exclude all set's and lua's
+                continue;
+            }
+            if ($row["dialplan_detail_type"] == "lua" && $destination_ext_silence_detect == 'true') {
+                // Exclude lua's in a case of silence detect
                 continue;
             }
             echo "              <tr>\n";
@@ -1082,9 +1121,14 @@
 
         if ($row["dialplan_detail_tag"] != "condition") {
             if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
-                // Exclude all set's.
+                // Exclude all set's
                 continue;
             }
+            if ($row["dialplan_detail_type"] == "lua" && $destination_ext_silence_detect == 'true') {
+                // Exclude lua's in a case of silence detect
+                continue;
+            }
+
             echo "              <tr>\n";
             echo "                  <td style='padding-top: 5px; padding-right: 3px; white-space: nowrap;'>\n";
             if (strlen($row['dialplan_detail_uuid']) > 0) {
@@ -1211,6 +1255,7 @@
         echo "<input type='hidden' name='domain_uuid' value='" . escape($domain_uuid) ."'>\n";
     }
 
+    // Destination variable
     echo "<tr>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
     echo "  ".$text['label-destination_ext_variable']."\n";
@@ -1222,6 +1267,27 @@
     echo "</td>\n";
     echo "</tr>\n";
 
+    echo "<tr>\n";
+    echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+    echo "  ".$text['label-destination_ext_silence_detect']."\n";
+    echo "</td>\n";
+    echo "<td class='vtable' align='left'>\n";
+    echo "  <select class='formfld' name='destination_ext_silence_detect'>\n";
+    if ($destination_ext_silence_detect == 'true') {
+        $selected[1] = "selected='selected'";
+    } else {
+        $selected[2] = "selected='selected'";
+    }
+    echo "  <option value='true' ".$selected[1].">".$text['label-true']."</option>\n";
+    echo "  <option value='false' ".$selected[2].">".$text['label-false']."</option>\n";
+    unset($selected);
+    echo "  </select>\n";
+    echo "<br />\n";
+    echo $text['description-destination_ext_silence_detect']."\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+
+    // Enabled / Disabled
     echo "<tr>\n";
     echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
     echo "  ".$text['label-destination_ext_enabled']."\n";

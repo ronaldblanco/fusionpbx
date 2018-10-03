@@ -30,6 +30,8 @@ $text['label-detail_action_invalid']['en-us'] = "Invalid number action";
 
 $text['label-destination_ext_variable']['en-us'] = "Variable to store extension";
 
+$text['label-destination_ext_silence_detect']['en-us'] = "Silence detect";
+
 $text['label-destination_ext_enabled']['en-us'] = "Enable/Disable";
 
 $text['label-destination_ext_description']['en-us'] = "Description";
@@ -42,6 +44,8 @@ $text['description-destination_ext_variable']['en-us'] = "Variable to store exte
 $text['description-destination_ext_number']['en-us'] = "Destinations main number";
 
 $text['description-destination_ext_enabled']['en-us'] = "Enable or disable current destiantion";
+
+$text['description-destination_ext_silence_detect']['en-us'] = "EXPERIMENTAL! Silence detect on incoming call on this channel. Will hangup if silence on incoming call is detected";
 
 $text['description-destination_ext_description']['en-us'] = "Destination description";
 

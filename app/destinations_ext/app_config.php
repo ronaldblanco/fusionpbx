@@ -85,6 +85,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Variable to save extension";
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_silence_detect";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Possibility to detect silence on this destination";
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_enabled";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enable destinations ext";

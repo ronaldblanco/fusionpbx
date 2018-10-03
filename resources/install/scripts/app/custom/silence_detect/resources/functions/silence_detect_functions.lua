@@ -28,7 +28,10 @@ function silence_detect_file(filename)
     -- Read only channel 1
     local samples = file_reader.get_samples(math.floor(file_reader.get_samples_per_channel()) - 1)[1]
 
-    file_reader.close_context()
-
-    return silence_detect_samples(samples)
+	file_reader.close_context()
+	
+	if (samples) then
+		return silence_detect_samples(samples)
+	end
+	return true
 end
