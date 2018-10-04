@@ -24,13 +24,15 @@ end
 
 function silence_detect_lines(samples)
 	local samples_length = #samples
-	-- Assuming min line lenght is 1% of sample
-	local min_line_lenght = math.round(samples_length / 100)
+
+	local min_line_lenght = math.floor(samples_length / 100)
 
 	-- Should be small here
 	local silence_threshold = argv[5] and tonumber(argv[5]) or 5
-	
-	local line_peak_ratio = argv[6] and tonumber(argv[6]) or 90
+	local line_peak_ratio = argv[6] and tonumber(argv[6]) or 70
+	local quantinizer = argv[7] and tonumber(argv[7]) or 100
+
+	local min_line_lenght = math.floor(samples_length / quantinizer)
 
 	local line_length = 0
 	local current_line_lenght = 0
@@ -51,7 +53,7 @@ function silence_detect_lines(samples)
 		end
 	end
 
-	local current_line_peak_ratio = math.round(line_length / samples_length)
+	local current_line_peak_ratio = math.floor(line_length / samples_length * 100)
 
 	if (current_line_peak_ratio > line_peak_ratio) then
 		return true, "Line/Peak ratio is " .. current_line_peak_ratio
@@ -76,7 +78,7 @@ function silence_detect_file(filename)
 	
 	local function_name = "silence_detect_" .. algo
 	
-	if (samples and _G[function_name])then
+	if (samples and _G[function_name]) then
 		return _G[function_name](samples)
 	end
 	return true

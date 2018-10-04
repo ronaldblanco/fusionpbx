@@ -3,7 +3,7 @@
 -- argv3 - Loops to detect silence. Default 10
 -- argv4 - algo is used. 
 --          samples - simple algo with 2 parameters - silence_threshold (argv5) and threshold_total_hits (argv6)
---          lines - trying to build silence/peaks ratio
+--          lines - trying to build silence/peaks ratio. silence_threshold (argv5) line_peak_ratio (argv6) quantinizer (argv7)
 
 require "app.custom.silence_detect.resources.functions.silence_detect_functions"
 require "app.custom.silence_detect.resources.functions.wav"
@@ -14,9 +14,10 @@ tmp_dir = '/dev/shm/'
 
 if session:ready() then
 
+    algo = argv[4] or 'samples'
+
     local transfer_on_silence = argv[2] or 'hangup'
     local loop_count = argv[3] or 10
-    local algo = argv[4] or 'samples'
 
     local record_append = session:getVariable('RECORD_APPEND') or nil
     local record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
