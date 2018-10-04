@@ -77,6 +77,9 @@
 		}
 	}
 
+
+    $destination_ext_silence_detect_enabled = isset($_SESSION['silence_detect']['enabled']['boolean']) ? filter_var($_SESSION['silence_detect']['enabled']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
+
     if (count($_POST) > 0) {
         //set the variables
         $domain_uuid = escape(check_str($_POST["domain_uuid"]));
@@ -95,6 +98,11 @@
         
         //convert the number to a regular expression
         $destination_ext_number_regex = string_to_regex($destination_ext_number);
+        if ($destination_ext_silence_detect_enabled) {
+            $destination_ext_silence_detect_algo = isset($_SESSION['silence_detect']['algorithm']['text']) ? $_SESSION['silence_detect']['algorithm']['text'] : "hangup 5";
+        } else {
+            $destination_ext_silence_detect = 'false';
+        }
     }
     unset($_POST["db_destination_ext_number"]);
 
@@ -383,7 +391,7 @@
                         $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable . "=" . $invalid_ext_transfer . "\"/>\n";
                     }
                     if ($destination_ext_silence_detect == 'true') {
-                        $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect hangup 5\"/>\n";
+                        $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect " . $destination_ext_silence_detect_algo . "\"/>\n";
                     }
 
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
@@ -478,7 +486,7 @@
                         $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "lua";
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "app_custom.lua silence_detect hangup 5";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "app_custom.lua silence_detect " . $destination_ext_silence_detect_algo;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $y += 1;
                         $dialplan_detail_order += 10;
@@ -646,7 +654,7 @@
                     }
 
                     if ($destination_ext_silence_detect == 'true') {
-                        $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect hangup 5\"/>\n";
+                        $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect " . $destination_ext_silence_detect_algo . "\"/>\n";
                     }
 
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
@@ -752,7 +760,7 @@
                         $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "lua";
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "app_custom.lua silence_detect hangup 5";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "app_custom.lua silence_detect " . $destination_ext_silence_detect_algo;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $y += 1;
                         $dialplan_detail_order += 10;
@@ -1267,25 +1275,28 @@
     echo "</td>\n";
     echo "</tr>\n";
 
-    echo "<tr>\n";
-    echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-    echo "  ".$text['label-destination_ext_silence_detect']."\n";
-    echo "</td>\n";
-    echo "<td class='vtable' align='left'>\n";
-    echo "  <select class='formfld' name='destination_ext_silence_detect'>\n";
-    if ($destination_ext_silence_detect == 'true') {
-        $selected[1] = "selected='selected'";
-    } else {
-        $selected[2] = "selected='selected'";
+    // Silence detect
+    if ($destination_ext_silence_detect_enabled) {
+        echo "<tr>\n";
+        echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+        echo "  ".$text['label-destination_ext_silence_detect']."\n";
+        echo "</td>\n";
+        echo "<td class='vtable' align='left'>\n";
+        echo "  <select class='formfld' name='destination_ext_silence_detect'>\n";
+        if ($destination_ext_silence_detect == 'true') {
+            $selected[1] = "selected='selected'";
+        } else {
+            $selected[2] = "selected='selected'";
+        }
+        echo "  <option value='true' ".$selected[1].">".$text['label-true']."</option>\n";
+        echo "  <option value='false' ".$selected[2].">".$text['label-false']."</option>\n";
+        unset($selected);
+        echo "  </select>\n";
+        echo "<br />\n";
+        echo $text['description-destination_ext_silence_detect']."\n";
+        echo "</td>\n";
+        echo "</tr>\n";
     }
-    echo "  <option value='true' ".$selected[1].">".$text['label-true']."</option>\n";
-    echo "  <option value='false' ".$selected[2].">".$text['label-false']."</option>\n";
-    unset($selected);
-    echo "  </select>\n";
-    echo "<br />\n";
-    echo $text['description-destination_ext_silence_detect']."\n";
-    echo "</td>\n";
-    echo "</tr>\n";
 
     // Enabled / Disabled
     echo "<tr>\n";

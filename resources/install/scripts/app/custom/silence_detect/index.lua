@@ -1,16 +1,13 @@
 -- Script to accept 2 vars
 -- argv2 - Transfer to if silence detected
 -- argv3 - Loops to detect silence. Default 10
+-- argv4 - algo is used. 
+--          samples - simple algo with 2 parameters - silence_threshold (argv5) and threshold_total_hits (argv6)
+--          lines - trying to build silence/peaks ratio
 
 require "app.custom.silence_detect.resources.functions.silence_detect_functions"
 require "app.custom.silence_detect.resources.functions.wav"
 
-
--- Differece in 2 close samples to say, that change was done
-silence_threshold = 20
-
--- How many silence_threshold to consider, that it's silence and not false-positive
-threshold_total_hits = 10
 
 -- Where to store temp files. Default = memory
 tmp_dir = '/dev/shm/'
@@ -19,6 +16,7 @@ if session:ready() then
 
     local transfer_on_silence = argv[2] or 'hangup'
     local loop_count = argv[3] or 10
+    local algo = argv[4] or 'samples'
 
     local record_append = session:getVariable('RECORD_APPEND') or nil
     local record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
@@ -43,7 +41,7 @@ if session:ready() then
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
-        is_silence_detected = silence_detect_file(tmp_file_name)
+        is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name)
         os.remove(tmp_file_name)
         if (is_silence_detected == false) then
             loop_detected = i
@@ -64,7 +62,7 @@ if session:ready() then
     end
 
     if (is_silence_detected) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected. Transferring to " .. transfer_on_silence)
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected with ".. silence_detect_debug_info .. ". Transferring to " .. transfer_on_silence)
         if (transfer_on_silence == 'hangup') then
             session:execute("hangup")
         else
@@ -72,6 +70,6 @@ if session:ready() then
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
         end
     else
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected on loop " .. loop_detected .. ". Continue dialplan")
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected on loop " .. loop_detected .. " with " .. silence_detect_debug_info .. ". Continue dialplan")
     end    
 end
