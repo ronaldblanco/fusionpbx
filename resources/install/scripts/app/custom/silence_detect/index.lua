@@ -36,13 +36,14 @@ if session:ready() then
 
     for i = 1, loop_count do
 
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Filename: " .. tmp_file_name .. " Loop:" .. i)
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i)
         session:execute("record_session", tmp_file_name)
         session:execute("playback", 'tone_stream://$${ringback}')
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
         is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name)
+        session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
         os.remove(tmp_file_name)
         if (is_silence_detected == false) then
             loop_detected = i
@@ -63,14 +64,12 @@ if session:ready() then
     end
 
     if (is_silence_detected) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected with ".. silence_detect_debug_info .. ". Transferring to " .. transfer_on_silence)
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected. Transferring to " .. transfer_on_silence)
         if (transfer_on_silence == 'hangup') then
             session:execute("hangup")
         else
             local domain_name = session:getVariable('domain_name') or ""
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
         end
-    else
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected on loop " .. loop_detected .. " with " .. silence_detect_debug_info .. ". Continue dialplan")
-    end    
+    end
 end

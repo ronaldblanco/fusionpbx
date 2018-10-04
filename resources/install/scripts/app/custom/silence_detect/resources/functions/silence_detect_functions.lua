@@ -12,14 +12,14 @@ function silence_detect_samples(samples)
 	for i = 2, #samples do
 		if (math.abs(first_sample - samples[i]) > silence_threshold) then
 			if (hits >= threshold_total_hits) then
-				return false, "Detect noise on sample " .. i
+				return false, "Detect noise on sample " .. i .. " " .. silence_threshold .. " " .. threshold_total_hits
 			end
 			hits = hits + 1
 		end
 		first_sample = samples[i]
 	end
 
-	return true, "Silence is detected"
+	return true, "Silence is detected " .. silence_threshold .. " " .. threshold_total_hits
 end
 
 function silence_detect_lines(samples)
@@ -59,9 +59,9 @@ function silence_detect_lines(samples)
 	local current_line_peak_ratio = math.floor(line_length / samples_length * 100)
 
 	if (current_line_peak_ratio > line_peak_ratio) then
-		return true, "Line/Peak ratio is " .. current_line_peak_ratio
+		return true, "Line/Peak ratio is " .. current_line_peak_ratio .. " " .. silence_threshold .. " " .. line_peak_ratio .. " " .. quantinizer
 	end
-	return false, "Line/Peak ratio is " .. current_line_peak_ratio
+	return false, "Line/Peak ratio is " .. current_line_peak_ratio .. " " .. silence_threshold .. " " .. line_peak_ratio .. " " .. quantinizer
 end
 
 function silence_detect_file(filename)
