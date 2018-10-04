@@ -6,20 +6,22 @@ function silence_detect_samples(samples)
 	-- How many silence_threshold to consider, that it's silence and not false-positive
 	local threshold_total_hits = argv[6] and tonumber(argv[6]) or 5
 
+	local debug_param_line = " ST: " .. silence_threshold .. " TTH: " .. threshold_total_hits
+
 	local first_sample = samples[1]
 	local hits = 0
 
 	for i = 2, #samples do
 		if (math.abs(first_sample - samples[i]) > silence_threshold) then
 			if (hits >= threshold_total_hits) then
-				return false, "Detect noise on sample " .. i .. " " .. silence_threshold .. " " .. threshold_total_hits
+				return false, "NOISE S:" .. i .. debug_param_line
 			end
 			hits = hits + 1
 		end
 		first_sample = samples[i]
 	end
 
-	return true, "Silence is detected " .. silence_threshold .. " " .. threshold_total_hits
+	return true, "SIL" .. debug_param_line
 end
 
 function silence_detect_lines(samples)
@@ -58,10 +60,11 @@ function silence_detect_lines(samples)
 
 	local current_line_peak_ratio = math.floor(line_length / samples_length * 100)
 
+	local debug_param_line = "L/P C: " .. current_line_peak_ratio .. " ST:" .. silence_threshold .. " L/P E:" .. line_peak_ratio .. " Q:" .. quantinizer
 	if (current_line_peak_ratio > line_peak_ratio) then
-		return true, "Line/Peak ratio is " .. current_line_peak_ratio .. " " .. silence_threshold .. " " .. line_peak_ratio .. " " .. quantinizer
+		return true, debug_param_line
 	end
-	return false, "Line/Peak ratio is " .. current_line_peak_ratio .. " " .. silence_threshold .. " " .. line_peak_ratio .. " " .. quantinizer
+	return false, debug_param_line
 end
 
 function silence_detect_file(filename)
