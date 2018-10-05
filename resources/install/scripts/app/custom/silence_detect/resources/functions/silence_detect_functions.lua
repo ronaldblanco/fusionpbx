@@ -28,7 +28,7 @@ function silence_detect_lines(samples)
 	local samples_length = #samples
 
 	-- Should be small here
-	local silence_threshold = argv[5] and tonumber(argv[5]) or 5
+	local silence_threshold = argv[5] and tonumber(argv[5]) or 20
 	local line_peak_ratio = argv[6] and tonumber(argv[6]) or 70
 	local quantinizer = argv[7] and tonumber(argv[7]) or 100
 
