@@ -72,7 +72,7 @@ function silence_detect_file(filename)
 	local file_reader = wav.create_context(filename, 'r')
 	
 	if (file_reader == false) then
-		return true
+		return true, "File " .. filename .. " not found"
 	end
 
     file_reader.set_position(0)
