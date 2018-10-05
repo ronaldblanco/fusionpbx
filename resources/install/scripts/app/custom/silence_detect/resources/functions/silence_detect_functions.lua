@@ -87,5 +87,5 @@ function silence_detect_file(filename)
 	if (samples and _G[function_name]) then
 		return _G[function_name](samples)
 	end
-	return true
+	return true, "No samples or no function " .. function_name .. " exist"
 end
