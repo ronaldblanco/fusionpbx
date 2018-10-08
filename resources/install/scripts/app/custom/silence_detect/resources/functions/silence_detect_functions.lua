@@ -1,10 +1,10 @@
-function silence_detect_samples(samples) 
+function silence_detect_samples(samples, opts) 
 
 	-- Differece in 2 close samples to say, that change was done
-	local silence_threshold = argv[5] and tonumber(argv[5]) or 100
+	local silence_threshold = opts[1] and tonumber(opts[1]) or 100
 
 	-- How many silence_threshold to consider, that it's silence and not false-positive
-	local threshold_total_hits = argv[6] and tonumber(argv[6]) or 5
+	local threshold_total_hits = opts[2] and tonumber(opts[2]) or 5
 
 	local debug_param_line = " ST: " .. silence_threshold .. " TTH: " .. threshold_total_hits
 
@@ -24,13 +24,13 @@ function silence_detect_samples(samples)
 	return true, "SIL" .. debug_param_line
 end
 
-function silence_detect_lines(samples)
+function silence_detect_lines(samples, opts)
 	local samples_length = #samples
 
 	-- Should be small here
-	local silence_threshold = argv[5] and tonumber(argv[5]) or 20
-	local line_peak_ratio = argv[6] and tonumber(argv[6]) or 70
-	local quantinizer = argv[7] and tonumber(argv[7]) or 100
+	local silence_threshold = opts[1] and tonumber(opts[1]) or 20
+	local line_peak_ratio = opts[2] and tonumber(opts[2]) or 70
+	local quantinizer = opts[3] and tonumber(opts[3]) or 100
 
 	local min_line_lenght = math.floor(samples_length / quantinizer)
 
@@ -67,7 +67,7 @@ function silence_detect_lines(samples)
 	return false, debug_param_line
 end
 
-function silence_detect_file(filename)
+function silence_detect_file(filename, algo, algo_opts)
 
 	local file_reader = wav.create_context(filename, 'r')
 	
@@ -85,7 +85,7 @@ function silence_detect_file(filename)
 	local function_name = "silence_detect_" .. algo
 	
 	if (samples and _G[function_name]) then
-		return _G[function_name](samples)
+		return _G[function_name](samples, algo_opts)
 	end
 	return true, "No samples or no function " .. function_name .. " exist"
 end
