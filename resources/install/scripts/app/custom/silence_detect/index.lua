@@ -32,6 +32,8 @@ if session:ready() then
         : count "*"
     parser:option("-t --transfer-to")
         : default "hangup"
+    parser:option("--hangup-reason")
+        :default ""
     parser:argument("algo_opts") 
         : args("*")
 
@@ -137,7 +139,7 @@ if session:ready() then
     if (is_silence_detected) then
         freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected. Transferring to " .. transfer_on_silence)
         if (transfer_on_silence == 'hangup') then
-            session:execute("hangup")
+            session:execute("hangup", args['hangup-reason'])
         else
             local domain_name = session:getVariable('domain_name') or ""
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
