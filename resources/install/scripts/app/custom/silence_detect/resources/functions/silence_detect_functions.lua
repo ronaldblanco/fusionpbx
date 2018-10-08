@@ -14,7 +14,7 @@ function silence_detect_samples(samples)
 	for i = 2, #samples do
 		if (math.abs(first_sample - samples[i]) > silence_threshold) then
 			if (hits >= threshold_total_hits) then
-				return false, "NOISE S:" .. i .. debug_param_line
+				return false, " NOISE S:" .. i .. debug_param_line
 			end
 			hits = hits + 1
 		end
