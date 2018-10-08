@@ -66,7 +66,7 @@ if session:ready() then
     if (is_silence_detected) then
         freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected. Transferring to " .. transfer_on_silence)
         if (transfer_on_silence == 'hangup') then
-            session:execute("hangup", args['hangup-reason'])
+            session:execute("hangup")
         else
             local domain_name = session:getVariable('domain_name') or ""
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
