@@ -22,12 +22,14 @@ if session:ready() then
     local record_append = session:getVariable('RECORD_APPEND') or nil
     local record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
     local record_stereo = session:getVariable('RECORD_STEREO') or nil
+    local ringback = session:getVariable('ringback') or "%(2000,4000,440,480)"
 
     local tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
     local is_silence_detected
 
     tmp_file_name = tmp_dir .. tmp_file_name .. '_sil_det.wav'
 
+    session:execute("set_zombie_exec")
     session:setVariable('RECORD_READ_ONLY', 'true')
     session:setVariable('RECORD_APPEND', 'false')
     session:setVariable('RECORD_STEREO', 'false')
@@ -38,7 +40,7 @@ if session:ready() then
 
         freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i)
         session:execute("record_session", tmp_file_name)
-        session:execute("playback", 'tone_stream://$${ringback}')
+        session:execute("playback", 'tone_stream://' .. ringback)
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
