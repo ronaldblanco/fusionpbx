@@ -221,9 +221,9 @@
 					freeswitch.consoleLog("NOTICE", "[failure_handler] - NO_ANSWER\n");
 				end
 
-			elseif (originate_disposition == "USER_NOT_REGISTERED") then
+			elseif (originate_disposition == "USER_NOT_REGISTERED" or originate_disposition == "NORMAL_TEMPORARY_FAILURE") then
 
-				--handle USER_NOT_REGISTERED
+				--handle USER_NOT_REGISTERED and NORMAL_TEMPORARY_FAILURE (cause cache of directory)
 				forward_user_not_registered_enabled = session:getVariable("forward_user_not_registered_enabled");
 				if (forward_user_not_registered_enabled == "true") then
 					forward_user_not_registered_destination = session:getVariable("forward_user_not_registered_destination");
