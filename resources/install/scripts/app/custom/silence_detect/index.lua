@@ -12,6 +12,7 @@ opthelp = [[
  -c, --clid-lenght=COUNT            If specified, only these callerid lenght are processed
  -d, --debug                        If specified - debug variables are set
  -v, --verbose                      If specified - verbose info is printed on FS console
+ -k, --keep-recorded                Keep recorded files
 ]]
 
 opts, args = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
@@ -37,7 +38,12 @@ if session:ready() then
     end
 
     if (check_exit) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid length is " .. #callerid_number .. " and not match options")
+        if opts.v then
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid length is " .. #callerid_number .. " and not match options")
+        end
+        if opts.d then
+            session:setVariable("silence_detect", "Callerid length is " .. #callerid_number .. " and not match options")
+        end
         do return end
     end
 
@@ -53,7 +59,12 @@ if session:ready() then
     end
 
     if (check_exit) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid  " .. callerid_number .. " not matched included options")
+        if opts.v then
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid  " .. callerid_number .. " not matched included options")
+        end
+        if opts.d then
+            session:setVariable("silence_detect", "Callerid  " .. callerid_number .. " not matched included options")
+        end
         do return end
     end    
 
@@ -67,7 +78,12 @@ if session:ready() then
     end
 
     if (check_exit) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid  " .. callerid_number .. " is matched excluded options")
+        if opts.v then
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid  " .. callerid_number .. " is matched excluded options")
+        end
+        if opts.d then
+            session:setVariable("silence_detect", "Callerid  " .. callerid_number .. " is matched excluded options")
+        end
         do return end
     end   
 
@@ -108,7 +124,11 @@ if session:ready() then
         if opts.d then
             session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
         end
-        os.remove(tmp_file_name)
+        if opts.k then
+            os.rename(tmp_file_name, tmp_file_name .. "_loop_" .. i)
+        else
+            os.remove(tmp_file_name)
+        end
         if (is_silence_detected == false) then
             loop_detected = i
             break
