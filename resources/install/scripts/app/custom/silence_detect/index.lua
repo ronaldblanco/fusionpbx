@@ -1,12 +1,17 @@
--- Script to accept 2 vars
--- argv2 - Transfer to if silence detected
--- argv3 - Loops to detect silence. Default 10
--- argv4 - algo is used. 
---          samples - simple algo with 2 parameters - silence_threshold (argv5) and threshold_total_hits (argv6)
---          lines - trying to build silence/peaks ratio. silence_threshold (argv5) line_peak_ratio (argv6) quantinizer (argv7)
-
 require "app.custom.silence_detect.resources.functions.silence_detect_functions"
 require "app.custom.silence_detect.resources.functions.wav"
+
+opthelp = [[
+ -a, --algo                     Algorythm used. lines or samples
+ -l, --loops                    Loop count
+ -r, --ringback                 Ringback to be used
+ -t, --transfer-on-silence      Where to transfer on silence
+ -i, --include-pattern=COUNT    Include callerid_number pattern     
+ -e, --exclude-pattern=COUNT    Exclude callerid_number pattern
+ -c, --clid-lenght=COUNT        If specified, only these callerid lenght are processed
+]]
+
+opts, args = require('app.custom.functions.optargs').from_opthelp(opthelp)
 
 
 -- Where to store temp files. Default = memory
@@ -14,15 +19,69 @@ tmp_dir = '/dev/shm/'
 
 if session:ready() then
 
-    algo = argv[4] or 'samples'
 
-    local transfer_on_silence = argv[2] or 'hangup'
-    local loop_count = argv[3] or 10
+    local check_exit = false
 
-    local record_append = session:getVariable('RECORD_APPEND') or nil
-    local record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
-    local record_stereo = session:getVariable('RECORD_STEREO') or nil
-    local ringback = session:getVariable('ringback') or "%(2000,4000,440,480)"
+    local callerid_number = session:getVariable('callerid_number') or ''
+    -- Filter callerid on digits
+    callerid_number = string.gsub(callerid_number, "%D", '') or ''
+
+    -- Check callerid lenght
+    if opts.c then
+        check_exit = true
+        for _, v in pairs(opts.c) do
+            if (tonumber(v) == #callerid_number) then
+                check_exit = false
+                break
+            end
+        end
+    end
+
+    if (check_exit) then
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid length is  " .. #callerid_number .. " and not match options")
+        do return end
+    end
+
+    -- Check for included callerid patterns
+    if opts.i then
+        check_exit = true
+        for _, v in pairs(opts.i) do
+            if (string.match(callerid_number, v)) then
+                check_exit = false
+                break
+            end
+        end
+    end
+
+    if (check_exit) then
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid  " .. callerid_number .. " not matched included options")
+        do return end
+    end    
+
+    if opts.e then
+        for _, v in pairs(opts.e) do
+            if (string.match(callerid_number, v)) then
+                check_exit = true
+                break
+            end
+        end
+    end
+
+    if (check_exit) then
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid  " .. callerid_number .. " is matched excluded options")
+        do return end
+    end   
+
+    algo = opts.a or 'samples'
+    loop_count = opts.l or 5
+    transfer_on_silence = opts.t or 'hangup'
+    ringback = opts.r or session:getVariable('ringback') or "%(2000,4000,440,480)"
+    -- Prepare args table to hold options only
+    table.remove(args, 1)
+
+    record_append = session:getVariable('RECORD_APPEND') or nil
+    record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
+    record_stereo = session:getVariable('RECORD_STEREO') or nil
 
     local tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
     local is_silence_detected
@@ -44,7 +103,7 @@ if session:ready() then
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
-        is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name)
+        is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name, args)
         session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
         os.remove(tmp_file_name)
         if (is_silence_detected == false) then

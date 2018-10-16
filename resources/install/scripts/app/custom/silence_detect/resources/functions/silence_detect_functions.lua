@@ -1,10 +1,10 @@
-function silence_detect_samples(samples) 
+function silence_detect_samples(samples, algo_opts) 
 
 	-- Differece in 2 close samples to say, that change was done
-	local silence_threshold = argv[5] and tonumber(argv[5]) or 100
+	local silence_threshold = algo_opts[1] and tonumber(algo_opts[1]) or 100
 
 	-- How many silence_threshold to consider, that it's silence and not false-positive
-	local threshold_total_hits = argv[6] and tonumber(argv[6]) or 5
+	local threshold_total_hits = algo_opts[2] and algo_opts(argv[2]) or 5
 
 	local debug_param_line = " ST: " .. silence_threshold .. " TTH: " .. threshold_total_hits
 
@@ -24,13 +24,14 @@ function silence_detect_samples(samples)
 	return true, "SIL" .. debug_param_line
 end
 
-function silence_detect_lines(samples)
+function silence_detect_lines(samples, algo_opts)
 	local samples_length = #samples
 
 	-- Should be small here
-	local silence_threshold = argv[5] and tonumber(argv[5]) or 20
-	local line_peak_ratio = argv[6] and tonumber(argv[6]) or 70
-	local quantinizer = argv[7] and tonumber(argv[7]) or 100
+	local line_peak_ratio = algo_opts[1] and tonumber(argv[1]) or 70
+	local silence_threshold = algo_opts[2] and tonumber(algo_opts[2]) or 20
+	local silence_threshold_zero = algo_opts[3] and tonumber(algo_opts[3]) or 30
+	local quantinizer = algo_opts[4] and tonumber(algo_opts[4]) or 100
 
 	local min_line_lenght = math.floor(samples_length / quantinizer)
 
@@ -40,7 +41,8 @@ function silence_detect_lines(samples)
 	local prev_sample = samples[1]
 
 	for i = 2, #samples do
-		if (math.abs(prev_sample - samples[i]) <= silence_threshold) then
+		local current_sample = samples[i]
+		if ((math.abs(current_sample) <=  silence_threshold_zero) or (math.abs(prev_sample - current_sample) <= silence_threshold)) then
 			-- Check if we are in the line. Not changing prev_sample here to avoid slow constant change
 			current_line_lenght = current_line_lenght + 1
 		else
@@ -49,7 +51,7 @@ function silence_detect_lines(samples)
 				line_length = line_length + current_line_lenght
 			end
 			current_line_lenght = 0
-			prev_sample = samples[i]
+			prev_sample = current_sample
 		end
 	end
 
@@ -67,7 +69,7 @@ function silence_detect_lines(samples)
 	return false, debug_param_line
 end
 
-function silence_detect_file(filename)
+function silence_detect_file(filename, algo_opts)
 
 	local file_reader = wav.create_context(filename, 'r')
 	
@@ -85,7 +87,7 @@ function silence_detect_file(filename)
 	local function_name = "silence_detect_" .. algo
 	
 	if (samples and _G[function_name]) then
-		return _G[function_name](samples)
+		return _G[function_name](samples, algo_opts)
 	end
 	return false, "No samples or no function " .. function_name .. " exist"
 end
