@@ -69,7 +69,7 @@ function silence_detect_lines(samples, algo_opts)
 	return false, debug_param_line
 end
 
-function silence_detect_file(filename, algo_opts)
+function silence_detect_file(filename, algo, algo_opts)
 
 	local file_reader = wav.create_context(filename, 'r')
 	

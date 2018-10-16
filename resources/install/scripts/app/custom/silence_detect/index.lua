@@ -2,16 +2,16 @@ require "app.custom.silence_detect.resources.functions.silence_detect_functions"
 require "app.custom.silence_detect.resources.functions.wav"
 
 opthelp = [[
- -a, --algo                     Algorythm used. lines or samples
- -l, --loops                    Loop count
- -r, --ringback                 Ringback to be used
- -t, --transfer-on-silence      Where to transfer on silence
- -i, --include-pattern=COUNT    Include callerid_number pattern     
- -e, --exclude-pattern=COUNT    Exclude callerid_number pattern
- -c, --clid-lenght=COUNT        If specified, only these callerid lenght are processed
+ -a, --algo=OPTARG                  Algorythm used. lines or samples
+ -l, --loops=OPTARG                 Loop count
+ -r, --ringback=OPTARG              Ringback to be used
+ -t, --transfer-on-silence=OPTARG   Where to transfer on silence
+ -i, --include-pattern=COUNT        Include callerid_number pattern     
+ -e, --exclude-pattern=COUNT        Exclude callerid_number pattern
+ -c, --clid-lenght=COUNT            If specified, only these callerid lenght are processed
 ]]
 
-opts, args = require('app.custom.functions.optargs').from_opthelp(opthelp)
+opts, args = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
 
 
 -- Where to store temp files. Default = memory
@@ -22,7 +22,7 @@ if session:ready() then
 
     local check_exit = false
 
-    local callerid_number = session:getVariable('callerid_number') or ''
+    local callerid_number = session:getVariable('caller_id_number') or ''
     -- Filter callerid on digits
     callerid_number = string.gsub(callerid_number, "%D", '') or ''
 
@@ -38,7 +38,7 @@ if session:ready() then
     end
 
     if (check_exit) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid length is  " .. #callerid_number .. " and not match options")
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid length is " .. #callerid_number .. " and not match options")
         do return end
     end
 
@@ -76,7 +76,7 @@ if session:ready() then
     loop_count = opts.l or 5
     transfer_on_silence = opts.t or 'hangup'
     ringback = opts.r or session:getVariable('ringback') or "%(2000,4000,440,480)"
-    -- Prepare args table to hold options only
+    -- Prepare args table to hold algo options only
     table.remove(args, 1)
 
     record_append = session:getVariable('RECORD_APPEND') or nil
@@ -103,7 +103,7 @@ if session:ready() then
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
-        is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name, args)
+        is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name, algo, args)
         session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
         os.remove(tmp_file_name)
         if (is_silence_detected == false) then
