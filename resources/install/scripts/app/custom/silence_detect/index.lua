@@ -104,7 +104,6 @@ if session:ready() then
 
     tmp_file_name = tmp_dir .. tmp_file_name .. '_sil_det.wav'
 
-    session:execute("set_zombie_exec")
     session:setVariable('RECORD_READ_ONLY', 'true')
     session:setVariable('RECORD_APPEND', 'false')
     session:setVariable('RECORD_STEREO', 'false')
@@ -120,7 +119,12 @@ if session:ready() then
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
-        is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name, algo, args)
+        if session:ready() then
+            is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name, algo, args)
+        else
+            is_silence_detected = false
+            silence_detect_debug_info = "Channel hung up"
+        end
         if opts.d then
             session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
         end

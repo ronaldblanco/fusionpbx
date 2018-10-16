@@ -99,7 +99,7 @@
         //convert the number to a regular expression
         $destination_ext_number_regex = string_to_regex($destination_ext_number);
         if ($destination_ext_silence_detect_enabled) {
-            $destination_ext_silence_detect_algo = isset($_SESSION['silence_detect']['algorithm']['text']) ? $_SESSION['silence_detect']['algorithm']['text'] : "hangup 5";
+            $destination_ext_silence_detect_algo = isset($_SESSION['silence_detect']['algorithm']['text']) ? $_SESSION['silence_detect']['algorithm']['text'] : "";
         } else {
             $destination_ext_silence_detect = 'false';
         }
@@ -1291,7 +1291,7 @@
         echo "  <option value='true' ".$selected[1].">".$text['label-true']."</option>\n";
         echo "  <option value='false' ".$selected[2].">".$text['label-false']."</option>\n";
         unset($selected);
-        echo "  </select>\n";
+        echo "  </select>&ensp;" . $destination_ext_silence_detect_algo ."\n";
         echo "<br />\n";
         echo $text['description-destination_ext_silence_detect']."\n";
         echo "</td>\n";
