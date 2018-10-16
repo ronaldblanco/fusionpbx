@@ -1291,7 +1291,7 @@
         echo "  <option value='true' ".$selected[1].">".$text['label-true']."</option>\n";
         echo "  <option value='false' ".$selected[2].">".$text['label-false']."</option>\n";
         unset($selected);
-        echo "  </select>&ensp;" . $destination_ext_silence_detect_algo ."\n";
+        echo "  </select>&ensp;" . escape($destination_ext_silence_detect_algo) ."\n";
         echo "<br />\n";
         echo $text['description-destination_ext_silence_detect']."\n";
         echo "</td>\n";
