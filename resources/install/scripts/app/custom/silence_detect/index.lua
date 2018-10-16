@@ -3,19 +3,18 @@ require "app.custom.silence_detect.resources.functions.wav"
 
 opthelp = [[
  -a, --algo=OPTARG                  Algorythm used. lines or samples
+ -s, --temporary-storage=OPTARG     Temporary storage
  -l, --loops=OPTARG                 Loop count
  -r, --ringback=OPTARG              Ringback to be used
  -t, --transfer-on-silence=OPTARG   Where to transfer on silence
  -i, --include-pattern=COUNT        Include callerid_number pattern     
  -e, --exclude-pattern=COUNT        Exclude callerid_number pattern
  -c, --clid-lenght=COUNT            If specified, only these callerid lenght are processed
+ -d, --debug                        If specified - debug variables are set
+ -v, --verbose                      If specified - verbose info is printed on FS console
 ]]
 
 opts, args = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
-
-
--- Where to store temp files. Default = memory
-tmp_dir = '/dev/shm/'
 
 if session:ready() then
 
@@ -76,6 +75,7 @@ if session:ready() then
     loop_count = opts.l or 5
     transfer_on_silence = opts.t or 'hangup'
     ringback = opts.r or session:getVariable('ringback') or "%(2000,4000,440,480)"
+    tmp_dir = opts.s or '/dev/shm/'
     -- Prepare args table to hold algo options only
     table.remove(args, 1)
 
@@ -96,15 +96,18 @@ if session:ready() then
     session:answer()
 
     for i = 1, loop_count do
-
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i)
+        if opts.v then
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i .. ', algorythm is ' .. algo .. ' ' .. table.concat(args, " "))
+        end
         session:execute("record_session", tmp_file_name)
         session:execute("playback", 'tone_stream://' .. ringback)
         session:execute("stop_record_session", tmp_file_name)
 
         -- Function to return true if is silence in file is detected
         is_silence_detected, silence_detect_debug_info = silence_detect_file(tmp_file_name, algo, args)
-        session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
+        if opts.d then
+            session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
+        end
         os.remove(tmp_file_name)
         if (is_silence_detected == false) then
             loop_detected = i
@@ -125,12 +128,17 @@ if session:ready() then
     end
 
     if (is_silence_detected) then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected. Transferring to " .. transfer_on_silence)
+        if opts.v then
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected on loop " .. loop_detected .. ". Transferring to " .. transfer_on_silence)
+        end
         if (transfer_on_silence == 'hangup') then
             session:execute("hangup")
         else
             local domain_name = session:getVariable('domain_name') or ""
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
         end
+    end
+    if opts.v then
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected for call from " .. callerid_number)
     end
 end
