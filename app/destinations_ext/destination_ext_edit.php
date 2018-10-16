@@ -77,8 +77,11 @@
 		}
 	}
 
-
+    // Check for silence detection features
     $destination_ext_silence_detect_enabled = isset($_SESSION['silence_detect']['enabled']['boolean']) ? filter_var($_SESSION['silence_detect']['enabled']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
+    if ($destination_ext_silence_detect_enabled) {
+        $destination_ext_silence_detect_algo = isset($_SESSION['silence_detect']['algorithm']['text']) ? $_SESSION['silence_detect']['algorithm']['text'] : "";
+    }
 
     if (count($_POST) > 0) {
         //set the variables
@@ -98,9 +101,8 @@
         
         //convert the number to a regular expression
         $destination_ext_number_regex = string_to_regex($destination_ext_number);
-        if ($destination_ext_silence_detect_enabled) {
-            $destination_ext_silence_detect_algo = isset($_SESSION['silence_detect']['algorithm']['text']) ? $_SESSION['silence_detect']['algorithm']['text'] : "";
-        } else {
+
+        if (!$destination_ext_silence_detect_enabled) {
             $destination_ext_silence_detect = 'false';
         }
     }
