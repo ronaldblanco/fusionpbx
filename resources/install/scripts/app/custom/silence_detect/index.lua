@@ -32,6 +32,9 @@ if session:ready() then
         for _, v in pairs(opts.c) do
             if (tonumber(v) == #callerid_number) then
                 check_exit = false
+                if opts.v then
+                    freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid length is " .. #callerid_number .. " and match options")
+                end
                 break
             end
         end
@@ -52,6 +55,9 @@ if session:ready() then
         check_exit = true
         for _, v in pairs(opts.i) do
             if (string.match(callerid_number, v)) then
+                if opts.v then
+                    freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid " .. callerid_number .. " match included " .. v)
+                end
                 check_exit = false
                 break
             end
@@ -71,6 +77,9 @@ if session:ready() then
     if opts.e then
         for _, v in pairs(opts.e) do
             if (string.match(callerid_number, v)) then
+                if opts.v then
+                    freeswitch.consoleLog("NOTICE", "[silence_detect] Callerid " .. callerid_number .. " match excluded " .. v)
+                end
                 check_exit = true
                 break
             end
@@ -112,7 +121,7 @@ if session:ready() then
 
     for i = 1, loop_count do
         if opts.v then
-            freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i .. ', algorythm is ' .. algo .. ' ' .. table.concat(args, " "))
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i .. ', algorithm is ' .. algo .. ' ' .. table.concat(args, " "))
         end
         session:execute("record_session", tmp_file_name)
         session:execute("playback", 'tone_stream://' .. ringback)
