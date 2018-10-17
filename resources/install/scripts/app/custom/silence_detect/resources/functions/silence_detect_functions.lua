@@ -28,7 +28,7 @@ function silence_detect_lines(samples, algo_opts)
 	local samples_length = #samples
 
 	-- Should be small here
-	local line_peak_ratio = algo_opts[1] and tonumber(argv[1]) or 70
+	local line_peak_ratio = algo_opts[1] and tonumber(algo_opts[1]) or 70
 	local silence_threshold = algo_opts[2] and tonumber(algo_opts[2]) or 20
 	local silence_threshold_zero = algo_opts[3] and tonumber(algo_opts[3]) or 30
 	local quantinizer = algo_opts[4] and tonumber(algo_opts[4]) or 100
@@ -62,7 +62,7 @@ function silence_detect_lines(samples, algo_opts)
 
 	local current_line_peak_ratio = math.floor(line_length / samples_length * 100)
 
-	local debug_param_line = "L/P C: " .. current_line_peak_ratio .. " ST:" .. silence_threshold .. " L/P E:" .. line_peak_ratio .. " Q:" .. quantinizer
+	local debug_param_line = "L/P C: " .. current_line_peak_ratio .. " ST:" .. silence_threshold .. " STZ: " .. silence_threshold_zero .. " L/P E:" .. line_peak_ratio .. " Q:" .. quantinizer
 	if (current_line_peak_ratio > line_peak_ratio) then
 		return true, debug_param_line
 	end
