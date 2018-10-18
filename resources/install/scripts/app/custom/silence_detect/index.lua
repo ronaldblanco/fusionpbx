@@ -110,6 +110,7 @@ if session:ready() then
 
     local tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
     local is_silence_detected
+    local loop_detected
 
     tmp_file_name = tmp_dir .. tmp_file_name .. '_sil_det.wav'
 
