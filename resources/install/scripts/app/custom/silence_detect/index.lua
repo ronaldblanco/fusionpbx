@@ -97,21 +97,21 @@ if session:ready() then
         do return end
     end   
 
-    algo = opts.a or 'samples'
-    loop_count = opts.l or 5
-    transfer_on_silence = opts.t or 'hangup'
-    ringback = opts.r or session:getVariable('ringback') or "%(2000,4000,440,480)"
-    tmp_dir = opts.s or '/dev/shm/'
+    local algo = opts.a or 'samples'
+    local loop_count = opts.l or 5
+    local transfer_on_silence = opts.t or 'hangup'
+    local ringback = opts.r or session:getVariable('ringback') or "%(2000,4000,440,480)"
+    local tmp_dir = opts.s or '/dev/shm/'
     -- Prepare args table to hold algo options only
     table.remove(args, 1)
 
-    record_append = session:getVariable('RECORD_APPEND') or nil
-    record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
-    record_stereo = session:getVariable('RECORD_STEREO') or nil
+    local record_append = session:getVariable('RECORD_APPEND') or nil
+    local record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
+    local record_stereo = session:getVariable('RECORD_STEREO') or nil
 
-    tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
-    is_silence_detected = false
-    loop_detected = 0
+    local tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
+    local is_silence_detected = false
+    local loop_detected = 0
 
     tmp_file_name = tmp_dir .. tmp_file_name .. '_sil_det.wav'
 
@@ -164,7 +164,7 @@ if session:ready() then
 
     if (is_silence_detected) then
         if opts.v then
-            freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected on loop " .. loop_detected .. ". Transferring to " .. transfer_on_silence)
+            freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected for call from " .. callerid_number .. ". Transferring to " .. transfer_on_silence)
         end
         if (transfer_on_silence == 'hangup') then
             hangup_reason = opts.h or ""
@@ -175,6 +175,6 @@ if session:ready() then
         end
     end
     if opts.v then
-        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected for call from " .. callerid_number)
+        freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is not detected for call from " .. callerid_number .. " on loop " .. loop_detected .. ". Continue dialplam")
     end
 end
