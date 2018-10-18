@@ -7,6 +7,7 @@ opthelp = [[
  -l, --loops=OPTARG                 Loop count
  -r, --ringback=OPTARG              Ringback to be used
  -t, --transfer-on-silence=OPTARG   Where to transfer on silence
+ -h, --hangup-cause=OPTARG          Set hangup cause if transfer-on-silence is hangup
  -i, --include-pattern=COUNT        Include callerid_number pattern     
  -e, --exclude-pattern=COUNT        Exclude callerid_number pattern
  -c, --clid-lenght=COUNT            If specified, only these callerid lenght are processed
@@ -108,9 +109,9 @@ if session:ready() then
     record_read_only = session:getVariable('RECORD_READ_ONLY') or nil
     record_stereo = session:getVariable('RECORD_STEREO') or nil
 
-    local tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
-    local is_silence_detected
-    local loop_detected
+    tmp_file_name = session:getVariable('call_uuid') or "tmp_file"
+    is_silence_detected = false
+    loop_detected = 0
 
     tmp_file_name = tmp_dir .. tmp_file_name .. '_sil_det.wav'
 
@@ -166,7 +167,8 @@ if session:ready() then
             freeswitch.consoleLog("NOTICE", "[silence_detect] Silence is detected on loop " .. loop_detected .. ". Transferring to " .. transfer_on_silence)
         end
         if (transfer_on_silence == 'hangup') then
-            session:execute("hangup")
+            hangup_reason = opts.h or ""
+            session:execute("hangup", hangup_reason)
         else
             local domain_name = session:getVariable('domain_name') or ""
             session:execute("transfer", transfer_on_silence .. " XML " .. domain_name)
