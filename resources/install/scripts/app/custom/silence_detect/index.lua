@@ -137,7 +137,7 @@ if session:ready() then
             silence_detect_debug_info = "Channel hung up"
         end
         if opts.d then
-            session:setVariable("silence_detect_" .. algo .. "_" .. i, silence_detect_debug_info)
+            session:execute("export","silence_detect_" .. algo .. "_" .. i.. "=" .. silence_detect_debug_info)
         end
         if opts.k then
             os.rename(tmp_file_name, tmp_file_name .. "_loop_" .. i)
