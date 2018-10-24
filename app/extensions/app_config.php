@@ -162,7 +162,9 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "extension_copy";
-		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";	
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "extension_toll_allow_show";	
 
 	//default settings
 		$y=0;
