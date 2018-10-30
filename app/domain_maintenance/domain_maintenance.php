@@ -22,7 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Lewis Hallam <lewishallam80@gmail.com>
+	Igor Olhovskiy <igorolhovskiy@gmail.com>
 */
 
 //includes
@@ -30,13 +30,10 @@
 	require_once "resources/require.php";
 	require_once "resources/check_auth.php";
 
-	require_once "app/e911/api_calls.php";
-
 //check permissions
-	if (permission_exists('e911_add') || permission_exists('e911_edit')) {
+	if (permission_exists('domain_maintenance_view')) {
 		//access granted
-	}
-	else {
+	} else {
 		echo "access denied";
 		exit;
 	}
@@ -55,86 +52,30 @@
 //get http post variables and set them to php variables
 	if (count($_POST) > 0) {
 		//set the variables from the http values
-		$e911_did = check_str($_POST["e911_did"]);
-		$e911_address_1 = check_str($_POST["e911_address_1"]);
-		$e911_address_2 = check_str($_POST["e911_address_2"]);
-		$e911_city = check_str($_POST["e911_city"]);
-		$e911_state = check_str($_POST["e911_state"]);
-		$e911_zip = check_str($_POST["e911_zip"]);
-		$e911_zip_4 = check_str($_POST["e911_zip_4"]);
-		$e911_callername = check_str($_POST["e911_callername"]);
-		$e911_alert_email_enable = check_str($_POST["e911_alert_email_enable"]);
-		$e911_alert_email = check_str($_POST["e911_alert_email"]);
-		$e911_validated = check_str($_POST["e911_validated"]);
+		$domain_maintenance_keep_days_cdr = check_str($_POST[""]);
+		$domain_maintenance_keep_days_cdr_global = check_str($_POST[""]);
+		$domain_maintenance_keep_days_recordings = check_str($_POST[""]);
+		$domain_maintenance_keep_days_recordings_global = check_str($_POST[""]);
+		$domain_maintenance_keep_days_vm_messages = check_str($_POST[""]);
+		$domain_maintenance_keep_days_vm_messages_global = check_str($_POST[""]);
+		$domain_maintenance_keep_days_fax = check_str($_POST[""]);
+		$domain_maintenance_keep_days_fax_global = check_str($_POST[""]);
+
+		$domain_maintenance_keep_size_recordings = check_str($_POST[""]);
+		$domain_maintenance_keep_size_recordings_global = check_str($_POST[""]);
+		$domain_maintenance_keep_size_vm_messages = check_str($_POST[""]);
+		$domain_maintenance_keep_size_vm_messages_global = check_str($_POST[""]);
+
 	}
 
-    if (isset($_REQUEST["update_from_server"]) && isset($_REQUEST["e911_did"])) {
-        // TODO - override data with API request
-        $e911_did = check_str($_REQUEST["e911_did"]);
-        $e911_request_data = query_e911_data($e911_did);
-        if ($e911_request_data) {
-            $e911_address_1 = $e911_request_data['e911_address_1'];
-            $e911_address_2 = $e911_request_data['e911_address_2'];
-            $e911_city = $e911_request_data['e911_city'];
-            $e911_state = $e911_request_data['e911_state'];
-            $e911_zip = $e911_request_data['e911_zip'];
-            $e911_zip_4 = $e911_request_data['e911_zip_4'];
-            $e911_callername = $e911_request_data['e911_callername'];
-            $e911_validated = check_str($e911_request_data['e911_validated']);
-        } else {
-            $e911_address_1 = "";
-            $e911_address_2 = "";
-            $e911_city = "";
-            $e911_state = "";
-            $e911_zip = "";
-            $e911_zip_4 = "";
-            $e911_callername = "";
-            $e911_validated = "False";
-        }
-        $e911_request_data = query_e911_alert($e911_did);
-        if ($e911_request_data) {
-            $e911_alert_email_enable = "true";
-            $e911_alert_email = $e911_request_data;
-        } else {
-            $e911_alert_email_enable = "false";
-        }
+    if (isset($_REQUEST["change_done"])) {
+		$action = "update"; 
+	} else {
+        $action = "show";
     }
 
-    if (isset($_REQUEST["id"])) {
-        $action = "update";
-        $e911_uuid = check_str($_REQUEST["id"]);
-    }
-    else {
-        $action = "add";
-    }
-
-    if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
-
-    	$msg = '';
-    	if ($action == "update") {
-    		$e911_uuid = check_str($_POST["e911_uuid"]);
-    	}
-
-    	//check for all required data
-    	if (strlen($e911_did) == 0) { $msg .= $text['message-required'].$text['label-e911_did']."<br>\n"; }
-    	if (strlen($e911_address_1) == 0) { $msg .= $text['message-required'].$text['llabel-e911_address_1']."<br>\n"; }
-    	if (strlen($e911_city) == 0) { $msg .= $text['message-required'].$text['label-e911_city']."<br>\n"; }
-    	if (strlen($e911_state) == 0) { $msg .= $text['message-required'].$text['label-e911_state']."<br>\n"; }
-    	if (strlen($e911_zip) == 0 || strlen($e911_zip_4) == 0) { $msg .= $text['message-required'].$text['label-e911_zip']."<br>\n"; }
-    	if (strlen($e911_callername) == 0) { $msg .= $text['message-required'].$text['label-e911_callername']."<br>\n"; }
-
-    	if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-    		require_once "resources/header.php";
-    		require_once "resources/persist_form_var.php";
-    		echo "<div align='center'>\n";
-    		echo "<table><tr><td>\n";
-    		echo $msg."<br />";
-    		echo "</td></tr></table>\n";
-    		persistformvar($_POST);
-    		echo "</div>\n";
-    		require_once "resources/footer.php";
-    		return;
-    	}
+	/*
+    if (count($_POST) > 0) {
 
     	//add or update the database
     	if ($_POST["persistformvar"] != "true") {
@@ -152,23 +93,6 @@
                 );
 
     		if ($action == "add" && permission_exists('e911_add')) {
-
-                // Make api calls here; Seems never would be used
-                if (validate_e911_data($e911_data)) {
-                    if (add_e911_data($e911_data)) {
-                        if ($e911_alert_email_enable == 'True') {
-                            if (!add_e911_alert($e911_alert_email)) {
-                                $e911_alert_email_enable = "False";
-                            }
-                        }
-                    } else {
-                        $e911_validated = "Not added";
-                        $e911_alert_email_enable = "False";
-                    }
-                } else {
-                    $e911_validated = "Not validated";
-                    $e911_alert_email_enable = "False";
-                }
 
     			//prepare the uuids
     			$e911_uuid = uuid();
@@ -241,41 +165,30 @@
     	} //if ($_POST["persistformvar"] != "true")
     } // if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0)
 
-//get the destinations
-	$sql = "select * from v_destinations ";
-	$sql .= "where domain_uuid = '".check_str($domain_uuid)."' ";
-	$sql .= "and destination_type = 'inbound' ";
-	$sql .= "order by destination_number asc ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$destinations = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	unset ($sql, $prep_statement);
+	*/
 
 //pre-populate the form
-	if (count($_GET) > 0 && $_POST["persistformvar"] != "true") {
-		$e911_uuid = check_str($_GET["id"]);
-		$sql = "select * from v_e911 ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and e911_uuid = '$e911_uuid' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		foreach ($result as &$row) {
-            //set the php variables
-            $e911_did = $row["e911_did"];
-            $e911_address_1 = $row["e911_address_1"];
-            $e911_address_2 = $row["e911_address_2"];
-            $e911_city = $row["e911_city"];
-            $e911_state = $row["e911_state"];
-            $e911_zip = $row["e911_zip"];
-            $e911_zip_4 = $row["e911_zip_4"];
-            $e911_callername = $row["e911_callername"];
-            $e911_alert_email_enable = $row["e911_alert_email_enable"];
-            $e911_alert_email = $row["e911_alert_email"];
-            $e911_validated = $row["e911_validated"];
-		}
-		unset ($prep_statement);
+	$sql = "select * from v_e911 ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "and e911_uuid = '$e911_uuid' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	foreach ($result as &$row) {
+		//set the php variables
+		$e911_did = $row["e911_did"];
+		$e911_address_1 = $row["e911_address_1"];
+		$e911_address_2 = $row["e911_address_2"];
+		$e911_city = $row["e911_city"];
+		$e911_state = $row["e911_state"];
+		$e911_zip = $row["e911_zip"];
+		$e911_zip_4 = $row["e911_zip_4"];
+		$e911_callername = $row["e911_callername"];
+		$e911_alert_email_enable = $row["e911_alert_email_enable"];
+		$e911_alert_email = $row["e911_alert_email"];
+		$e911_validated = $row["e911_validated"];
 	}
+	unset ($prep_statement);
 
 //show the header
 	require_once "resources/header.php";
