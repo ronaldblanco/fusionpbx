@@ -500,7 +500,12 @@
 <P66></P66>
 
 <!-- Dial Plan. Default value is { x+ | \+x+ | *x+ | *xx*x+ } -->
+	
+{if isset($grandstream_dial_plan) }
 <P290>{$grandstream_dial_plan}</P290>
+{else}
+<P290>{literal}{x+|*x+|*++|\p\a\r\k\+*x+| \f\l\o\w\+*x+}{/literal}</P290>
+{/if}
 
 <!-- Refer-To Use Target Contact. 0 - No, 1 - Yes. Default value is 0 -->
 <!-- Number: 0, 1 -->
@@ -3213,7 +3218,7 @@ Account 5 Codec Settings
 <P212>2</P212>
 
 <!-- Firmware Server Path -->
-<P192>{domain_name}/firmware/gs</P192>
+<P192>{$domain_name}/firmware/gs</P192>
 
 <!-- Config Server Path -->
 <P237>{$domain_name}{$project_path}/app/provision</P237>
