@@ -54,7 +54,7 @@ function M.from_opthelp(opthelp, raw_args, errfunc)
 	local moreopts = true
 	raw_args = raw_args or argv
 	errfunc = errfunc or function(opt, errstr)
-		io.stderr:write(("%s: %s: %s\n"):format(_G.arg[0], opt, errstr))
+		io.stderr:write(("%s: %s\n"):format(opt, errstr))
 		return nil, opt, errstr
 	end
 --	for line in opthelp:gmatch("[^\n]+") do

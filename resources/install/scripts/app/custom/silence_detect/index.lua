@@ -21,7 +21,12 @@ opthelp = [[
  -k, --keep-recorded                Keep recorded files
 ]]
 
-opts, args = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
+opts, args, err = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
+
+if opts == nil then
+    freeswitch.consoleLog("ERROR", "[silence_detect] Options are not parsable " .. err)
+    do return end
+end
 
 if session:ready() then
 
