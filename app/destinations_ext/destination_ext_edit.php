@@ -393,7 +393,7 @@
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"accountcode=" . $destination_ext_domain . "\"/>\n";
 
                     if (strlen($destination_ext_variable) > 0 and (isset($invalid_ext_transfer) or $destination_ext_variable_no_extension)) {
-                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable_no_extension ? $destination_ext_variable_no_extension : $invalid_ext_transfer . "=" . $invalid_ext_transfer . "\"/>\n";
+                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . ($destination_ext_variable_no_extension ? $destination_ext_variable_no_extension : $invalid_ext_transfer) . "=" . $invalid_ext_transfer . "\"/>\n";
                     }
                     if ($destination_ext_silence_detect == 'true') {
                         $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect " . $destination_ext_silence_detect_algo . "\"/>\n";
@@ -481,7 +481,7 @@
                         $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable."=" . $destination_ext_variable_no_extension ? $destination_ext_variable_no_extension : $invalid_ext_transfer;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable . "=" . ($destination_ext_variable_no_extension ? $destination_ext_variable_no_extension : $invalid_ext_transfer);
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $dialplan_detail_order += 10;
                         $y += 1;
