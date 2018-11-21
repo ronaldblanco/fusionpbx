@@ -16,8 +16,6 @@ $text['header-destination_ext-edit']['en-us'] = "Edit destination";
 
 $text['label-destination_ext_number']['en-us'] = "Destination";
 
-$text['label-destination_ext_variable']['en-us'] = "Extension variable";
-
 $text['label-destination_ext_status']['en-us'] = "Status";
 
 $text['label-destination_ext_description']['en-us'] = "Description";
@@ -30,6 +28,8 @@ $text['label-detail_action_invalid']['en-us'] = "Invalid number action";
 
 $text['label-destination_ext_variable']['en-us'] = "Variable to store extension";
 
+$text['label-destination_ext_variable_no_extension']['en-us'] = "Alternate value for store extension";
+
 $text['label-destination_ext_silence_detect']['en-us'] = "Silence detect";
 
 $text['label-destination_ext_enabled']['en-us'] = "Enable/Disable";
@@ -41,9 +41,11 @@ $text['description-destination_ext']['en-us'] = "Destinations with support of ex
 
 $text['description-destination_ext_variable']['en-us'] = "Variable to store extension, if needed to use in dialplan later";
 
+$text['description-destination_ext_variable_no_extension']['en-us'] = "Alternate Store Extension variable value if no extension is specified. Can be used for intermediate call flows";
+
 $text['description-destination_ext_number']['en-us'] = "Destinations main number";
 
-$text['description-destination_ext_enabled']['en-us'] = "Enable or disable current destiantion";
+$text['description-destination_ext_enabled']['en-us'] = "Enable or disable current destination";
 
 $text['description-destination_ext_silence_detect']['en-us'] = "EXPERIMENTAL! Silence detect on incoming call on this channel. Will hangup if silence on incoming call is detected";
 

@@ -85,6 +85,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Variable to save extension";
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_variable_no_extension";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Default set for variable destination_ext_variable for no extension specified";
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_silence_detect";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Possibility to detect silence on this destination";

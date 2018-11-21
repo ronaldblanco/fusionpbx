@@ -95,6 +95,7 @@
         $destination_ext_number = escape(check_str($_POST["destination_ext_number"]));
         $db_destination_ext_number = escape(check_str($_POST["db_destination_ext_number"]));
         $destination_ext_variable = escape(check_str($_POST["destination_ext_variable"]));
+        $destination_ext_variable_no_extension = escape(check_str($_POST["destination_ext_variable_no_extension"]));
         $destination_ext_silence_detect = escape(check_str($_POST["destination_ext_silence_detect"]));
         $destination_ext_enabled = escape(check_str($_POST["destination_ext_enabled"]));
         $destination_ext_description = escape(check_str($_POST["destination_ext_description"]));
@@ -105,6 +106,8 @@
         if (!$destination_ext_silence_detect_enabled) {
             $destination_ext_silence_detect = 'false';
         }
+
+        $destination_ext_variable_no_extension = strlen($destination_ext_variable_no_extension) > 0 ? $destination_ext_variable_no_extension : False;
     }
     unset($_POST["db_destination_ext_number"]);
 
@@ -389,8 +392,8 @@
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"continue_on_fail=true\" inline=\"true\"/>\n";
                     $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"accountcode=" . $destination_ext_domain . "\"/>\n";
 
-                    if (strlen($destination_ext_variable) > 0 and isset($invalid_ext_transfer)) {
-                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable . "=" . $invalid_ext_transfer . "\"/>\n";
+                    if (strlen($destination_ext_variable) > 0 and (isset($invalid_ext_transfer) or $destination_ext_variable_no_extension)) {
+                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable_no_extension ? $destination_ext_variable_no_extension : $invalid_ext_transfer . "=" . $invalid_ext_transfer . "\"/>\n";
                     }
                     if ($destination_ext_silence_detect == 'true') {
                         $dialplan["dialplan_xml"] .= "		<action application=\"lua\" data=\"app_custom.lua silence_detect " . $destination_ext_silence_detect_algo . "\"/>\n";
@@ -473,12 +476,12 @@
                     $y += 1;
                     $dialplan_detail_order += 10;
 
-                    if (strlen($destination_ext_variable) > 0 and isset($invalid_ext_transfer)) {
+                    if (strlen($destination_ext_variable) > 0 and (isset($invalid_ext_transfer) or $destination_ext_variable_no_extension)) {
                         
                         $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
-                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable."=".$invalid_ext_transfer;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable."=" . $destination_ext_variable_no_extension ? $destination_ext_variable_no_extension : $invalid_ext_transfer;
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $dialplan_detail_order += 10;
                         $y += 1;
@@ -855,6 +858,7 @@
                 $sql .= " destination_ext_dialplan_extensions_uuid,";
                 $sql .= " destination_ext_number,";
                 $sql .= " destination_ext_variable,";
+                $sql .= " destination_ext_variable_no_extension,";
                 $sql .= " destination_ext_silence_detect,";
                 $sql .= " destination_ext_enabled,";
                 $sql .= " destination_ext_description";
@@ -865,6 +869,7 @@
                 $sql .= " '".$destination_ext_dialplan_extensions_uuid."',";
                 $sql .= " '".$destination_ext_number."',";
                 $sql .= " '".$destination_ext_variable."',";
+                $sql .= " '".$destination_ext_variable_no_extension."',";
                 $sql .= " '".$destination_ext_silence_detect."',";
                 $sql .= " '".$destination_ext_enabled."',";
                 $sql .= " '".$destination_ext_description."')";
@@ -879,6 +884,7 @@
                 $sql .= " destination_ext_dialplan_extensions_uuid = '".$destination_ext_dialplan_extensions_uuid."',";
                 $sql .= " destination_ext_number = '".$destination_ext_number."',";
                 $sql .= " destination_ext_variable = '".$destination_ext_variable."',";
+                $sql .= " destination_ext_variable_no_extension = '".$destination_ext_variable_no_extension."',";
                 $sql .= " destination_ext_silence_detect = '".$destination_ext_silence_detect."',";
                 $sql .= " destination_ext_enabled = '".$destination_ext_enabled."',";
                 $sql .= " destination_ext_description = '".$destination_ext_description."'";
@@ -931,6 +937,7 @@
             $destination_ext_dialplan_extensions_uuid = $result[0]["destination_ext_dialplan_extensions_uuid"];
             $destination_ext_number = $result[0]["destination_ext_number"];
             $destination_ext_variable = $result[0]["destination_ext_variable"];
+            $destination_ext_variable_no_extension = $result[0]["destination_ext_variable_no_extension"];
             $destination_ext_silence_detect = $result[0]["destination_ext_silence_detect"];
             $destination_ext_enabled = $result[0]["destination_ext_enabled"];
             $destination_ext_description = $result[0]["destination_ext_description"];
@@ -1274,6 +1281,18 @@
     echo "  <input class='formfld' type='text' name='destination_ext_variable' id='destination_ext_variable' maxlength='255' value=\"" . escape($destination_ext_variable) . "\">\n";
     echo "<br />\n";
     echo $text['description-destination_ext_variable']."\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+
+     // Alternate Destination variable destination
+    echo "<tr>\n";
+    echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+    echo "  ".$text['label-destination_ext_variable_no_extension']."\n";
+    echo "</td>\n";
+    echo "<td class='vtable' align='left'>\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_variable_no_extension' id='destination_ext_variable_no_extension' maxlength='255' value=\"" . escape($destination_ext_variable_no_extension) . "\">\n";
+    echo "<br />\n";
+    echo $text['description-destination_ext_variable_no_extension']."\n";
     echo "</td>\n";
     echo "</tr>\n";
 
