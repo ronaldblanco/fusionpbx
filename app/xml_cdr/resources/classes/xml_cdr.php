@@ -970,34 +970,16 @@ if (!class_exists('xml_cdr')) {
 
 				$sql .= "COUNT(*) \n";
 				$sql .= "FILTER ( \n";
-				$sql .= " WHERE (( \n";
-				$sql .= "   c.caller_id_number = e.extension \n";
-				$sql .= "   OR \n";
-				$sql .= "   c.destination_number = e.extension) \n";
-				$sql .= "  OR ( \n";
-				$sql .= "   e.number_alias IS NOT NULL \n";
-				$sql .= "   AND ( \n";
-				$sql .= "    c.caller_id_number = e.number_alias \n";
-				$sql .= "    OR \n";
-				$sql .= "    c.destination_number = e.number_alias))) \n";
-				$sql .= " AND \n";
-				$sql .= " c.direction = 'outbound') \n";
+				$sql .= " WHERE c.extension_uuid = e.extension_uuid \n";
+				$sql .= " AND c.direction = 'outbound' \n";
+				$sql .= ") \n";
 				$sql .= "AS outbound_calls, \n";
 
 				$sql .= "SUM(c.billsec) \n";
 				$sql .= "FILTER ( \n";
-				$sql .= " WHERE (( \n";
-				$sql .= "   c.caller_id_number = e.extension \n";
-				$sql .= "   OR \n";
-				$sql .= "   c.destination_number = e.extension) \n";
-				$sql .= "  OR ( \n";
-				$sql .= "   e.number_alias IS NOT NULL \n";
-				$sql .= "   AND ( \n";
-				$sql .= "    c.caller_id_number = e.number_alias \n";
-				$sql .= "    OR \n";
-				$sql .= "    c.destination_number = e.number_alias))) \n";
-				$sql .= " AND ( \n";
-				$sql .= " c.direction = 'outbound')) \n";
+				$sql .= " WHERE c.extension_uuid = e.extension_uuid \n";
+				$sql .= " AND c.direction = 'outbound' \n";
+				$sql .= ") \n";
 				$sql .= "AS outbound_duration, \n";
 
 				$sql .= "e.description \n";
@@ -1005,6 +987,7 @@ if (!class_exists('xml_cdr')) {
 				$sql .= "FROM v_extensions AS e, v_domains AS d, \n";
 				$sql .= "( SELECT \n";
 				$sql .= " domain_uuid, \n";
+				$sql .= " extension_uuid, \n";
 				$sql .= " caller_id_number, \n";
 				$sql .= " destination_number, \n";
 				$sql .= " answer_stamp, \n";
@@ -1025,7 +1008,6 @@ if (!class_exists('xml_cdr')) {
 				}
 				$sql .= "GROUP BY e.extension, e.domain_uuid, d.domain_uuid, e.number_alias, e.description \n";
 				$sql .= "ORDER BY extension ASC \n";
-
 				$prep_statement = $this->db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$summary = $prep_statement->fetchAll(PDO::FETCH_NAMED);
