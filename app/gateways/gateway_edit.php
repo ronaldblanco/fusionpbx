@@ -631,7 +631,8 @@
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<select class='formfld' name='caller_id_in_from'>\n";
 	echo "		<option value=''></option>\n";
-	if ($caller_id_in_from == "true" || strlen($caller_id_in_from) == 0) {
+	if ($caller_id_in_from == "true" || (strlen($caller_id_in_from) == 0 && $action == 'add')) {
+		// When adding, set caller_id_in_from as 'true' by default. On update - show real value.
 		echo "		<option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	} else {
 		echo "		<option value='true'>".$text['label-true']."</option>\n";
