@@ -157,7 +157,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Try to join same calls in CDR report (like not show loose_race). uuid,close_match,lose_race";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Try to join same calls in CDR report (like not show LOSE_RACE). uuid,close_match,lose_race";
 
 	//schema details
 		$y = 0;
