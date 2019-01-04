@@ -28,11 +28,15 @@ if (!class_exists('xml_cdr_join_view')) {
 
             $options = $session_options['join_view']['text'];
             
-            $this->is_uuid = (strpos($options, "uuid") != false);
-            $this->is_close_match = (strpos($options, "close_match") != false);
-            $this->is_lose_race = (strpos($options, "lose_race") != false);
+            $this->is_uuid = (strpos($options, "uuid") !== false);
+            $this->is_close_match = (strpos($options, "close_match") !== false);
+            $this->is_lose_race = (strpos($options, "lose_race") !== false);
 
             return;
+        }
+
+        private function xlog($str) {
+            file_put_contents("/tmp/xml_cdr_join_view.log", $str, FILE_APPEND);
         }
 
         private function uuid_cleanup(&$xml_cdr_data) {
@@ -41,14 +45,16 @@ if (!class_exists('xml_cdr_join_view')) {
             foreach ($xml_cdr_data as $xml_cdr_data_key => $xml_cdr_data_line) {
 
                 // Not process already hidden data. Small optimization
-                if (isset($xml_cdr_data_line['hidden'])) {
+                if (isset($xml_cdr_data_line['hidden']) || isset($xml_cdr_data_line['joined'])) {
                     continue;
                 }
+
+                $this->xlog("Processing... " . json_encode($xml_cdr_data_line) . "\n");
 
                 if (isset($xml_cdr_data_line['uuids']) && strlen($xml_cdr_data_line['uuids']) > 0) {
                     $uuids_to_hide = $xml_cdr_data_line['uuids'];
                     foreach ($xml_cdr_data as $k => $v) {
-                        if (strpos($uuids_to_hide, $v['uuid']) != false) {
+                        if (strpos($uuids_to_hide, $v['xml_cdr_uuid']) != false) {
                             $xml_cdr_data[$k]['hidden'] = true;
                             // Yes, could be multiple assignments, but here it's done to be sure
                             $xml_cdr_data[$xml_cdr_data_key]['joined'] = true;
@@ -61,7 +67,7 @@ if (!class_exists('xml_cdr_join_view')) {
         private function lose_race_cleanup(&$xml_cdr_data) {
             foreach ($xml_cdr_data as $xml_cdr_data_key => $xml_cdr_data_line) {
 
-                if (isset($xml_cdr_data_line['hidden'])) {
+                if (isset($xml_cdr_data_line['hidden']) || isset($xml_cdr_data_line['joined'])) {
                     continue;
                 }
 
@@ -81,6 +87,7 @@ if (!class_exists('xml_cdr_join_view')) {
         }
 
         public function cleanup(&$xml_cdr_data) {
+
             if (!$this->enabled) {
                 return;
             }

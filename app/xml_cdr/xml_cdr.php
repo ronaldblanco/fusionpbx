@@ -49,6 +49,9 @@
 
 //xml cdr include
 	$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50;
+
+	$is_join_view = new xml_cdr_join_view($_SESSION['cdr']);
+
 	require_once "xml_cdr_inc.php";
 
 //javascript function: send_cmd
@@ -456,7 +459,8 @@
 				) ? true : false;
 
 		// Cleanup call results
-		$is_join_view = new xml_cdr_join_view($_SESSION['cdr']);
+
+		$xml_cdr_total_hidden = 0;
 
 		if ($is_join_view->status()) {
 			$is_join_view->cleanup($result);
@@ -467,6 +471,7 @@
 
 			// Not show hidden call results
 			if ($is_join_view->status() && isset($row['hidden'])) {
+				$xml_cdr_total_hidden += 1;
 				continue;
 			}
 
@@ -723,13 +728,17 @@
 			echo "</tr>\n";
 			$c = ($c) ? 0 : 1;
 		} //end foreach
-		unset($sql, $result, $row_count);
+		unset($sql, $result);
 	} //end if results
 
 	echo "<tr>\n";
 	echo "</table>";
 	echo "</form>";
 	echo "<br><br>";
+
+	if ($xml_cdr_total_hidden > 0) {
+		echo $text['description-total_hidden'] . ": " . $xml_cdr_total_hidden . "/" . $result_count;
+	}
 	echo $paging_controls;
 	echo "<br><br>";
 

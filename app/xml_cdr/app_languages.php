@@ -2381,6 +2381,8 @@ $text['description-mos']['ru-ru'] = "Средний оценочный пока�
 $text['description-mos']['sv-se'] = "Genomsnittlig bedömning poäng";
 $text['description-mos']['uk-ua'] = "Середнє число думок";
 
+$text['description-total_hidden']['en-us'] = "Total hidden";
+
 $text['button-update']['en-us'] = "Update";
 $text['button-update']['ar-eg'] = "";
 $text['button-update']['de-at'] = "Aktualisieren"; //copied from de-de
