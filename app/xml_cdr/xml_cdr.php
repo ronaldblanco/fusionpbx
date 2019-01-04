@@ -749,10 +749,6 @@
 
 //show the footer
 
-	echo "<pre>";
-	echo json_encode($_SESSION['cdr']);
-	echo "</pre>";
-
 	require_once "resources/footer.php";
 
 ?>
