@@ -59,13 +59,19 @@ if (!class_exists('xml_cdr_join_view')) {
 
                 $xml_cdr_json_data = $xml_cdr_json_data['variables'];
 
-                if (isset($xml_cdr_json_data['uuids']) && strlen($xml_cdr_json_data['uuids']) > 0) {
-                    $uuids_to_hide = $xml_cdr_json_data['uuids'];
+                if (isset($xml_cdr_json_data['originating_leg_uuid']) && strlen($xml_cdr_json_data['originating_leg_uuid']) > 0) {
+                    $parent_channel_uuid = $xml_cdr_json_data['originating_leg_uuid'];
+
+                    // Continue if our parent channel is ourself
+                    if ($parent_channel_uuid == $xml_cdr_data_line['xml_cdr_uuid']) {
+                        continue;
+                    }
+
                     foreach ($xml_cdr_data as $k => $v) {
-                        if (strpos($uuids_to_hide, $v['xml_cdr_uuid']) !== false) {
-                            $xml_cdr_data[$k]['hidden'] = true;
+                        if ($parent_channel_uuid == $v['xml_cdr_uuid'] && !isset($xml_cdr_data[$v]['joined'])) {
+                            $xml_cdr_data[$xml_cdr_data_key]['hidden'] = true;
                             // Yes, could be multiple assignments, but here it's done to be sure
-                            $xml_cdr_data[$xml_cdr_data_key]['joined'] = true;
+                            $xml_cdr_data[$v]['joined'] = true;
                         }
                     }
                 }

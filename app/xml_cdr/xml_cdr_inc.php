@@ -361,7 +361,6 @@
 
 	// For process joined view need to get additional data
 	if (isset($is_join_view) && $is_join_view->status()) {
-		$sql .= "xml_cdr_uuid, ";
 		$sql .= "json, ";
 	}
 
@@ -383,7 +382,7 @@
 	$sql .= "destination_number, ";
 	$sql .= "leg, ";
 	$sql .= "(xml IS NOT NULL OR json IS NOT NULL) AS raw_data_exists, ";
-	
+
 	if (is_array($_SESSION['cdr']['field'])) {
 		foreach ($_SESSION['cdr']['field'] as $field) {
 			$array = explode(",", $field);
