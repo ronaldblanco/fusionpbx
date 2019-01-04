@@ -458,7 +458,7 @@
 		// Cleanup call results
 		$is_join_view = new xml_cdr_join_view($_SESSION['cdr']);
 
-		if ($is_join_view) {
+		if ($is_join_view->status()) {
 			$is_join_view->cleanup($result);
 		}
 
@@ -466,7 +466,7 @@
 		foreach($result as $index => $row) {
 
 			// Not show hidden call results
-			if ($is_join_view && isset($row['hidden'])) {
+			if ($is_join_view->status() && isset($row['hidden'])) {
 				continue;
 			}
 
@@ -545,7 +545,7 @@
 				}
 
 				// As for now - show asterisk (*) sign near joined calls
-				if ($is_join_view && isset($row['joined'])) {
+				if ($is_join_view->status() && isset($row['joined'])) {
 					echo " *";
 				}
 

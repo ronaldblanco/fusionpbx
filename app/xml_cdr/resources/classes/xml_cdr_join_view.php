@@ -5,33 +5,34 @@
 
 if (!class_exists('xml_cdr_join_view')) {
 
-	class xml_cdr_join_view {
+    class xml_cdr_join_view {
 
-        private $enabled = false;
+        private $enabled;
         private $is_uuid;
         private $is_close_match;
         private $is_loose_race;
 
         public function __construct($session_options) {
-            if (!$session_options) {
+
+            if (!$session_options || !isset($session_options['join_view'])) {
                 $this->enabled = false;
-                return false;
+                return;
             }
 
-            if ($session_options['uuid'] == '') {
+            if ($session_options['join_view']['uuid'] == '') {
                 $this->enabled = false;
-                return false;
+                return;
             }
 
             $this->enabled = true;
 
-            $options = $session_options['text'];
+            $options = $session_options['join_view']['text'];
             
             $this->is_uuid = (strpos($options, "uuid") != false);
             $this->is_close_match = (strpos($options, "close_match") != false);
             $this->is_lose_race = (strpos($options, "lose_race") != false);
 
-            return true;
+            return;
         }
 
         private function uuid_cleanup(&$xml_cdr_data) {
@@ -74,6 +75,10 @@ if (!class_exists('xml_cdr_join_view')) {
             // Nothing here yet. TBD
         }
 
+
+        public function status() {
+            return $this->enabled;
+        }
 
         public function cleanup(&$xml_cdr_data) {
             if (!$this->enabled) {
