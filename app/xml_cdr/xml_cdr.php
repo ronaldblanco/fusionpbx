@@ -455,7 +455,21 @@
 				file_exists($theme_image_path."icon_cdr_local_failed.png")
 				) ? true : false;
 
+		// Cleanup call results
+		$is_join_view = new xml_cdr_join_view($_SESSION['cdr']);
+
+		if ($is_join_view) {
+			$is_join_view->cleanup($result);
+		}
+
+		// Show actual results
 		foreach($result as $index => $row) {
+
+			// Not show hidden call results
+			if ($is_join_view && isset($row['hidden'])) {
+				continue;
+			}
+
 			//get the date and time
 				$tmp_year = date("Y", strtotime($row['start_stamp']));
 				$tmp_month = date("M", strtotime($row['start_stamp']));
@@ -526,7 +540,15 @@
 						echo "<img src='".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/".escape($image_name)."' width='16' style='border: none; cursor: help;' title='".$text['label-'.$row['direction']].": ".$text['label-'.$call_result]. ($row['leg']=='b'?'(b)':'') . "'>\n";
 					}
 				}
-				else { echo "&nbsp;"; }
+				else { 
+					echo "&nbsp;"; 
+				}
+
+				// As for now - show asterisk (*) sign near joined calls
+				if ($is_join_view && isset($row['joined'])) {
+					echo " *";
+				}
+
 				echo "</td>\n";
 			//domain name
 				if ($_REQUEST['show'] == "all" && permission_exists('xml_cdr_all')) {
@@ -726,6 +748,11 @@
 	$_SESSION['xml_cdr']['last_query'] = $_SERVER["QUERY_STRING"];
 
 //show the footer
+
+	echo "<pre>";
+	echo json_encode($_SESSION['cdr']);
+	echo "</pre>";
+
 	require_once "resources/footer.php";
 
 ?>
