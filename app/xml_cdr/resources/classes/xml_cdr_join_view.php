@@ -49,12 +49,20 @@ if (!class_exists('xml_cdr_join_view')) {
                     continue;
                 }
 
-                $this->xlog("Processing... " . json_encode($xml_cdr_data_line) . "\n");
+                // Extrancting json data from string
+                $xml_cdr_json_data = json_decode($xml_cdr_data_line['json'], true);
 
-                if (isset($xml_cdr_data_line['uuids']) && strlen($xml_cdr_data_line['uuids']) > 0) {
-                    $uuids_to_hide = $xml_cdr_data_line['uuids'];
+                // Check if we have necessary data at all
+                if (!$xml_cdr_json_data || !isset($xml_cdr_json_data['variables'])) {
+                    continue;
+                }
+
+                $xml_cdr_json_data = $xml_cdr_json_data['variables'];
+
+                if (isset($xml_cdr_json_data['uuids']) && strlen($xml_cdr_json_data['uuids']) > 0) {
+                    $uuids_to_hide = $xml_cdr_json_data['uuids'];
                     foreach ($xml_cdr_data as $k => $v) {
-                        if (strpos($uuids_to_hide, $v['xml_cdr_uuid']) != false) {
+                        if (strpos($uuids_to_hide, $v['xml_cdr_uuid']) !== false) {
                             $xml_cdr_data[$k]['hidden'] = true;
                             // Yes, could be multiple assignments, but here it's done to be sure
                             $xml_cdr_data[$xml_cdr_data_key]['joined'] = true;
