@@ -469,15 +469,14 @@
 		// Show actual results
 		foreach($result as $index => $row) {
 
-			// Show hidden as italic and joined as bold
+			// Show actual as bold
 			$tr_style = "";
-			if ($is_join_view->status() && isset($row['hidden'])) {
-				$tr_style = " style=font-weight:italic";
-				$xml_cdr_total_hidden += 1;
-			}
-
-			if ($is_join_view->status() && isset($row['joined'])) {
-				$tr_style = " style=font-weight:bold";
+			if ($is_join_view->status()) {
+				if (isset($row['hidden'])) {
+					$xml_cdr_total_hidden += 1;
+				} else {
+					$tr_style = " style=font-weight:bold";
+				}
 			}
 
 			//get the date and time

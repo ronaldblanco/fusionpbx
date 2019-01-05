@@ -42,56 +42,60 @@ if (!class_exists('xml_cdr_join_view')) {
         private function uuid_cleanup(&$xml_cdr_data) {
             // Yes, here we have 0^2 complexity. I know, but it's really quick'n'dirty way of doing this
             // Plus we're using it not more than on ~50-100 array size, so not super big data.
-            foreach ($xml_cdr_data as $xml_cdr_data_key => $xml_cdr_data_line) {
+          
+            foreach ($xml_cdr_data as $xml_cdr_data_parent_key => $xml_cdr_data_parent_value) {
 
-                // Not process already hidden data. Small optimization
-                if (isset($xml_cdr_data_line['hidden']) || isset($xml_cdr_data_line['joined'])) {
+                // Not process already marked data
+                if (isset($xml_cdr_data_parent_value['hidden']) || isset($xml_cdr_data_parent_value['joined'])) {
                     continue;
                 }
 
-                // Extrancting json data from string
-                $xml_cdr_json_data = json_decode($xml_cdr_data_line['json'], true);
+                $xml_cdr_parent_json_data = json_decode($xml_cdr_data_parent_value['json'], true);
 
-                // Check if we have necessary data at all
-                if (!$xml_cdr_json_data || !isset($xml_cdr_json_data['variables'])) {
-                    continue;
-                }
+                // First - check if it's child for others. If originating_leg_uuid is present - than this is child.
+                $child_originating_leg_uuid = (isset($xml_cdr_parent_json_data['variables']['originating_leg_uuid'])) ? $xml_cdr_parent_json_data['variables']['originating_leg_uuid'] : false;
 
-                $xml_cdr_json_data = $xml_cdr_json_data['variables'];
-
-                if (isset($xml_cdr_json_data['originating_leg_uuid']) && strlen($xml_cdr_json_data['originating_leg_uuid']) > 0) {
-                    $parent_channel_uuid = $xml_cdr_json_data['originating_leg_uuid'];
-
-                    // We need to compare it against uuid and call_uuid variables of the channel
-
-                    // Continue if our parent channel is ourself
-                    if ($parent_channel_uuid == $xml_cdr_data_line['xml_cdr_uuid']) {
-                        continue;
-                    }
-
+                // This is a child channel. We need to find a parent. For this channel could be only 1 parent.
+                if ($child_originating_leg_uuid) {
+                    // Here we cycle again to find master channel. Master uuid could be found on 3 variables;
+                    // xml_cdr_uuid, uuid, channel_uuid
                     foreach ($xml_cdr_data as $k => $v) {
 
-                        if (isset($v['joined']) || isset($v['hidden'])) {
-                            // Our channel is already marked
+                        // Bypass myself
+                        if ($k == $xml_cdr_data_parent_key) {
                             continue;
                         }
 
-                        if ($parent_channel_uuid == $v['xml_cdr_uuid']) {
-                            $xml_cdr_data[$xml_cdr_data_key]['hidden'] = true;
-                            // Yes, could be multiple assignments, but here it's done to be sure
+                        $possible_parent_channel_xml_cdr_uuid = $v['xml_cdr_uuid'];
+                        // We found our master!
+                        if ($possible_parent_channel_xml_cdr_uuid == $child_originating_leg_uuid) {
                             $xml_cdr_data[$k]['joined'] = true;
-                            continue;
+                            $xml_cdr_data[$xml_cdr_data_parent_key]['hidden'] = true;
+                            continue 2; // Go for outer foreach loop. This master is already marked
                         }
 
-                        // Check more deep against channel variables;
-                        $test_channel_variables = json_decode($v['json'], true)['variables'];
-                        if ($parent_channel_uuid == $test_channel_variables['uuid'] || $parent_channel_uuid == $test_channel_variables['call_uuid']) {
-                            $xml_cdr_data[$xml_cdr_data_key]['hidden'] = true;
+                        // Check further.
+                        $possible_parent_channel_json_data = json_decode($v['json'], true);
+
+                        // Check uuid variable of the channel
+                        $possible_parent_channel_uuid = (isset($possible_parent_channel_json_data['variables']['uuid'])) ? $possible_parent_channel_json_data['variables']['uuid'] : false;
+                        if ($possible_parent_channel_uuid == $child_originating_leg_uuid) {
                             $xml_cdr_data[$k]['joined'] = true;
+                            $xml_cdr_data[$xml_cdr_data_parent_key]['hidden'] = true;
+                            continue 2; // Go for outer foreach loop. This master is already marked
                         }
-                    }
-                }
-            }
+
+                        // Check call_uuid variable of the channel
+                        $possible_parent_channel_uuid = (isset($possible_parent_channel_json_data['variables']['call_uuid'])) ? $possible_parent_channel_json_data['variables']['call_uuid'] : false;
+                        if ($possible_parent_channel_uuid == $child_originating_leg_uuid) {
+                            $xml_cdr_data[$k]['joined'] = true;
+                            $xml_cdr_data[$xml_cdr_data_parent_key]['hidden'] = true;
+                            continue 2; // Go for outer foreach loop. This master is already marked
+                        }
+                    } // End inner foreach
+                } // End if ($child_originating_leg_uuid)
+            } // End outer foreach
+
         }
 
         private function lose_race_cleanup(&$xml_cdr_data) {
