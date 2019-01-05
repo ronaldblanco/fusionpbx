@@ -469,9 +469,15 @@
 		// Show actual results
 		foreach($result as $index => $row) {
 
-			// Not show hidden call results
+			// Show hidden as italic and joined as bold
+			$tr_style = "";
 			if ($is_join_view->status() && isset($row['hidden'])) {
+				$tr_style = " style=font-weight:italic";
 				$xml_cdr_total_hidden += 1;
+			}
+
+			if ($is_join_view->status() && isset($row['joined'])) {
+				$tr_style = " style=font-weight:bold";
 			}
 
 			//get the date and time
@@ -511,9 +517,9 @@
 					$tr_link = "href='xml_cdr_details.php?id=".escape($row['xml_cdr_uuid']).(($_REQUEST['show']) ? "&show=all" : null)."'";
 				}
 				else {
-					$tr_link = null;
+					$tr_link = "";
 				}
-				echo "<tr ".$tr_link.">\n";
+				echo "<tr " . $tr_link . $tr_style . ">\n";
 				if (permission_exists('xml_cdr_delete')) {
 					echo "	<td valign='top' class='".$row_style[$c]." tr_link_void' style='text-align: center; vertical-align: middle; padding: 0px;'>";
 					echo "		<input type='checkbox' name='id[".$index."]' id='checkbox_".escape($row['xml_cdr_uuid'])."' value='".escape($row['xml_cdr_uuid'])."' onclick=\"if (this.checked) { document.getElementById('recording_".escape($row['xml_cdr_uuid'])."').value='".base64_encode(escape($record_path).'/'.escape($record_name))."' } else { document.getElementById('recording_".escape($row['xml_cdr_uuid'])."').value=''; document.getElementById('chk_all').checked = false; }\">";
@@ -546,14 +552,6 @@
 				}
 				else { 
 					echo "&nbsp;"; 
-				}
-
-				// As for now - show asterisk (*) sign near joined calls
-				if ($is_join_view->status() && isset($row['joined'])) {
-					echo " J";
-				}
-				if ($is_join_view->status() && isset($row['hidden'])) {
-					echo " H";
 				}
 
 				echo "</td>\n";
