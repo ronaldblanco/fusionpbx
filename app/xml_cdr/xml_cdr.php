@@ -472,7 +472,6 @@
 			// Not show hidden call results
 			if ($is_join_view->status() && isset($row['hidden'])) {
 				$xml_cdr_total_hidden += 1;
-				continue;
 			}
 
 			//get the date and time
@@ -551,7 +550,10 @@
 
 				// As for now - show asterisk (*) sign near joined calls
 				if ($is_join_view->status() && isset($row['joined'])) {
-					echo " *";
+					echo " J";
+				}
+				if ($is_join_view->status() && isset($row['hidden'])) {
+					echo " H";
 				}
 
 				echo "</td>\n";

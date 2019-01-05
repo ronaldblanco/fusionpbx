@@ -62,16 +62,32 @@ if (!class_exists('xml_cdr_join_view')) {
                 if (isset($xml_cdr_json_data['originating_leg_uuid']) && strlen($xml_cdr_json_data['originating_leg_uuid']) > 0) {
                     $parent_channel_uuid = $xml_cdr_json_data['originating_leg_uuid'];
 
+                    // We need to compare it against uuid and call_uuid variables of the channel
+
                     // Continue if our parent channel is ourself
                     if ($parent_channel_uuid == $xml_cdr_data_line['xml_cdr_uuid']) {
                         continue;
                     }
 
                     foreach ($xml_cdr_data as $k => $v) {
-                        if ($parent_channel_uuid == $v['xml_cdr_uuid'] && !isset($xml_cdr_data[$v]['joined'])) {
+
+                        if (isset($v['joined']) || isset($v['hidden'])) {
+                            // Our channel is already marked
+                            continue;
+                        }
+
+                        if ($parent_channel_uuid == $v['xml_cdr_uuid']) {
                             $xml_cdr_data[$xml_cdr_data_key]['hidden'] = true;
                             // Yes, could be multiple assignments, but here it's done to be sure
-                            $xml_cdr_data[$v]['joined'] = true;
+                            $xml_cdr_data[$k]['joined'] = true;
+                            continue;
+                        }
+
+                        // Check more deep against channel variables;
+                        $test_channel_variables = json_decode($v['json'], true)['variables'];
+                        if ($parent_channel_uuid == $test_channel_variables['uuid'] || $parent_channel_uuid == $test_channel_variables['call_uuid']) {
+                            $xml_cdr_data[$xml_cdr_data_key]['hidden'] = true;
+                            $xml_cdr_data[$k]['joined'] = true;
                         }
                     }
                 }
