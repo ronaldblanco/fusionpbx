@@ -302,7 +302,8 @@ if (!class_exists('xml_cdr')) {
 						$uuid = check_str(urldecode($xml->variables->uuid));
 						$this->array[$key]['xml_cdr_uuid'] = $uuid;
 						$this->array[$key]['destination_number'] = check_str($destination_number);
-						$this->array[$key]['source_number'] = check_str(urldecode($xml->variables->effective_caller_id_number));
+						//$this->array[$key]['source_number'] = check_str(urldecode($xml->variables->effective_caller_id_number));
+						$this->array[$key]['source_number'] = check_str(urldecode($xml->variables->caller_id_number));
 						$this->array[$key]['user_context'] = check_str(urldecode($xml->variables->user_context));
 						$this->array[$key]['network_addr'] = check_str(urldecode($xml->variables->sip_network_ip));
 						$this->array[$key]['caller_id_name'] = check_str($caller_id_name);

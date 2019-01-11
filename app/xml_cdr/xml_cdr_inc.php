@@ -231,6 +231,7 @@
 				$sql_where_ors[] = "caller_id_number like '".$user_extension."'";
 				$sql_where_ors[] = "destination_number like '".$user_extension."'";
 				$sql_where_ors[] = "destination_number like '*99".$user_extension."'";
+				$sql_where_ors[] = "source_number like '".$user_extension."'";
 			}
 			// if source submitted is blank, implement restriction for assigned extension(s)
 			if ($caller_id_number == '') { // if source criteria is blank, then restrict to assigned ext
