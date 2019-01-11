@@ -133,6 +133,7 @@
 			$database->table = "v_xml_cdr";
 		//caller info
 			$database->fields['caller_destination'] = check_str(urldecode($xml->variables->caller_destination));
+			$database->fields['source_number'] = check_str(urldecode($xml->variables->caller_id_number));
 		//misc
 			$uuid = check_str(urldecode($xml->variables->uuid));
 			$database->fields['xml_cdr_uuid'] = $uuid;
