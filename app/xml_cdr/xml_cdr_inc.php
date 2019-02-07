@@ -220,7 +220,9 @@
 	if (!permission_exists('xml_cdr_domain')) {
 		if (count($_SESSION['user']['extension']) > 0) { // extensions are assigned to this user
 			// create simple user extension array
-			foreach ($_SESSION['user']['extension'] as $row) { $user_extensions[] = $row['user']; }
+			foreach ($_SESSION['user']['extension'] as $row) { 
+				$user_extensions[] = $row['user']; 
+			}
 			// if both a source and destination are submitted, but neither are an assigned extension, restrict results
 			if (
 				$caller_id_number != '' &&
@@ -228,23 +230,25 @@
 				array_search($caller_id_number, $user_extensions) === false &&
 				array_search($destination_number, $user_extensions) === false
 				) {
-				$sql_where_ors[] = "caller_id_number like '".$user_extension."'";
-				$sql_where_ors[] = "destination_number like '".$user_extension."'";
-				$sql_where_ors[] = "destination_number like '*99".$user_extension."'";
-				$sql_where_ors[] = "source_number like '".$user_extension."'";
+				foreach ($user_extensions as $user_extension) {
+					$sql_where_ors[] = "caller_id_number = '".$user_extension."'";
+					$sql_where_ors[] = "destination_number = '".$user_extension."'";
+					$sql_where_ors[] = "destination_number = '*99".$user_extension."'";
+					$sql_where_ors[] = "source_number = '".$user_extension."'";
+				}
 			}
 			// if source submitted is blank, implement restriction for assigned extension(s)
 			if ($caller_id_number == '') { // if source criteria is blank, then restrict to assigned ext
 				foreach ($user_extensions as $user_extension) {
-					if (strlen($user_extension) > 0) {	$sql_where_ors[] = "caller_id_number like '".$user_extension."'"; }
+					if (strlen($user_extension) > 0) {	$sql_where_ors[] = "caller_id_number = '".$user_extension."'"; }
 				}
 			}
 			// if destination submitted is blank, implement restriction for assigned extension(s)
 			if ($destination_number == '') {
 				foreach ($user_extensions as $user_extension) {
 					if (strlen($user_extension) > 0) {
-						$sql_where_ors[] = "destination_number like '".$user_extension."'";
-						$sql_where_ors[] = "destination_number like '*99".$user_extension."'";
+						$sql_where_ors[] = "destination_number = '".$user_extension."'";
+						$sql_where_ors[] = "destination_number = '*99".$user_extension."'";
 					}
 				}
 			}
