@@ -240,7 +240,10 @@
 			// if source submitted is blank, implement restriction for assigned extension(s)
 			if ($caller_id_number == '') { // if source criteria is blank, then restrict to assigned ext
 				foreach ($user_extensions as $user_extension) {
-					if (strlen($user_extension) > 0) {	$sql_where_ors[] = "caller_id_number = '".$user_extension."'"; }
+					if (strlen($user_extension) > 0) {
+						$sql_where_ors[] = "caller_id_number = '".$user_extension."'";
+						$sql_where_ors[] = "source_number = '".$user_extension."'";
+					}
 				}
 			}
 			// if destination submitted is blank, implement restriction for assigned extension(s)
