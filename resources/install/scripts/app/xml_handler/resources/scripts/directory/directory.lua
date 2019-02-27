@@ -404,25 +404,26 @@
 						if (debug["sql"]) then
 							freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
 						end
-						dbh:query(sql, params, function(row)
-							if (string.len(row.voicemail_enabled) > 0) then
-								vm_enabled = row.voicemail_enabled;
-							end
-							vm_password = row.voicemail_password;
-							vm_attach_file = "true";
-							if (string.len(row.voicemail_attach_file) > 0) then
-								vm_attach_file = row.voicemail_attach_file;
-							end
-							vm_keep_local_after_email = "true";
-							if (string.len(row.voicemail_local_after_email) > 0) then
-								vm_keep_local_after_email = row.voicemail_local_after_email;
-							end
-							if (string.len(row.voicemail_mail_to) > 0) then
-								vm_mailto = row.voicemail_mail_to;
-							else
-								vm_mailto = "";
-							end
-						end);
+						if (tonumber(params.voicemail_id) ~= nil) then
+							dbh:query(sql, params, function(row)
+								if (string.len(row.voicemail_enabled) > 0) then
+									vm_enabled = row.voicemail_enabled;
+								end
+								vm_password = row.voicemail_password;
+								vm_attach_file = "true";
+								if (string.len(row.voicemail_attach_file) > 0) then
+									vm_attach_file = row.voicemail_attach_file;
+								end
+								vm_keep_local_after_email = "true";
+								if (string.len(row.voicemail_local_after_email) > 0) then
+									vm_keep_local_after_email = row.voicemail_local_after_email;
+								end
+								if (string.len(row.voicemail_mail_to) > 0) then
+									vm_mailto = row.voicemail_mail_to;
+								else
+									vm_mailto = "";
+								end
+							end);
 					end
 
 				--if the extension does not exist set continue to false;
