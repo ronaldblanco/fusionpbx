@@ -424,6 +424,7 @@
 									vm_mailto = "";
 								end
 							end);
+						end
 					end
 
 				--if the extension does not exist set continue to false;
