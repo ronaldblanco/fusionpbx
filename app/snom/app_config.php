@@ -62,7 +62,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "snom_tonescheme";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "AUT";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "trie";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Tonescheme to use";
 		$y++;
 
