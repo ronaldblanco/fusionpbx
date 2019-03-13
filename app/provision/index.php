@@ -124,6 +124,11 @@
 				$mac = $matches[1];
 				$mac = preg_replace("#[^a-fA-F0-9./]#", "", $mac);
 			}
+		// Snom: $_SERVER['HTTP_USER_AGENT']: Mozilla/4.0 (compatible; snomM200SC-SIP 2.10.46.adad 00041364108d)
+			if (substr($_SERVER['HTTP_USER_AGENT'],0,7) == 'Mozilla' && strpos($_SERVER['HTTP_USER_AGENT'], 'compatible; snom') !== false) {
+				$mac = substr($_SERVER['HTTP_USER_AGENT'], -13);
+				$mac = preg_replace("#[^a-fA-F0-9./]#", "", $mac);
+			}
 	}
 
 //prepare the mac address
