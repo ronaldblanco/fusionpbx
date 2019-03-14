@@ -51,12 +51,12 @@ $text['description-call_acl_order']['en-us'] = "Select order number for this rul
 $text['description-call_acl_templates']['en-us'] = "Templates support ranges and wildcards. Actually it's limited regexes<br>";
 $text['description-call_acl_templates']['en-us'] .= "[A-B] matches any digit within A-B range<br>";
 $text['description-call_acl_templates']['en-us'] .= "'X' matches any digit one time<br>";
-$text['description-call_acl_templates']['en-us'] .= "'*' or '.' matches anything<br>";
+$text['description-call_acl_templates']['en-us'] .= "'*' matches anything<br>";
 $text['description-call_acl_templates']['en-us'] .= "'^'  matches start of the string<br>";
 $text['description-call_acl_templates']['en-us'] .= "'$'  matches end of the string<br>";
 $text['description-call_acl_templates']['en-us'] .= "Examples:<br>";
 $text['description-call_acl_templates']['en-us'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^[1-2]X matches numbers 10 - 29 <br>";
-$text['description-call_acl_templates']['en-us'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^XXX matches numbers with more than 3 digits <br>";
+$text['description-call_acl_templates']['en-us'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^XXX or ^XXX*$ matches numbers with 3 digits and more<br>";
 $text['description-call_acl_templates']['en-us'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^XXX$ matches numbers with exact 3 digits <br>";
 $text['description-call_acl_templates']['en-us'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^*[45]$ matches numbers that ends with 4 or 5 <br>";
 ?>
