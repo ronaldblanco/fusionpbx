@@ -12,7 +12,7 @@ end
 local function convert_pattern(pattern)
     
     -- Cleanup pattern-related magical characters
-    converted_pattern = converted_pattern:gsub("%(", "%%(")
+    converted_pattern = pattern:gsub("%(", "%%(")
     converted_pattern = converted_pattern:gsub("%)", "%%)")
     converted_pattern = converted_pattern:gsub("%%", "%%%%")
     converted_pattern = converted_pattern:gsub("%.", "%%.")
@@ -23,8 +23,8 @@ local function convert_pattern(pattern)
     converted_pattern = converted_pattern:gsub("%?", "%%?")
 
     -- Internal convention X - any digit, * - any number of digits
-    converted_pattern = pattern:gsub("X", "%d")
-    converted_pattern = pattern:gsub("%*", ".*")
+    converted_pattern = converted_pattern:gsub("X", "%d")
+    converted_pattern = converted_pattern:gsub("%*", ".*")
 
     return converted_pattern
 
