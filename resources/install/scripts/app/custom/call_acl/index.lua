@@ -32,8 +32,6 @@ end
 
 if (session:ready()) then
 
-    log("Process started...")
-
     local sql = ""
 
     local source = session:getVariable("caller_id_number")
