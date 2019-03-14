@@ -72,11 +72,25 @@ if (session:ready()) then
             sql = sql .. "AND call_acl_enabled = 'true' "
             sql = sql .. "ORDER BY call_acl_order"
         end
+
+        -- Get all patterns in list. Mainly cause we can't get 
+        local patterns = {}
+        local pattern_index = 1
         dbh:query(sql, function(row)
-            call_acl_name = row['call_acl_name']
-            call_acl_source = row['call_acl_source']
-            call_acl_destination = row['call_acl_destination']
-            call_acl_action = row['call_acl_action']
+            patterns[pattern_index] = row
+            pattern_index = pattern_index + 1
+        end);
+
+        dbh:release()
+
+        -- Adjust pattern_index as it's 1 more than actual data
+        pattern_index = pattern_index - 1
+
+        for i = 1, pattern_index do
+            call_acl_name = patterns[i]['call_acl_name']
+            call_acl_source = patterns[i]['call_acl_source']
+            call_acl_destination = patterns[i]['call_acl_destination']
+            call_acl_action = patterns[i]['call_acl_action']
 
             log("Processing ACL " .. call_acl_name)
 
@@ -93,9 +107,7 @@ if (session:ready()) then
                 -- We found pattern match and this is allow
                 return
             end
-
-        end);
-        dbh:release()
+        end
     end
 
     log("ACL processing end. Contunue call")
