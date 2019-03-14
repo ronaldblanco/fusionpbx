@@ -24,7 +24,7 @@ if (session:ready()) then
             sql = sql .. "WHERE domain_uuid = "
             sql = sql .. "(SELECT domain_uuid FROM v_domains "
             sql = sql .. "WHERE domain_name = '"..domain_id.."' "
-            sql = sql .. "and enabled = 'true') "
+            sql = sql .. "and domain_enabled = 'true') "
             sql = sql .. "AND enabled = 'true'"
         end
         local results_count = 0

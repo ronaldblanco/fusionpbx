@@ -68,7 +68,7 @@ if (session:ready()) then
             sql = sql .. "WHERE domain_uuid ="
             sql = sql .. " (SELECT domain_uuid FROM v_domains"
             sql = sql .. " WHERE domain_name = '" .. domain_id .. "'"
-            sql = sql .. " AND enabled = 'true') "
+            sql = sql .. " AND domain_enabled = 'true') "
             sql = sql .. "AND call_acl_enabled = 'true' "
             sql = sql .. "ORDER BY call_acl_order"
         end
@@ -95,6 +95,7 @@ if (session:ready()) then
             end
 
         end);
+        dbh:release()
     end
 
     log("ACL processing end. Contunue call")
