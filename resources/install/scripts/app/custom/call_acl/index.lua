@@ -97,7 +97,7 @@ if (session:ready()) then
             call_acl_source = convert_pattern(call_acl_source)
             call_acl_destination = convert_pattern(call_acl_destination)
 
-            if (source:find(call_acl_source) or destination:find(call_acl_destination)) then
+            if (source:find(call_acl_source) and destination:find(call_acl_destination)) then
                 log("ACL " .. call_acl_name .. " matched")
                 if call_acl_action == 'reject' then
                     log("ACL is reject. Stop process call")
