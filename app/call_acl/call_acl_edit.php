@@ -176,7 +176,7 @@
 
 // Get maximum order number
 
-	$call_acl_order_max = isset($_SESSION['call_acl']['max_order']) ? (int)$_SESSION['call_acl']['max_order'] : 20;
+	$call_acl_order_max = isset($_SESSION['call_acl']['max_order']['numeric']) ? (int)$_SESSION['call_acl']['max_order']['numeric'] : 20;
 	if (!$call_acl_order_max) {
 		$call_acl_order_max = 20;
 	}
