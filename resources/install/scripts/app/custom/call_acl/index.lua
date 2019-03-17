@@ -24,6 +24,7 @@ local function convert_pattern(pattern)
 
     -- Internal convention X - any digit, * - any number of digits
     converted_pattern = converted_pattern:gsub("X", "%d")
+    converted_pattern = converted_pattern:gsub("x", "%d")
     converted_pattern = converted_pattern:gsub("%*", ".*")
 
     return converted_pattern
