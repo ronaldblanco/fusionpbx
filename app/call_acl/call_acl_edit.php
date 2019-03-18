@@ -127,7 +127,7 @@
 				unset($sql);
 
 				messages::add($text['label-add-complete']);
-				header("Location: call_acl_edit.php?id=" . $call_acl_uuid);
+				header("Location: call_acl.php");
 				return;
 			} //if ($action == "add")
 
@@ -146,7 +146,7 @@
 				unset($sql);
 
 				messages::add($text['label-update-complete']);
-				header("Location: call_acl_edit.php?id=" . $call_acl_uuid);
+				header("Location: call_acl.php");
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
