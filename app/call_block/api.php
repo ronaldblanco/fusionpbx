@@ -56,6 +56,11 @@ function send_answer($code, $message) {
     echo $status;
 }
 
+function format_number($number) {
+
+    return $formatted;
+}
+
 //check permissions
 if (permission_exists('call_block_edit') || permission_exists('call_block_add')) {
     //access granted
@@ -86,30 +91,36 @@ if (!$call_block_number) {
 }
 
 if ($action == "add") {
-    $sql = "INSERT INTO v_call_block ";
-    $sql .= "(";
-    $sql .= "domain_uuid, ";
-    $sql .= "call_block_uuid, ";
-    $sql .= "call_block_name, ";
-    $sql .= "call_block_number, ";
-    $sql .= "call_block_count, ";
-    $sql .= "call_block_action, ";
-    $sql .= "call_block_enabled, ";
-    $sql .= "date_added ";
-    $sql .= ") ";
-    $sql .= "values ";
-    $sql .= "(";
-    $sql .= "'".$_SESSION['domain_uuid']."', ";
-    $sql .= "'".uuid()."', ";
-    $sql .= "'$call_block_name', ";
-    $sql .= "'$call_block_number', ";
-    $sql .= "0, ";
-    $sql .= "'$call_block_action', ";
-    $sql .= "'$call_block_enabled', ";
-    $sql .= "'".time()."' ";
-    $sql .= ")";
-    $db->exec(check_sql($sql));
-    unset($sql);
+
+    $call_block_number = format_number($call_block_number);
+    $call_block_numbers = [$call_block_number, "+" . $call_block_number];
+
+    foreach ($call_block_numbers as $call_block_number) {
+        $sql = "INSERT INTO v_call_block ";
+        $sql .= "(";
+        $sql .= "domain_uuid, ";
+        $sql .= "call_block_uuid, ";
+        $sql .= "call_block_name, ";
+        $sql .= "call_block_number, ";
+        $sql .= "call_block_count, ";
+        $sql .= "call_block_action, ";
+        $sql .= "call_block_enabled, ";
+        $sql .= "date_added ";
+        $sql .= ") ";
+        $sql .= "values ";
+        $sql .= "(";
+        $sql .= "'".$_SESSION['domain_uuid']."', ";
+        $sql .= "'".uuid()."', ";
+        $sql .= "'$call_block_name', ";
+        $sql .= "'$call_block_number', ";
+        $sql .= "0, ";
+        $sql .= "'$call_block_action', ";
+        $sql .= "'$call_block_enabled', ";
+        $sql .= "'".time()."' ";
+        $sql .= ")";
+        $db->exec(check_sql($sql));
+        unset($sql);
+    }
     send_answer('200', 'Number added');
 } else {
     send_answer('404', "Action $action not found");
