@@ -58,7 +58,7 @@ function send_answer($code, $message) {
 
 function format_number($number) {
 
-    return $formatted;
+    return preg_replace( '/[^0-9]/', '', $number);
 }
 
 //check permissions
