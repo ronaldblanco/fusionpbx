@@ -22,9 +22,8 @@ local function convert_pattern(pattern)
     converted_pattern = converted_pattern:gsub("%-", "%%-")
     converted_pattern = converted_pattern:gsub("%?", "%%?")
 
-    -- Internal convention X - any digit, * - any number of digits
-    converted_pattern = converted_pattern:gsub("X", "%d")
-    converted_pattern = converted_pattern:gsub("x", "%d")
+    -- Internal convention x - any digit, * - any number of digits
+    converted_pattern = converted_pattern:gsub("x", "%%d")
     converted_pattern = converted_pattern:gsub("%*", ".*")
 
     return converted_pattern
@@ -91,8 +90,8 @@ if (session:ready()) then
             call_acl_destination = patterns[i]['call_acl_destination']
             call_acl_action = patterns[i]['call_acl_action']
 
-            call_acl_source = convert_pattern(call_acl_source)
-            call_acl_destination = convert_pattern(call_acl_destination)
+            call_acl_source = convert_pattern(call_acl_source:lower())
+            call_acl_destination = convert_pattern(call_acl_destination:lower())
 
             if (source:find(call_acl_source) and destination:find(call_acl_destination)) then
                 log("[" ..source.. "/" .. call_acl_source.. "][" ..destination.. "/" .. call_acl_destination.. "] ACL " .. call_acl_name .. " matched")
