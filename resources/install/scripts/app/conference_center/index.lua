@@ -70,9 +70,9 @@
 	end
 
 
--- dtmf_type_intenal
-	dtmf_type_intenal = session:getVariable("dtmf_type_intenal")
-	if (dtmf_type_intenal and dtmf_type_intenal == 'inband') then
+-- dtmf_type_internal
+	dtmf_type_internal = session:getVariable("dtmf_type_internal")
+	if (dtmf_type_internal and dtmf_type_internal == 'inband') then
 		session:execute("start_dtmf")
 	end
 --define a function to send email
