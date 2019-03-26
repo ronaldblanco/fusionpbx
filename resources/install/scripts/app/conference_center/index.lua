@@ -69,6 +69,12 @@
 			record_ext = "wav";
 	end
 
+
+-- dtmf_type_intenal
+	dtmf_type_intenal = session:getVariable("dtmf_type_intenal")
+	if (dtmf_type_intenal and dtmf_type_intenal == 'inband') then
+		session:execute("start_dtmf")
+	end
 --define a function to send email
 	function send_email(email, attachment, default_language, default_dialect)
 
