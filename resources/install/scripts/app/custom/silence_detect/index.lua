@@ -3,13 +3,13 @@ require "app.custom.silence_detect.resources.functions.wav"
 
 opthelp = [[
  -a, --algo=OPTARG                  Algorythm used. lines or samples
- -m, --mode=OPTARG                  Could be simple or advanced
+ -m, --mode=OPTARG                  Could be simple or advanced. On advanced mode it says "hello-file" after "loops" count and run again for "post-loops"
  -s, --temporary-storage=OPTARG     Temporary storage
  -l, --loops=OPTARG                 Loop count on simple mode. On advanced mode applies to initial loop before fake an answer
  -p, --post-loops=OPTARG            Loop count on after answer on advanced mode.
  -q, --silenece-duration=OPTARG     Silence duration on post-answer in advanced mode. Miliseconds
  -r, --ringback=OPTARG              Ringback to be used in simple mode and first part in advanced
- -f, --hello-file=OPTARG             File to be used on answer. Imitate 'hello'. streamfile.lua is used to play this
+ -f, --hello-file=OPTARG            File to be used on answer. Imitate 'hello'. streamfile.lua is used to play this
  -g, --ignore-silence-detect        Ignore silence detect results on first part of advanced mode
  -t, --transfer-on-silence=OPTARG   Where to transfer on silence
  -h, --hangup-cause=OPTARG          Set hangup cause if transfer-on-silence is hangup
@@ -132,7 +132,7 @@ if session:ready() then
     -- Answer the call
     session:answer()
 
-    -- For both simple and advanced mode first part is same
+    -- For both simple and advanced mode first part is the same
     for i = 1, loop_count do
         if opts.v then
             freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i .. ', algorithm is ' .. algo .. ' ' .. table.concat(args, " "))
@@ -162,18 +162,18 @@ if session:ready() then
         end
     end
 
-    -- If mode is advanced and silence detected on previius steps or we ignore all silence before - proceed to next step
+    -- If mode is advanced and silence detected on previous steps or we ignore all silence before - proceed to next step
     if (mode == 'advanced' and (is_silence_detected or opts.g)) then
         local hello_file = opts.f or ''
         local post_loop_count = opts.p or 5
         local silence_duration = opts.q or 1000
 
-        -- Playbach hello here
+        -- Playback hello here
         session:execute('lua', 'streamfile.lua '.. hello_file)
 
         for i = loop_count, loop_count + post_loop_count do
             if opts.v then
-                freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i .. ', algorithm is ' .. algo .. ' ' .. table.concat(args, " "))
+                freeswitch.consoleLog("NOTICE", "[silence_detect] Loop:" .. i .. ' (advanced), algorithm is ' .. algo .. ' ' .. table.concat(args, " "))
             end
             session:execute("record_session", tmp_file_name)
             session:execute("playback", 'silence_stream://' .. silence_duration)
@@ -187,7 +187,7 @@ if session:ready() then
             end
             -- Debug part
             if opts.d then
-                session:execute("export", "silence_detect_" .. mode .. "_" .. algo .. "_" .. i .. "=" .. silence_detect_debug_info)
+                session:execute("export", "silence_detect_" .. mode .. "_" .. algo .. "_" .. i .. "_advanced=" .. silence_detect_debug_info)
             end
             -- Keep recorded file
             if opts.k then
