@@ -69,6 +69,12 @@
 			record_ext = "wav";
 	end
 
+
+-- dtmf_type_internal
+	dtmf_type_internal = session:getVariable("dtmf_type_internal")
+	if (dtmf_type_internal and dtmf_type_internal == 'inband') then
+		session:execute("start_dtmf")
+	end
 --define a function to send email
 	function send_email(email, attachment, default_language, default_dialect)
 
