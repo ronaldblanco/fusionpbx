@@ -616,6 +616,20 @@
 				unset($vtiger_api_call);
 			}
 
+		// Custom Callbacks
+			
+			$custom_callback_enable = isset($_SESSION['cdr']['custom_callback_enable']['boolean']) ? filter_var($_SESSION['cdr']['custom_callback_enable']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
+
+			if ($custom_callback_enable) {
+				$call_back_classes = $_SESSION['cdr']['custom_callback'];
+				foreach ($call_back_classes as $call_back_class) {
+					$callback = new $call_back_class();
+					if ($callback->is_ready) {
+						$callback->start($database->fields);
+					}
+				}
+			}
+
 		//insert xml_cdr into the db
 			if (strlen($start_stamp) > 0) {
 				$database->add();
