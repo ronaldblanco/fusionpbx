@@ -623,9 +623,9 @@
 			if ($custom_callback_enable) {
 				$call_back_classes = $_SESSION['cdr']['custom_callback'];
 				foreach ($call_back_classes as $call_back_class) {
-					$callback = new $call_back_class();
+					$callback = new $call_back_class($_SESSION);
 					if ($callback->is_ready) {
-						$callback->start($database->fields);
+						$callback->process($database->fields);
 					}
 				}
 			}
