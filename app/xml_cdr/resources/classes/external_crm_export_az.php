@@ -44,9 +44,27 @@ if (!class_exists('external_crm_export_az')) {
         }
 
         public function process(&$xml_varibles) {
+
+            $phoneNumberA = strval($xml_varibles->caller_id_number);
+            $phoneNumberB = strval($xml_varibles->destination_number);
+
+            $phoneNumber = False;
+
+            if (strlen($phoneNumberA) > 5) {
+                $phoneNumber = $phoneNumberA;
+            }
+
+            if (strlen($phoneNumberB) > 5) {
+                $phoneNumber = $phoneNumberB;
+            }
+
+            if (!$phoneNumber) {
+                return;
+            }
+
             $data = array(
                 'duration' => strval($xml_varibles->billsec),
-                'phoneNumber' => strval($xml_varibles->caller_id_number),
+                'phoneNumber' => $phoneNumber,
                 'recordDate' => strval($xml_varibles->start_stamp),
                 'record_name' => strval($xml_varibles->record_name),
                 'record_path' => strval($xml_varibles->record_path),
