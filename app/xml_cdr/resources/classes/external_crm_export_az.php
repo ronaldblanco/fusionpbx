@@ -45,10 +45,10 @@ if (!class_exists('external_crm_export_az')) {
 
         public function process($xml_varibles) {
             $data = array(
-                'duration' => strval($xml_varibles->billsec),
-                'phoneNumber' => strval($xml_varibles->caller_id_number),
-                'recordDate' => strval($xml_varibles->start_stamp),
-                'record_name' => strval($xml_varibles->record_name),
+                'duration' => $xml_varibles->billsec,
+                'phoneNumber' => $xml_varibles->caller_id_number,
+                'recordDate' => $xml_varibles->start_stamp,
+                'record_name' => $xml_varibles->record_name,
             );
             $this->send_request($data);
         }
