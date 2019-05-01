@@ -625,7 +625,7 @@
 
 				// Add $call_back_classes with custom domain settings
 				$sql = "SELECT domain_setting_value FROM v_domain_settings";
-				$sql .= " WHERE domain_uuid = '" . $xml->variables->domain_uuid ."'";
+				$sql .= " WHERE domain_uuid = '" . $xml->variables->domain_uuid . "'";
 				$sql .= " AND domain_setting_category = 'cdr'";
 				$sql .= " AND domain_setting_name = 'array'";
 				$sql .= " AND domain_setting_subcategory = 'custom_callback'";
