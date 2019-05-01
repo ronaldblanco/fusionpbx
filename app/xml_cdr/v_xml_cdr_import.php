@@ -622,7 +622,25 @@
 
 			if ($custom_callback_enable) {
 				$call_back_classes = $_SESSION['cdr']['custom_callback'];
+
+				// Add $call_back_classes with custom domain settings
+				$sql = "SELECT domain_setting_value FROM v_domain_settings";
+				$sql .= " WHERE domain_uuid = '" . $xml->variables->domain_uuid ."'";
+				$sql .= " AND domain_setting_category = 'cdr'";
+				$sql .= " AND domain_setting_name = 'array'";
+				$sql .= " AND domain_setting_subcategory = 'custom_callback'";
+				$sql .= " AND domain_setting_enabled = 'true'";
+				$sql .= " ORDER BY domain_setting_order ASC";
+
+				$row = $db->query($sql)->fetchall();
+				foreach ($row as $call_back_class) {
+					$call_back_classes[] = $call_back_class[0];
+				}
+
 				foreach ($call_back_classes as $call_back_class) {
+					if (!class_exists($call_back_class)) {
+						continue;
+					}
 					$callback = new $call_back_class($_SESSION);
 					if ($callback->is_ready) {
 						$callback->process($database->fields);

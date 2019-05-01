@@ -1,6 +1,6 @@
 <?php
 if (!class_exists('external_crm_export_az')) {
-    class external_crm_export {
+    class external_crm_export_az {
         public $is_ready;
 
         private $crm_url;
