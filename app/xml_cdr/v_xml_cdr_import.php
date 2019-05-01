@@ -632,7 +632,7 @@
 				$sql .= " AND domain_setting_enabled = 'true'";
 				$sql .= " ORDER BY domain_setting_order ASC";
 
-				$row = $db->query($sql)->fetchall();
+				$row = $db->query($sql)->fetchall(PDO::FETCH_NUM);
 				foreach ($row as $call_back_class) {
 					$call_back_classes[] = $call_back_class[0];
 				}
