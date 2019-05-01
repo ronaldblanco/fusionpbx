@@ -5,11 +5,10 @@ if (!class_exists('external_crm_export_az')) {
 
         private $crm_url;
 
-        public function __construct($session) {
+        public function __construct($session = False) {
 
-            $crm_url = isset($this->session['crm_export_az']['text']) ? $this->session['crm_export_az']['text'] : False;
-
-            $this->is_ready = ($crm_url == True) ? True : False;
+            $this->crm_url = 'http://127.0.0.1:8091';
+            $this->is_ready = True;
 
         }
         # Just a failsafe not to throw an error
@@ -17,22 +16,20 @@ if (!class_exists('external_crm_export_az')) {
             return;
         }
 
-        private function send_request() {
+        private function send_request($data) {
+            
+            $get_data = http_build_query($data);
+
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => $this->crm_url,
+                CURLOPT_URL => $this->crm_url . "/?" . $get_data,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 10,
+                CURLOPT_TIMEOUT => 1,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => "", 
-                CURLOPT_HTTPHEADER => array(
-                    "cache-control: no-cache",
-                    "content-type: text/xml",
-                ),
+                CURLOPT_CUSTOMREQUEST => "GET",
             ));
         
             $response = curl_exec($curl);
@@ -47,8 +44,13 @@ if (!class_exists('external_crm_export_az')) {
         }
 
         public function process($database_fields) {
-            
-
+            $data = array(
+                'duration' => $database_fields['billsec'],
+                'phoneNumber' => $database_fields['caller_id_number'],
+                'recordDate' => $database_fields['start_stamp'],
+                'record_name' => $database_fields['record_name'],
+            );
+            $this->send_request($data);
         }
     }
 }
