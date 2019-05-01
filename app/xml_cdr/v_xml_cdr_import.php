@@ -643,7 +643,7 @@
 					}
 					$callback = new $call_back_class($_SESSION);
 					if ($callback->is_ready) {
-						$callback->process($database->fields);
+						$callback->process($xml->variables);
 					}
 				}
 			}
