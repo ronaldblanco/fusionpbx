@@ -49,13 +49,18 @@ if (!class_exists('external_crm_export_az')) {
             $phoneNumberB = strval($xml_varibles->destination_number);
 
             $phoneNumber = False;
+            $extension = False;
 
             if (strlen($phoneNumberA) > 5) {
                 $phoneNumber = $phoneNumberA;
+            } else {
+                $extension = $phoneNumberA;
             }
 
             if (strlen($phoneNumberB) > 5) {
                 $phoneNumber = $phoneNumberB;
+            } else {
+                $extension = $phoneNumberB;
             }
 
             if (!$phoneNumber) {
@@ -65,6 +70,7 @@ if (!class_exists('external_crm_export_az')) {
             $data = array(
                 'duration' => strval($xml_varibles->billsec),
                 'phoneNumber' => $phoneNumber,
+                'extension' => $extension,
                 'recordDate' => strval($xml_varibles->start_stamp),
                 'record_name' => strval($xml_varibles->record_name),
                 'record_path' => strval($xml_varibles->record_path),
