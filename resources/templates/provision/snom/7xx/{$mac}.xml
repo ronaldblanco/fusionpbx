@@ -1,101 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
+{* V11 2019-05-10 *}
+{* Variables used *}
+{* snom_time_zone - Timezone in SNOM format http://wiki.snom.com/Settings/timezone *}
+{* snom_language - Language to use with phone http://wiki.snom.com/Settings/language *}
+{* snom_gui_fkeyX - GUI softkeys config http://wiki.snom.com/Settings/gui_fkey *}
+{* snom_dim_timer - Dim timer http://wiki.snom.com/Settings/dim_timer *}
+{* snom_tonescheme - Tone sheme to use http://wiki.snom.com/Settings/thttp://wiki.snom.com/Settings/attended_transfer_on_ringingone_scheme *}
+{* snom_time_format - US/EU time format http://wiki.snom.com/Settings/date_us_format *}
+{* snom_call_waiting - Call waiting (on/off/visual/ringer) - http://wiki.snom.com/Settings/call_waiting *}
+{* snom_green_blf - Use green/off BLF for indicate idle state. on/off http://wiki.snom.com/Settings/led_green http://wiki.snom.com/Settings/led_on *}
+{* snom_update_policy - Update policy http://wiki.snom.com/Settings/update_policy *}
+{* snom_dhcp - DHCP options http://wiki.snom.com/Settings/dhcp *}
+{* snom_attended_transfer_on_ringing - http://wiki.snom.com/Settings/attended_transfer_on_ringing *}
+{* snom_status_msgs_that_show_directly - http://wiki.snom.com/Settings/status_msgs_that_show_directly *}
+{* snom_monitor_calls - Monitor ongoing calls on the screen http://wiki.snom.com/Settings/goto_monitor_state_on_line_activity *}
+{* snom_resync_peiod - Resync configuration period http://wiki.snom.com/Settings/settings_refresh_timer *}
+{* snom_backgrouond_image_url - URL of background image http://wiki.snom.com/Settings/custom_bg_image_url *}
+
+{* Model-specific values for D765: *}
+{$snom_firmware_path_default = "http://downloads.snom.com/fw/snomD765-8.9.3.80-SIP-r.bin"}
+{$regularKeys = 16}
+{$isD3XX = false}
+
+{* default values: *}
+{$refresh_default = 7200}
+{$cancel_reasons_to_ignore_default = "text='Call completed elsewhere' text='Call was replaced' cause&lt;300"}
+{$dialnumber_us_format_default = "off"}
+{$updatepolicy_default = "auto_update"}
+{$dhcp_default = "on"}
+{$attended_transfer_on_ringing_default = "on"}
+{$user_srtp_default = "off"}
+{$user_mailbox_default = "*97"}
+{$dtmf_default = "off"}
+{$symmetrical_rtp_default = "on"}
+{$codec_priority_list_default = "g729,g722,pcmu,pcma"}
+{$user_expiry_default = 180}
+{$user_subscription_expiry_default = 1209600}
+{$retry_after_failed_subscribe_default = 1}
+
 <settings>
 <phone-settings e="2">
-<language perm="">English</language>
-<update_policy perm="">auto_update</update_policy>
-<setting_server perm="RW">http://{$domain_name}{$project_path}/app/provision/index.php?mac={$mac}</setting_server>
-<dhcp perm="R">on</dhcp>
-<timezone perm="">{$snom_time_zone}</timezone>
-<firmware_status perm="R">http://{$domain_name}{$project_path}/app/provision/firmware.xml</firmware_status>
-{if isset($admin_password) }
-<http_user perm="">{$admin_name}</http_user>
-<http_pass perm="">{$admin_password}</http_pass>
+<timezone perm="R">{$snom_time_zone}</timezone>
+<ntp_server perm="R">{$ntp_server_primary}</ntp_server>
+<language perm="!">{$snom_language}</language>
+
+<gui_fkey1 perm="R">{if isset ($snom_gui_fkey1)}{$snom_gui_fkey1}{else}F_REGS{/if}</gui_fkey1>
+<gui_fkey2 perm="R">{if isset ($snom_gui_fkey2)}{$snom_gui_fkey2}{else}F_CALL_LIST{/if}</gui_fkey2>
+<gui_fkey3 perm="R">{if isset ($snom_gui_fkey3)}{$snom_gui_fkey3}{else}F_REDIRECT{/if}</gui_fkey3>
+<gui_fkey4 perm="R">{if isset ($snom_gui_fkey4)}{$snom_gui_fkey4}{else}F_SUPPORT{/if}</gui_fkey4>
+
+<dim_timer perm="R">{if isset ($snom_dim_timer)}{$snom_dim_timer}{else}20{/if}</dim_timer>
+
+<tone_scheme perm="R">{$snom_tonescheme}</tone_scheme>
+<date_us_format perm="R">{if isset($snom_time_format)}{$snom_time_format}{else}off{/if}</date_us_format>
+<dialnumber_us_format perm="R">{if isset($snom_time_format)}{$snom_time_format}{else}off{/if}</dialnumber_us_format>
+
+<call_waiting perm="R">{if isset ($snom_call_waiting)}{$snom_call_waiting}{else}on{/if}</call_waiting>
+<admin_mode_password perm="R">{$admin_password}</admin_mode_password>
+<admin_mode_password_confirm perm="R">{$admin_password}</admin_mode_password_confirm>
+<http_user perm="R">{$admin_name}</http_user>
+<http_pass perm="R">{$admin_password}</http_pass>
+<http_client_user perm="R">{$http_auth_username}</http_client_user>
+<http_client_pass perm="R">{$http_auth_password}</http_client_pass>
+
+{if isset ($snom_green_blf)}
+{if $snom_green_blf == "on"}
+<led_on perm="R">idle ON BUSY IN_A_CALL CALLING IN_A_MEETING URGENT_INTERRUPTIONS_ONLY DND UNAVAILABLE ACTIVE INACTIVE BE_RIGHT_BACK AWAY SEIZED CONNECTED ON_HOLD OFFHOOK RINGBACK I-Am-Ready AVAILABLE I-Am-Busy PhoneHasCall PhoneHasMissedCalls</led_on>
+<led_green perm="R">idle AVAILABLE  I-Am-Ready I-Am-Almost-Ready</led_green>
 {/if}
-<web_logout_timer>5</web_logout_timer>
-{if isset($admin_password) }
-<admin_mode_login perm="">{$admin_name}</admin_mode_login>
-<admin_mode_password perm="">{$admin_password}</admin_mode_password>
-<admin_mode_password_confirm perm="">{$admin_password}</admin_mode_password_confirm>
 {else}
-<admin_mode_password>0000</admin_mode_password>
-<admin_mode_password_confirm>0000</admin_mode_password_confirm>
+<led_on perm="R">ON IN_A_CALL CALLING IN_A_MEETING URGENT_INTERRUPTIONS_ONLY BUSY I-Am-Busy DND_ALL DND_SELF ACTIVE INACTIVE BE_RIGHT_BACK SEIZED CONNECTED ON_HOLD OFFHOOK RINGBACK I-Am-Ready AWAY AVAILABLE AVAILABLE_ON_MOBILE AVAILABLE_AT_DESK PhoneHasCall PhoneHasMissedCalls CurrentIdentityHasVoiceMessages PhoneHasVoiceMessages seized_local seized_remote active_local active_remote</led_on>
+<led_green perm="R">AVAILABLE AVAILABLE_ON_MOBILE AVAILABLE_AT_DESK I-Am-Ready I-Am-Almost-Ready seized_local alerting_local active_local held_local</led_green>
 {/if}
-<admin_mode perm="">on</admin_mode>
-<attended_transfer_on_ringing perm="">on</attended_transfer_on_ringing>
-<was_never_registered perm="">off</was_never_registered>
-<user_active idx="1" perm="">on</user_active>
-<user_active idx="2" perm="">on</user_active>
-<user_active idx="3" perm="">on</user_active>
-<user_active idx="4" perm="">on</user_active>
-<user_active idx="5" perm="">on</user_active>
-<user_active idx="6" perm="">on</user_active>
-<user_active idx="7" perm="">on</user_active>
-<user_active idx="8" perm="">on</user_active>
-<user_active idx="9" perm="">on</user_active>
-<user_active idx="10" perm="">on</user_active>
-<user_realname idx="1" perm="">{$display_name_1}</user_realname>
-<user_name idx="1" perm="">{$user_id_1}</user_name>
-<user_pass idx="1" perm="">{$user_password_1}</user_pass>
-<user_host idx="1" perm="">{$server_address_1}:{$sip_port_1}</user_host>
-<user_expiry idx="1" perm="">{$register_expires_1}</user_expiry>
-<user_server_type idx="1" perm="">Default</user_server_type>
-<user_srtp idx="1" perm="">off</user_srtp>
-<user_mailbox idx="1" perm="">*97</user_mailbox>
-<user_realname idx="2" perm="">{$display_name_2}</user_realname>
-<user_name idx="2" perm="">{$user_id_2}</user_name>
-<user_pass idx="2" perm="">{$user_password_2}</user_pass>
-<user_host idx="2" perm="">{$server_address_2}:{$sip_port_2}</user_host>
-<user_expiry idx="2" perm="">{$register_expires_2}</user_expiry>
-<user_server_type idx="2" perm="">Default</user_server_type>
-<user_srtp idx="2" perm="">off</user_srtp>
-<user_mailbox idx="2" perm="">*97</user_mailbox>
-<user_realname idx="3" perm="">{$display_name_3}</user_realname>
-<user_name idx="3" perm="">{$user_id_3}</user_name>
-<user_pass idx="3" perm="">{$user_password_3}</user_pass>
-<user_host idx="3" perm="">{$server_address_3}:{$sip_port_3}</user_host>
-<user_expiry idx="3" perm="">{$register_expires_3}</user_expiry>
-<user_server_type idx="3" perm="">Default</user_server_type>
-<user_srtp idx="3" perm="">off</user_srtp>
-<user_mailbox idx="3" perm="">*97</user_mailbox>
-<user_realname idx="4" perm="">{$display_name_4}</user_realname>
-<user_name idx="4" perm="">{$user_id_4}</user_name>
-<user_pass idx="4" perm="">{$user_password_4}</user_pass>
-<user_host idx="4" perm="">{$server_address_4}:{$sip_port_4}</user_host>
-<user_expiry idx="4" perm="">{$register_expires_4}</user_expiry>
-<user_server_type idx="4" perm="">Default</user_server_type>
-<user_srtp idx="4" perm="">off</user_srtp>
-<user_mailbox idx="4" perm="">*97</user_mailbox>
-<user_realname idx="5" perm="">{$display_name_5}</user_realname>
-<user_name idx="5" perm="">{$user_id_5}</user_name>
-<user_pass idx="5" perm="">{$user_password_5}</user_pass>
-<user_host idx="5" perm="">{$server_address_5}:{$sip_port_5}</user_host>
-<user_expiry idx="5" perm="">{$register_expires_5}</user_expiry>
-<user_server_type idx="5" perm="">Default</user_server_type>
-<user_srtp idx="5" perm="">off</user_srtp>
-<user_mailbox idx="5" perm="">*97</user_mailbox>
-<user_symmetrical_rtp idx="1" perm="">on</user_symmetrical_rtp>
-<user_ice idx="1" perm="">off</user_ice>
-<stun_server idx="1" perm=""></stun_server>
-<codec_priority_list idx="1" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="2" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="3" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="4" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="5" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="6" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="7" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="8" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="9" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="10" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="11" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
-<codec_priority_list idx="12" perm="">g722,pcmu,pcma,gsm,g726-32,aal2-g726-32,g723,g729,telephone-event</codec_priority_list>
+
+<update_policy perm="R">{if isset($snom_update_policy)}{$snom_update_policy}{else}settings_only{/if}</update_policy>
+<setting_server perm="R">https://{$domain_name}{$project_path}/app/provision/index.php?mac={$mac}</setting_server>
+<dhcp perm="R">{if isset($snom_dhcp)}{$snom_dhcp}{else}on{/if}</dhcp>
+
+<firmware perm="R">{$snom_firmware_path}</firmware>
+
+<attended_transfer_on_ringing perm="R">{if isset ($snom_attended_transfer_on_ringing)}{$snom_attended_transfer_on_ringing}{else}on{/if}</attended_transfer_on_ringing> 
+{if isset($snom_status_msgs_that_show_directly)}<status_msgs_that_show_directly perm="R">{$snom_status_msgs_that_show_directly}</status_msgs_that_show_directly>{/if}
+{if isset ($snom_monitor_calls)}<goto_monitor_state_on_line_activity perm="R">{$snom_monitor_calls}</goto_monitor_state_on_line_activity>{/if}
+<settings_refresh_timer perm="R">{if isset ($snom_resync_peiod)}{$snom_resync_peiod}{else}7200{/if}</settings_refresh_timer>
+
+{if isset ($snom_backgrouond_image_url)}<custom_bg_image_url perm="R">{$snom_backgrouond_image_url}</custom_bg_image_url>{/if}
+
+<sip_cancel_reasons_to_ignore_missed_call perm="R">{$cancel_reasons_to_ignore_default}</sip_cancel_reasons_to_ignore_missed_call>
+
+{foreach $lines as $row}
+<!-- line {$row.line_number}: -->
+<user_active idx="{$row.line_number}" perm="R">on</user_active>
+<user_realname idx="{$row.line_number}" perm="R">{$row.display_name}</user_realname>
+<user_name idx="{$row.line_number}" perm="R">{$row.user_id}</user_name>
+<user_pass idx="{$row.line_number}" perm="R">{$row.password}</user_pass>
+<user_host idx="{$row.line_number}" perm="R">{$row.server_address}</user_host>
+{if $row.sip_transport neq "dns srv"}<user_outbound idx="{$row.line_number}" perm="R">{if $row.outbound_proxy neq ''}{$row.outbound_proxy}{else}{$row.server_address}{/if};transport={$row.sip_transport}</user_outbound>{/if}
+{if $row.auth_id neq ''}<user_pname idx="{$row.line_number}" perm="R">{$row.auth_id}</user_pname>{/if}
+<user_server_type idx="{$row.line_number}" perm="R">Default</user_server_type>
+<user_srtp idx="{$row.line_number}" perm="R">{$user_srtp_default}</user_srtp>
+<user_mailbox idx="{$row.line_number}" perm="R">{$user_mailbox_default}</user_mailbox>
+<user_dtmf_info idx="{$row.line_number}" perm="R">{if isset ($dtmf)}{$dtmf}{else}{$dtmf_default}{/if}</user_dtmf_info>
+<user_symmetrical_rtp idx="{$row.line_number}" perm="R">{$symmetrical_rtp_default}</user_symmetrical_rtp>
+<user_ice idx="{$row.line_number}" perm="R">off</user_ice>
+<stun_server idx="{$row.line_number}" perm="R"></stun_server>
+<codec_priority_list idx="{$row.line_number}" perm="R">{$codec_priority_list_default}</codec_priority_list>
+<user_expiry idx="{$row.line_number}" perm="R">{$user_expiry_default}</user_expiry>
+<user_subscription_expiry idx="{$row.line_number}" perm="R">{$user_subscription_expiry_default}</user_subscription_expiry>
+<retry_after_failed_subscribe idx="{$row.line_number}" perm="R">{$retry_after_failed_subscribe_default}</retry_after_failed_subscribe>
+{/foreach}
 </phone-settings>
-<functionKeys e="2">
+
+<functionKeys>
+{foreach $keys["expansion"] as $row}
+	{if $row.device_key_line == "" || $row.device_key_line == "0"}
+		{if $row.device_key_type == "line"}
+			<fkey idx="{$row.device_key_id-1+$regularKeys+$isD3XX*126}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+		{else if $row.device_key_type == "blf"}
+			<fkey idx="{$row.device_key_id-1+$regularKeys+$isD3XX*126}" context="active" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+		{else}
+			<fkey idx="{$row.device_key_id-1+$regularKeys+$isD3XX*126}" context="active" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+		{/if}
+	{else}
+		{if $row.device_key_type == "line"}
+			<fkey idx="{$row.device_key_id-1+$regularKeys+$isD3XX*126}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+		{else if $row.device_key_type == "blf"}
+			<fkey idx="{$row.device_key_id-1+$regularKeys+$isD3XX*126}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+		{else}
+			<fkey idx="{$row.device_key_id-1+$regularKeys+$isD3XX*126}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+		{/if}
+	{/if}
+{/foreach}
 {foreach $keys["line"] as $row}
-{if $row.device_key_line == ""}
-    <fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
-{/if}
+	{if $row.device_key_id <= $regularKeys}
+		{if $row.device_key_line == "" || $row.device_key_line == "0"}
+			{if $row.device_key_type == "line"}
+				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+			{else if $row.device_key_type == "blf"}
+				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+			{else}
+				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+			{/if}
+		{else}
+			{if $row.device_key_type == "line"}
+				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+			{else if $row.device_key_type == "blf"}
+				<fkey idx="{$row.device_key_id-1}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+			{else}
+				<fkey idx="{$row.device_key_id-1}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+			{/if}
+		{/if}
+	{else}
+		<!-- {$row.device_key_id} außerhalb des Bereichs -->
+	{/if}
 {/foreach}
 </functionKeys>
-<tbook e="2">
-</tbook>
+
+{if isset($snom_phonebook_url)}
+	{fetch file=''|cat:$snom_phonebook_url|cat:'&vendor=snom'}
+{else}
+	{* Phonebook Support via app *}
+	{if isset($phonebook_key) and (isset($phonebook_gid) or isset($phonebook_gid_1))}
+		{$snom_phonebook_url = "https://{$domain_name}{$project_path}/app/phonebook/directory.php?key=$phonebook_key{if isset($phonebook_gid)}&gid=$phonebook_gid{/if}{if isset($phonebook_gid_1)}&gid_1=$phonebook_gid_1{/if}{if isset($phonebook_gid_2)}&gid_2=$phonebook_gid_2{/if}{if isset($phonebook_gid_3)}&gid_3=$phonebook_gid_3{/if}{if isset($phonebook_gid_4)}&gid_4=$phonebook_gid_4{/if}{if isset($phonebook_gid_5)}&gid_5=$phonebook_gid_5{/if}{if isset($phonebook_gid_6)}&gid_6=$phonebook_gid_6{/if}{if isset($phonebook_gid_7)}&gid_7=$phonebook_gid_7{/if}{if isset($phonebook_gid_8)}&gid_8=$phonebook_gid_8{/if}{if isset($phonebook_gid_9)}&gid_9=$phonebook_gid_9{/if}{if isset($phonebook_gid_10)}&gid_10=$phonebook_gid_10{/if}"}
+		{fetch file=''|cat:$snom_phonebook_url|cat:'&vendor=snom'}
+	{/if}
+{/if}
+{if $debug == "on"}
+<!-- regularKeys: {$regularKeys} -->
+<!-- D3XX: {$isD3XX} -->
+<!-- domain_name: {$domain_name} -->
+<!-- timezone: {$snom_timezone} -->
+<!-- language: {$snom_language} -->
+<!-- snom_phonebook_url: {$snom_phonebook_url} -->
+{/if}
+
 </settings>

@@ -54,7 +54,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "Deutch";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Language to use in the phones";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Language to use in the phones. http://wiki.snom.com/Settings/language";
 		$y++;
 
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "479387da-2829-4247-804f-73a11240980f";
