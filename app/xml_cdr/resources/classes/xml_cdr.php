@@ -383,7 +383,7 @@ if (!class_exists('xml_cdr')) {
 						if (strlen($domain_name) == 0) {
 							$presence_id = check_str(urldecode($xml->variables->presence_id));
 							if (strlen($presence_id) > 0) {
-								$presence_array = explode($presence_id);
+								$presence_array = explode('@', $presence_id);
 								$domain_name = $presence_array[1];
 							}
 						}
