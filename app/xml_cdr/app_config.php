@@ -162,6 +162,24 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Try to join same calls in CDR report (like not show LOSE_RACE). uuid,close_match,lose_race";
+		// Custom callback functions
+		$y += 1;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "2070a819-e820-4038-93b0-3e0e22cfb917";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "cdr";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "custom_callback_enable";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Custom callback calsses enable on CDR end";
+		$y += 1;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "9fe8e702-12ff-413b-997c-071105ce0726";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "cdr";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "custom_callback";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "array";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "class to call";
+
 
 	//schema details
 		$y = 0;

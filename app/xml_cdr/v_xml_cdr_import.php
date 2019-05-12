@@ -616,6 +616,38 @@
 				unset($vtiger_api_call);
 			}
 
+		// Custom Callbacks
+			
+			$custom_callback_enable = isset($_SESSION['cdr']['custom_callback_enable']['boolean']) ? filter_var($_SESSION['cdr']['custom_callback_enable']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
+
+			if ($custom_callback_enable) {
+				$call_back_classes = $_SESSION['cdr']['custom_callback'];
+
+				// Add $call_back_classes with custom domain settings
+				$sql = "SELECT domain_setting_value FROM v_domain_settings";
+				$sql .= " WHERE domain_uuid = '" . $xml->variables->domain_uuid . "'";
+				$sql .= " AND domain_setting_category = 'cdr'";
+				$sql .= " AND domain_setting_name = 'array'";
+				$sql .= " AND domain_setting_subcategory = 'custom_callback'";
+				$sql .= " AND domain_setting_enabled = 'true'";
+				$sql .= " ORDER BY domain_setting_order ASC";
+
+				$row = $db->query($sql)->fetchall(PDO::FETCH_NUM);
+				foreach ($row as $call_back_class) {
+					$call_back_classes[] = $call_back_class[0];
+				}
+
+				foreach ($call_back_classes as $call_back_class) {
+					if (!class_exists($call_back_class)) {
+						continue;
+					}
+					$callback = new $call_back_class($_SESSION);
+					if ($callback->is_ready) {
+						$callback->process($xml->variables);
+					}
+				}
+			}
+
 		//insert xml_cdr into the db
 			if (strlen($start_stamp) > 0) {
 				$database->add();
