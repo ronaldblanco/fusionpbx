@@ -17,7 +17,7 @@ if (!class_exists('external_crm_export_az')) {
         }
 
         private function send_request($data) {
-            
+
             $get_data = http_build_query($data);
 
             $curl = curl_init();
@@ -31,12 +31,12 @@ if (!class_exists('external_crm_export_az')) {
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "GET",
             ));
-        
+
             $response = curl_exec($curl);
             $err = curl_error($curl);
-        
+
             curl_close($curl);
-        
+
             if ($err) {
                 return False;
             }
@@ -49,22 +49,30 @@ if (!class_exists('external_crm_export_az')) {
             $phoneNumberB = strval($xml_varibles->destination_number);
 
             $phoneNumber = False;
+            $extension = False;
 
             if (strlen($phoneNumberA) > 5) {
                 $phoneNumber = $phoneNumberA;
+            } else {
+                $extension = $phoneNumberA;
             }
 
             if (strlen($phoneNumberB) > 5) {
                 $phoneNumber = $phoneNumberB;
+            } else {
+                $extension = $phoneNumberB;
             }
 
             if (!$phoneNumber) {
                 return;
             }
 
+            $extension = ($extension) ? $extension : strval($xml_varibles->dialed_user);
+
             $data = array(
                 'duration' => strval($xml_varibles->billsec),
                 'phoneNumber' => $phoneNumber,
+                'extension' => $extension,
                 'recordDate' => strval($xml_varibles->start_stamp),
                 'record_name' => strval($xml_varibles->record_name),
                 'record_path' => strval($xml_varibles->record_path),
