@@ -116,6 +116,10 @@
 	}
 	if (strlen($cdr_id) > 0) { $sql_where_ands[] = "cdr_id like '%".$cdr_id."%'"; }
 	if (strlen($direction) > 0) { $sql_where_ands[] = "direction = '".$direction."'"; }
+	if (strlen($caller_id_number) > 0) {
+		$mod_caller_id_number = str_replace("*", "%", $caller_id_number);
+		$sql_where_ands[] = "caller_id_number like '".$mod_caller_id_number."'";
+	}
 	if (strlen($caller_id_name) > 0) {
 		$mod_caller_id_name = str_replace("*", "%", $caller_id_name);
 		$sql_where_ands[] = "caller_id_name like '".$mod_caller_id_name."'";
