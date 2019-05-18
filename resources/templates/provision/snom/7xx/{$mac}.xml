@@ -3,6 +3,7 @@
 {* Variables used *}
 {* snom_time_zone - Timezone in SNOM format http://wiki.snom.com/Settings/timezone *}
 {* snom_language - Language to use with phone http://wiki.snom.com/Settings/language *}
+{* snom_firmware_path - Firmware path https://service.snom.com/display/wiki/Deskphones+Firmware *}
 {* snom_gui_fkeyX - GUI softkeys config http://wiki.snom.com/Settings/gui_fkey *}
 {* snom_dim_timer - Dim timer http://wiki.snom.com/Settings/dim_timer *}
 {* snom_tonescheme - Tone sheme to use http://wiki.snom.com/Settings/thttp://wiki.snom.com/Settings/attended_transfer_on_ringingone_scheme *}
@@ -18,6 +19,8 @@
 {* snom_backgrouond_image_url - URL of background image http://wiki.snom.com/Settings/custom_bg_image_url *}
 {* snom_enable_srtp - Enable or disable SRTP by default http://wiki.snom.com/Settings/user_srtp *}
 {* snom_dtmf_mode -Set DTMF mode http://wiki.snom.com/Settings/user_dtmf_info *}
+{* snom_vpn_enable - Snom VPN *}
+{* snom_syslog_server - Syslog server *}
 {* snom_is_D3xx - for compatibility *}
 
 {$regularKeys = 16}
@@ -25,9 +28,16 @@
 
 <settings>
 <phone-settings e="2">
-<timezone perm="R">{$snom_time_zone}</timezone>
+<timezone perm="!">{$snom_time_zone}</timezone>
 <ntp_server perm="R">{$ntp_server_primary}</ntp_server>
 <language perm="!">{$snom_language}</language>
+{if isset($snom_vpn_enable)}
+<vpn_on perm="R">{$snom_vpn_enable}</vpn_on>
+<vpn_tarball_url perm="R">https://{$http_auth_username}:{$http_auth_password}@{$domain_name}{$project_path}/app/provision/{$mac}-snomovpn.tar</vpn_tarball_url>
+{/if}
+{if isset($snom_syslog_server)}
+<syslog_server perm="R">{$snom_syslog_server}</syslog_server>
+{/if}
 
 <gui_fkey1 perm="R">{if isset ($snom_gui_fkey1)}{$snom_gui_fkey1}{else}F_REGS{/if}</gui_fkey1>
 <gui_fkey2 perm="R">{if isset ($snom_gui_fkey2)}{$snom_gui_fkey2}{else}F_CALL_LIST{/if}</gui_fkey2>
