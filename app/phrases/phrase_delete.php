@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 //includes
-	include "root.php";
+	require_once "root.php";
 	require_once "resources/require.php";
 	require_once "resources/check_auth.php";
 	require_once "resources/functions/save_phrases_xml.php";
@@ -74,7 +74,7 @@
 	$cache->delete("languages:".$phrase_language);
 
 //redirect the user
-	message::add($text['message-delete']);
+	messages::add($text['message-delete']);
 	header("Location: phrases.php");
-
+	return;
 ?>
