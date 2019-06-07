@@ -581,8 +581,6 @@ $text['label-tools']['ru-ru'] = "Параметры";
 $text['label-tools']['sv-se'] = "Verktyg";
 $text['label-tools']['uk-ua'] = "Параметри";
 
-$text['label-greeting_id']['en-us'] = "Custom greeting";
-
 $text['label-read_epoch']['en-us'] = "Read";
 $text['label-read_epoch']['ar-eg'] = "";
 $text['label-read_epoch']['de-at'] = "Lesen"; //copied from de-de
