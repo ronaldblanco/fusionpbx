@@ -46,6 +46,8 @@
 	require "resources.functions.file_exists";
 	require "resources.functions.channel_utils"
 	require "resources.functions.format_ringback"
+-- include function to translate local to file streams
+	require "app.custom.moh_fix.resources.functions.local_to_file_stream"
 
 --- include libs
 	local route_to_bridge = require "resources.functions.route_to_bridge"
