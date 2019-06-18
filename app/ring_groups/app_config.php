@@ -256,6 +256,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "ring_group_forward_toll_allow";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Toll Allow for Ring Group Forward.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "ring_group_force_answer";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Force answer on executing ring group";
 
 		$y++;
 		$apps[$x]['db'][$y]['table']['name'] = "v_ring_group_destinations";

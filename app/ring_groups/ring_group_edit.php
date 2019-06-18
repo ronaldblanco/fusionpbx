@@ -112,6 +112,7 @@
 			$ring_group_forward_enabled = check_str($_POST["ring_group_forward_enabled"]);
 			$ring_group_forward_destination = check_str($_POST["ring_group_forward_destination"]);
 			$ring_group_forward_toll_allow = check_str($_POST["ring_group_forward_toll_allow"]);
+			$ring_group_force_answer = check_str($_POST["ring_group_force_answer"]);
 			$ring_group_enabled = check_str($_POST["ring_group_enabled"]);
 			$ring_group_description = check_str($_POST["ring_group_description"]);
 			$dialplan_uuid = check_str($_POST["dialplan_uuid"]);
@@ -281,11 +282,14 @@
 						//increment the row
 							$x++;
 					}
-
 				//build the xml dialplan
 					$dialplan_xml = "<extension name=\"ring group\" continue=\"\" uuid=\"".$dialplan_uuid."\">\n";
 					$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".$ring_group_extension."$\">\n";
-					$dialplan_xml .= "		<action application=\"ring_ready\" data=\"\"/>\n";
+					if ($ring_group_force_answer == 'true') {
+						$dialplan_xml .= "		<action application=\"answer\" data=\"\"/>\n";
+					} else {
+						$dialplan_xml .= "		<action application=\"ring_ready\" data=\"\"/>\n";
+					}
 					$dialplan_xml .= "		<action application=\"set\" data=\"ring_group_uuid=".$ring_group_uuid."\"/>\n";
 					$dialplan_xml .= "		<action application=\"lua\" data=\"app.lua ring_groups\"/>\n";
 					$dialplan_xml .= "	</condition>\n";
@@ -846,6 +850,30 @@
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-ring_group_force_answer']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<select class='formfld' name='ring_group_force_answer'>\n";
+	if ($ring_group_force_answer == "true") {
+		echo "	<option value='true' selected='selected'>".$text['option-true']."</option>\n";
+	}
+	else {
+		echo "	<option value='true'>".$text['option-true']."</option>\n";
+	}
+	if ($ring_group_force_answer == "false") {
+		echo "	<option value='false' selected='selected'>".$text['option-false']."</option>\n";
+	}
+	else {
+		echo "	<option value='false'>".$text['option-false']."</option>\n";
+	}
+	echo "	</select>\n";
+	echo "<br />\n";
+	echo $text['description-ring_group_force_answer']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 	
 	if (if_group("superadmin")) {
 		echo "<tr>\n";

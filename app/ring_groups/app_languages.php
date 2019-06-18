@@ -1001,6 +1001,8 @@ $text['label-call-forward']['ru-ru'] = "Переадресация вызова"
 $text['label-call-forward']['sv-se'] = "Vidarekoppling";
 $text['label-call-forward']['uk-ua'] = "Переадресація";
 
+$text['label-ring_group_force_answer']['en-us'] = "Force answer";
+
 $text['header-ring-group-forward']['en-us'] = "Ring Group Forward";
 $text['header-ring-group-forward']['ar-eg'] = "";
 $text['header-ring-group-forward']['de-at'] = "Rufgruppe weiterleiten"; //copied from de-de
@@ -1440,6 +1442,8 @@ $text['description-ring_group_forward_toll_allow']['ro-ro'] = "";
 $text['description-ring_group_forward_toll_allow']['ru-ru'] = "";
 $text['description-ring_group_forward_toll_allow']['sv-se'] = "Ring group forwarding toll allow.";
 $text['description-ring_group_forward_toll_allow']['uk-ua'] = "Ring group forwarding toll allow.";
+
+$text['description-ring_group_force_answer']['en-us'] = "Answer a call on getting in a ring group. Could help if ringback is not heard";
 
 $text['button-view_all']['en-us'] = "View All";
 $text['button-view_all']['ar-eg'] = "";
