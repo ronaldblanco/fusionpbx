@@ -859,15 +859,10 @@
 	echo "	<select class='formfld' name='ring_group_force_answer'>\n";
 	if ($ring_group_force_answer == "true") {
 		echo "	<option value='true' selected='selected'>".$text['option-true']."</option>\n";
-	}
-	else {
-		echo "	<option value='true'>".$text['option-true']."</option>\n";
-	}
-	if ($ring_group_force_answer == "false") {
-		echo "	<option value='false' selected='selected'>".$text['option-false']."</option>\n";
-	}
-	else {
 		echo "	<option value='false'>".$text['option-false']."</option>\n";
+	} else {
+		echo "	<option value='true'>".$text['option-true']."</option>\n";
+		echo "	<option value='false' selected='selected'>".$text['option-false']."</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
