@@ -390,6 +390,7 @@
 			$ring_group_forward_enabled = $row["ring_group_forward_enabled"];
 			$ring_group_forward_destination = $row["ring_group_forward_destination"];
 			$ring_group_forward_toll_allow = $row["ring_group_forward_toll_allow"];
+			$ring_group_force_answer = $row["ring_group_force_answer"];
 			$ring_group_enabled = $row["ring_group_enabled"];
 			$ring_group_description = $row["ring_group_description"];
 			$dialplan_uuid = $row["dialplan_uuid"];
