@@ -8,14 +8,19 @@ if (!class_exists('check_acl')) {
 		private static $_IP_TYPE_MASK = 'mask';
 		private static $_IP_TYPE_CIDR = 'CIDR';
 		private static $_IP_TYPE_SECTION = 'section';
-		private $_allowed_ips = array();
 
-		public function __construct($allowed_ips) {
-			$this->_allowed_ips = $allowed_ips;
+		private $db;
+
+		public function __construct($db) {
+			$this->db = $db;
+
+			$sql = "SELECT node_cidr FROM v_access_control_nodes";
+			$sql .= " WHERE node_cidr != ''";
+			$sql .= " AND node_type = 'allow'";
+			$sql .= " ";
 		}
 
-		public function check($ip, $allowed_ips = null) {
-			$allowed_ips = $allowed_ips ? $allowed_ips : $this->_allowed_ips;
+		public function check($ip, $allowed_ips) {
 
 			foreach ($allowed_ips as $allowed_ip) {
 				$type = $this->_judge_ip_type($allowed_ip);
@@ -28,6 +33,8 @@ if (!class_exists('check_acl')) {
 
 			return false;
 		}
+
+
 
 		private function _judge_ip_type($ip) {
 			if (strpos($ip, '*')) {
@@ -95,7 +102,7 @@ if (!class_exists('check_acl')) {
 
 	}
 
-	function check_acl_1(){
+	function check_acl_1() {
 		global $db, $debug, $domain_uuid, $domain_name;
 
 		//select node_cidr from v_access_control_nodes where node_cidr != '';
