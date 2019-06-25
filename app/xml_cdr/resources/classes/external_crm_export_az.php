@@ -49,7 +49,7 @@ if (!class_exists('external_crm_export_az')) {
             $phoneNumberB = strval($xml_varibles->destination_number);
 
             $phoneNumber = "NA";
-            $extension = "NA";
+            $extension = False;
 
             if (strlen($phoneNumberA) > 5) {
                 $phoneNumber = $phoneNumberA;
