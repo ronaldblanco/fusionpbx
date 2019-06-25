@@ -24,40 +24,45 @@
 --	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 --	POSSIBILITY OF SUCH DAMAGE.
 
---connect to the database
-	local Database = require "resources.functions.database";
-	dbh = Database.new('system');
 
---debug
-	debug["info"] = true;
-	debug["sql"] = true;
+local log       = require "resources.functions.log".sms
+
+log.warning("Starting SMS feature")
+
+local uuid                           = env:getHeader("uuid")
+
+--[=====[
+
+--define the functions
+local Settings = require "resources.functions.lazy_settings"
+local Database = require "resources.functions.database"
+
+-- get the configuration variables from the DB
+local db = dbh or Database.new('system')
+local settings = Settings.new(db, domain_name, domain_uuid)
 
 --set the api
-	api = freeswitch.API();
-
---include json library
-	local json
-	if (debug["sql"]) then
-		json = require "resources.functions.lunajson"
-	end
+api = freeswitch.API();
 
 --define the urlencode function
-	local function urlencode(s)
-		s = string.gsub(s, "([^%w])",function(c)
-			return string.format("%%%02X", string.byte(c))
-		end)
-		return s
-	end
+local function urlencode(s)
+	s = string.gsub(s, "([^%w])",function(c)
+		return string.format("%%%02X", string.byte(c))
+	end)
+	return s
+end
 
 --define uuid function
-	local random = math.random;
-	local function uuid()
-		local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
-		return string.gsub(template, '[xy]', function (c)
-			local v = (c == 'x') and random(0, 0xf) or random(8, 0xb);
-			return string.format('%x', v);
-		end)
-	end
+local random = math.random;
+local function uuid()
+	local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+	return string.gsub(template, '[xy]', function (c)
+		local v = (c == 'x') and random(0, 0xf) or random(8, 0xb);
+		return string.format('%x', v);
+	end)
+end
+
+
 
 --get the argv values
 	script_name = argv[0];
@@ -176,7 +181,7 @@
 			end
 		end 
 
-		elseif direction == "outbound" then
+	elseif direction == "outbound" then
 		if (argv[3] ~= nil) then
 			to_user = argv[3];
 			to_user = to_user:gsub("^+?sip%%3A%%40","");
@@ -446,3 +451,6 @@
 		end
 		dbh:query(sql,params);
 	end
+
+
+--]=====]
