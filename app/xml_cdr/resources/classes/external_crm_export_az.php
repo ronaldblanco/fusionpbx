@@ -46,7 +46,8 @@ if (!class_exists('external_crm_export_az')) {
         public function process(&$xml_varibles) {
 
             $phoneNumberA = strval($xml_varibles->caller_id_number);
-            $phoneNumberB = strval($xml_varibles->destination_number);
+            $phoneNumberB = strlen(strval($xml_varibles->callee_id_number)) > 0 ? strval($xml_varibles->callee_id_number) : strval($xml_varibles->caller_destination);
+
 
             $phoneNumber = "NA";
             $extension = False;
