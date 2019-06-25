@@ -48,8 +48,8 @@ if (!class_exists('external_crm_export_az')) {
             $phoneNumberA = strval($xml_varibles->caller_id_number);
             $phoneNumberB = strval($xml_varibles->destination_number);
 
-            $phoneNumber = False;
-            $extension = False;
+            $phoneNumber = "NA";
+            $extension = "NA";
 
             if (strlen($phoneNumberA) > 5) {
                 $phoneNumber = $phoneNumberA;
@@ -61,10 +61,6 @@ if (!class_exists('external_crm_export_az')) {
                 $phoneNumber = $phoneNumberB;
             } else {
                 $extension = $phoneNumberB;
-            }
-
-            if (!$phoneNumber) {
-                return;
             }
 
             $extension = ($extension) ? $extension : strval($xml_varibles->dialed_user);
