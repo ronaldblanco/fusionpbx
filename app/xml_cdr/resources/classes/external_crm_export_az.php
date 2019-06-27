@@ -45,8 +45,8 @@ if (!class_exists('external_crm_export_az')) {
 
         public function process(&$xml_varibles) {
 
-            $phoneNumberA = strval($xml_varibles->caller_id_number);
-            $phoneNumberB = strlen(strval($xml_varibles->callee_id_number)) > 0 ? strval($xml_varibles->callee_id_number) : strval($xml_varibles->caller_destination);
+            $phoneNumberA = strval($xml_varibles->sip_from_user);
+            $phoneNumberB = strlen(strval($xml_varibles->last_sent_callee_id_number)) > 0 ? strval($xml_varibles->last_sent_callee_id_number) : strval($xml_varibles->caller_destination);
 
 
             $phoneNumber = "NA";
@@ -58,7 +58,7 @@ if (!class_exists('external_crm_export_az')) {
                 $extension = $phoneNumberA;
             }
 
-            if (strlen($phoneNumberB) > 5) {
+            if (strlen($phoneNumberB) > 5 && $phoneNumber == "NA") {
                 $phoneNumber = $phoneNumberB;
             } else {
                 $extension = $phoneNumberB;
