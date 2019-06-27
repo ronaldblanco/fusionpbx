@@ -23,18 +23,18 @@
 	--	<hook event="CUSTOM" subclass="SMS::SEND_MESSAGE" script="app/messages/resources/events.lua"/>
 
 --prepare the api object
-api = freeswitch.API();
+	api = freeswitch.API();
 
 --define the functions
-	require "resources.functions.trim";
-	require "resources.functions.explode";
-	require "resources.functions.base64";
+	require "resources.functions.trim"
+	require "resources.functions.explode"
+	require "resources.functions.base64"
 
 --include the database class
-	local Database = require "resources.functions.database";
+	local Database = require "resources.functions.database"
 
 --set debug
-	debug["sql"] = false;
+	debug["sql"] = false
 
 --get the events
 	--serialize the data for the console
@@ -45,22 +45,22 @@ api = freeswitch.API();
 	--from_user = '';
 
 --get the event variables
-	uuid               = event:getHeader("Core-UUID");
-	from_user          = event:getHeader("from_user");
-	from_host          = event:getHeader("from_host");
-	to_user            = event:getHeader("to_user");
-	to_host            = event:getHeader("to_host");
-	content_type       = event:getHeader("type");
-	message_text       = event:getBody();
+	uuid               = event:getHeader("Core-UUID")
+	from_user          = event:getHeader("from_user")
+	from_host          = event:getHeader("from_host")
+	to_user            = event:getHeader("to_user")
+	to_host            = event:getHeader("to_host")
+	content_type       = event:getHeader("type")
+	sms_message_text   = event:getBody()
 
 --set required variables
 	if (from_user ~= nil and from_host ~= nil) then
-		message_from   = from_user .. '@' .. from_host;
+		sms_message_from   = from_user .. '@' .. from_host
 	end
 	if (to_user ~= nil and to_host ~= nil) then
-		message_to     = to_user .. '@' .. to_host;
+		sms_message_to     = to_user .. '@' .. to_host
 	end
-	message_type       = 'message';
+	sms_type       = 'sms';
 
 --connect to the database
 	dbh = Database.new('system');
@@ -79,180 +79,124 @@ api = freeswitch.API();
 
 --check if the from user exits
 	if (from_user ~= nil and from_host ~= nil) then
-		cmd = "user_exists id ".. from_user .." "..from_host;
-		freeswitch.consoleLog("notice", "[messages][from] user exists " .. cmd .. "\n");
-		from_user_exists = api:executeString(cmd);
+		cmd = "user_exists id ".. from_user .." "..from_host
+		freeswitch.consoleLog("notice", "[sms][from] user exists " .. cmd .. "\n")
+		from_user_exists = api:executeString(cmd)
 	else
-		from_user_exists  = 'false';
+		from_user_exists  = 'false'
 	end
 
 --check if the to user exits
 	if (to_user ~= nil and to_host ~= nil) then
-		cmd = "user_exists id ".. to_user .." "..to_host;
-		freeswitch.consoleLog("notice", "[messages][to] user exists " .. cmd .. "\n");
-		to_user_exists = api:executeString(cmd);
+		cmd = "user_exists id ".. to_user .." "..to_host
+		freeswitch.consoleLog("notice", "[sms][to] user exists " .. cmd .. "\n")
+		to_user_exists = api:executeString(cmd)
 	else
-		to_user_exists = 'false';
+		to_user_exists = 'false'
 	end
 
 --add the message
 	if (from_user_exists == 'true') then
 		--set the direction
-		message_direction = 'send';
+		sms_message_direction = 'send'
 
 		--get the from user_uuid
-		cmd = "user_data ".. from_user .."@"..from_host.." var domain_uuid";
-		domain_uuid = trim(api:executeString(cmd));
-
-		--get the from user_uuid
-		cmd = "user_data ".. from_user .."@"..from_host.." var user_uuid";
-		user_uuid = trim(api:executeString(cmd));
-
-		--get the from contact_uuid
-		cmd = "user_data ".. to_user .."@"..to_host.." var contact_uuid";
-		contact_uuid = trim(api:executeString(cmd));
-
-		--create a new uuid and add it to the uuid list
-		message_uuid = api:executeString("create_uuid");
+		cmd = "user_data ".. from_user .."@"..from_host.." var domain_uuid"
+		domain_uuid = trim(api:executeString(cmd))
 
 		--sql statement
-		sql = "INSERT INTO v_messages ";
-		sql = sql .."( ";
-		sql = sql .."domain_uuid, ";
-		sql = sql .."message_uuid, ";
-		sql = sql .."user_uuid, ";
-		if (contact_uuid ~= null and string.len(contact_uuid) > 0) then
-			sql = sql .."contact_uuid, ";
-		end
-		sql = sql .."message_direction, ";
-		sql = sql .."message_date, ";
-		sql = sql .."message_type, ";
-		if (message_from ~= null and string.len(message_from) > 0) then
-			sql = sql .."message_from, ";
-		end
-		sql = sql .."message_to, ";
-		sql = sql .."message_text ";
-		sql = sql ..") ";
-		sql = sql .."VALUES ( ";
-		sql = sql ..":domain_uuid, ";
-		sql = sql ..":message_uuid, ";
-		sql = sql ..":user_uuid, ";
-		if (contact_uuid ~= null and string.len(contact_uuid) > 0) then
-			sql = sql ..":contact_uuid, ";
-		end
-		sql = sql ..":message_direction, ";
-		sql = sql .."now(), ";
-		sql = sql ..":message_type, ";
-		if (message_from ~= null and string.len(message_from) > 0) then
-			sql = sql ..":message_from, ";
-		end
-		sql = sql ..":message_to, ";
-		sql = sql ..":message_text ";
+		sql = "INSERT INTO v_sms_messages "
+		sql = sql .."( "
+		sql = sql .."domain_uuid, "
+		sql = sql .."sms_message_uuid, "
+		sql = sql .."sms_message_timestamp, "
+		sql = sql .."sms_message_from, ";
+		sql = sql .."sms_message_to, "
+		sql = sql .."sms_message_direction, "
+		sql = sql .."sms_message_text "
+		sql = sql ..") "
+		sql = sql .."VALUES ( "
+		sql = sql ..":domain_uuid, "
+		sql = sql ..":sms_message_uuid, "
+		sql = sql .."now(), "
+		sql = sql ..":sms_message_from, ";
+		sql = sql ..":sms_message_to, "
+		sql = sql ..":sms_message_direction, "
+		sql = sql ..":sms_message_text, "
 		sql = sql ..") ";
 
 		--set the parameters
 		local params= {}
-		params['domain_uuid'] = domain_uuid;
-		params['message_uuid'] = message_uuid;
-		params['user_uuid'] = user_uuid;
-		if (contact_uuid ~= null and string.len(contact_uuid) > 0) then
-			params['contact_uuid'] = contact_uuid;
-		end
-		params['message_direction'] = message_direction;
-		params['message_type'] = message_type;
-		if (message_from ~= null) then
-			params['message_from'] = message_from;
-		end
-		params['message_to'] = message_to;
-		params['message_text'] = message_text;
+		params['domain_uuid']            = domain_uuid
+		params['sms_message_uuid']       = api:executeString("create_uuid")
+		params['sms_message_from']       = (from_user ~= nil and string.len(from_user) > 0) and from_user or "NA"
+		params['sms_message_to']         = (to_user ~= nil and string.len(to_user) > 0) and to_user or "NA"
+		params['sms_message_direction']  = sms_message_direction
+		params['sms_message_text']       = sms_message_text
 
 		--show debug info
 		if (debug["sql"]) then
-			freeswitch.consoleLog("notice", "[call_center] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
+			freeswitch.consoleLog("notice", "[sms] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
 		end
 
 		--run the query
 		dbh:query(sql, params);
 	end
+	
+	-- Possible duplicate by design here. To have separate SMS for each user.
 	if (to_user_exists == 'true') then
-		--sql statement
-		sql = "INSERT INTO v_messages ";
-		sql = sql .."( ";
-		sql = sql .."domain_uuid, ";
-		sql = sql .."message_uuid, ";
-		sql = sql .."user_uuid, ";
-		if (contact_uuid ~= null and string.len(contact_uuid) > 0) then
-			sql = sql .."contact_uuid, ";
-		end
-		sql = sql .."message_direction, ";
-		sql = sql .."message_date, ";
-		sql = sql .."message_type, ";
-		if (message_from ~= null and string.len(message_from) > 0) then
-			sql = sql .."message_from, ";
-		end
-		sql = sql .."message_to, ";
-		sql = sql .."message_text ";
-		sql = sql ..") ";
-		sql = sql .."VALUES ( ";
-		sql = sql ..":domain_uuid, ";
-		sql = sql ..":message_uuid, ";
-		sql = sql ..":user_uuid, ";
-		if (contact_uuid ~= null and string.len(contact_uuid) > 0) then
-			sql = sql ..":contact_uuid, ";
-		end
-		sql = sql ..":message_direction, ";
-		sql = sql .."now(), ";
-		sql = sql ..":message_type, ";
-		if (message_from ~= null and string.len(message_from) > 0) then
-			sql = sql ..":message_from, ";
-		end
-		sql = sql ..":message_to, ";
-		sql = sql ..":message_text ";
-		sql = sql ..") ";
 
 		--set the direction
-		message_direction = 'receive';
+		sms_message_direction = 'receive';
 
 		--get the from user_uuid
 		cmd = "user_data ".. to_user .."@"..to_host.." var domain_uuid";
 		domain_uuid = trim(api:executeString(cmd));
 
-		--get the from user_uuid
-		cmd = "user_data ".. to_user .."@"..to_host.." var user_uuid";
-		user_uuid = trim(api:executeString(cmd));
-
-		--get the from contact_uuid
-		cmd = "user_data ".. to_user .."@"..to_host.." var contact_uuid";
-		contact_uuid = trim(api:executeString(cmd));
-
-		--create a new uuid and add it to the uuid list
-		message_uuid = api:executeString("create_uuid");
+		--sql statement
+		sql = "INSERT INTO v_sms_messages "
+		sql = sql .."( "
+		sql = sql .."domain_uuid, "
+		sql = sql .."sms_message_uuid, "
+		sql = sql .."sms_message_timestamp, "
+		sql = sql .."sms_message_from, ";
+		sql = sql .."sms_message_to, "
+		sql = sql .."sms_message_direction, "
+		sql = sql .."sms_message_text "
+		sql = sql ..") "
+		sql = sql .."VALUES ( "
+		sql = sql ..":domain_uuid, "
+		sql = sql ..":sms_message_uuid, "
+		sql = sql .."now(), "
+		sql = sql ..":sms_message_from, ";
+		sql = sql ..":sms_message_to, "
+		sql = sql ..":sms_message_direction, "
+		sql = sql ..":sms_message_text, "
+		sql = sql ..") ";
 
 		--set the parameters
 		local params= {}
-		params['domain_uuid'] = domain_uuid;
-		params['message_uuid'] = message_uuid;
-		params['user_uuid'] = user_uuid;
-		if (contact_uuid ~= null and string.len(message_from) > 0) then
-			params['contact_uuid'] = contact_uuid;
-		end
-		params['message_direction'] = message_direction;
-		params['message_type'] = message_type;
-		params['message_from'] = message_from;
-		params['message_to'] = message_to;
-		params['message_text'] = message_text;
+		params['domain_uuid']            = domain_uuid
+		params['sms_message_uuid']       = api:executeString("create_uuid")
+		params['sms_message_from']       = (from_user ~= nil and string.len(from_user) > 0) and from_user or "NA"
+		params['sms_message_to']         = (to_user ~= nil and string.len(to_user) > 0) and to_user or "NA"
+		params['sms_message_direction']  = sms_message_direction
+		params['sms_message_text']       = sms_message_text
 
 		--show debug info
 		if (debug["sql"]) then
-			freeswitch.consoleLog("notice", "[call_center] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
+			freeswitch.consoleLog("notice", "[sms] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
 		end
 
 		--run the query
 		dbh:query(sql, params);
 
 	else
+		-- We don't have a user to deliver this message. Have to use routing rules here.
 
-		--get setttings needed to send the message
+		-- TODO
+
+		-- get settings needed to send the message
 		require "resources.functions.settings";
 		settings = settings(domain_uuid);
 		if (settings['message'] ~= nil) then
