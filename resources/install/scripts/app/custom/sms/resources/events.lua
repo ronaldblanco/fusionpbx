@@ -192,16 +192,20 @@
 		dbh:query(sql, params);
 
 	else
-		-- We don't have a user to deliver this message. Have to use routing rules here.
-
-		-- TODO
 
 		-- get settings needed to send the message
 		require "resources.functions.settings";
+		-- This means, that we have from_user
+
+		-- Get routing rules for this message type.
+		sql =        "SELECT sms_routing_source, "
+		sql = sql .. "sms_routing_destination, "
+		sql = sql .. ""
+
 		settings = settings(domain_uuid);
-		if (settings['message'] ~= nil) then
+		if (settings['sms'] ~= nil) then
 			http_method = '';
-			if (settings['message']['http_method'] ~= nil) then
+			if (settings['sms']['http_method'] ~= nil) then
 				if (settings['message']['http_method']['text'] ~= nil) then
 					http_method = settings['message']['http_method']['text'];
 				end
