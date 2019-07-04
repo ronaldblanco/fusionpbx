@@ -275,4 +275,6 @@ $text['description-e911_alert_email_enable']['uk'] = "";
 $text['description-e911_alert_email_enable']['de-at'] = "";
 
 $text['button-update_911']['en-us'] = "Load from server";
+
+$text['message-info_not_found_on_server']['en-us'] = "911 is not enabled for this call on server"
 ?>
