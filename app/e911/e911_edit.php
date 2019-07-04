@@ -123,7 +123,7 @@
 			if (strlen($e911_address_1) == 0) { $msg .= $text['message-required'].$text['label-e911_address_1']."<br>\n"; }
 			if (strlen($e911_city) == 0) { $msg .= $text['message-required'].$text['label-e911_city']."<br>\n"; }
 			if (strlen($e911_state) == 0) { $msg .= $text['message-required'].$text['label-e911_state']."<br>\n"; }
-			if (strlen($e911_zip) == 0 || strlen($e911_zip_4) == 0) { $msg .= $text['message-required'].$text['label-e911_zip']."<br>\n"; }
+			if (strlen($e911_zip) == 0) { $msg .= $text['message-required'].$text['label-e911_zip']."<br>\n"; }
 			if (strlen($e911_callername) == 0) { $msg .= $text['message-required'].$text['label-e911_callername']."<br>\n"; }
 		}
 
