@@ -219,8 +219,46 @@
 
     		if ($action == "update" && permission_exists('e911_edit')) {
 
-                // Make api calls here
-                if (!isset($_REQUEST["update_from_server"])) {
+				$e911_update_on_server = False;
+				$e911_add_on_server = True;
+
+				// Make api calls here
+				$e911_server_data = query_e911_data($e911_did);
+
+				if ($e911_server_data) {
+					$e911_add_on_server = False;
+					if (
+						$e911_address_1 == $e911_server_data['e911_address_1'] &&
+						$e911_address_2 == $e911_server_data['e911_address_2'] &&
+						$e911_city == $e911_server_data['e911_city'] &&
+						$e911_state == $e911_server_data['e911_state'] &&
+						$e911_zip == $e911_server_data['e911_zip'] &&
+						$e911_zip_4 == $e911_server_data['e911_zip_4'] &&
+						$e911_callername == $e911_server_data['e911_callername']
+					) {
+						$e911_update_on_server = False;
+					}
+				}
+
+				if ($e911_add_on_server) {
+					if (validate_e911_data($e911_data)) {
+						if (add_e911_data($e911_data)) {
+							if ($e911_alert_email_enable == 'True') {
+								if (!add_e911_alert($e911_alert_email)) {
+									$e911_alert_email_enable = "False";
+								}
+							}
+						} else {
+							$e911_validated = "Not added";
+							$e911_alert_email_enable = "False";
+						}
+					} else {
+						$e911_validated = "Not validated";
+						$e911_alert_email_enable = "False";
+					}
+				}
+
+                if ($e911_update_on_server) {
                     $e911_update_result = update_e911($e911_data);
                     $e911_alert_email_enable = $e911_update_result['e911_alert_email_enable'];
                     $e911_validated = $e911_update_result['e911_validated'];
