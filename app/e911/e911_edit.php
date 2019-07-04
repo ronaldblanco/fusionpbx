@@ -68,11 +68,14 @@
 		$e911_validated = check_str($_POST["e911_validated"]);
 	}
 
+	$e911_success_got_from_server = False;
     if (isset($_REQUEST["update_from_server"]) && isset($_REQUEST["e911_did"])) {
         // TODO - override data with API request
         $e911_did = check_str($_REQUEST["e911_did"]);
         $e911_request_data = query_e911_data($e911_did);
         if ($e911_request_data) {
+			$e911_success_got_from_server = True;
+
             $e911_address_1 = $e911_request_data['e911_address_1'];
             $e911_address_2 = $e911_request_data['e911_address_2'];
             $e911_city = $e911_request_data['e911_city'];
@@ -116,7 +119,7 @@
     	}
 
 		//check for all required data
-		if (isset($_REQUEST["update_from_server"]) && !$e911_request_data) {
+		if (isset($_REQUEST["update_from_server"]) && !$e911_success_got_from_server) {
 			$msg = $text['message-info_not_found_on_server'] ."<br>\n";
 		} else {
 			if (strlen($e911_did) == 0) { $msg .= $text['message-required'].$text['label-e911_did']."<br>\n"; }
