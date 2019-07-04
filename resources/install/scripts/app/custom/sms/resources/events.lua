@@ -23,7 +23,7 @@
 	--	<hook event="CUSTOM" subclass="SMS::SEND_MESSAGE" script="app/messages/resources/events.lua"/>
 
 --prepare the api object
-	api = freeswitch.API();
+	api = freeswitch.API()
 
 --define the functions
 	require "resources.functions.trim"
@@ -35,6 +35,15 @@
 
 --set debug
 	debug["sql"] = false
+
+	function get_settings_parameter(settings, parameter)
+		if (settings['sms'][parameter] ~= nil) then
+			if (settings['sms'][parameter]['text'] ~= nil) then
+				return settings['sms'][parameter]['text']
+			end
+		end
+		return nil
+	end
 
 --get the events
 	--serialize the data for the console
@@ -200,58 +209,54 @@
 		-- Get routing rules for this message type.
 		sql =        "SELECT sms_routing_source, "
 		sql = sql .. "sms_routing_destination, "
-		sql = sql .. ""
+		sql = sql .. "sms_routing_target_details"
+		sql = sql .. " FROM v_sms_routing WHERE"
+		sql = sql .. " domain_uuid = '" .. domain_uuid .. "'"
+		sql = sql .. " AND sms_routing_target_type = 'carrier'"
+		sql = sql .. " AND sms_routing_enabled = 'true'"
 
-		settings = settings(domain_uuid);
+		--show debug info
+		if (debug["sql"]) then
+			freeswitch.consoleLog("notice", "[sms] SQL: " .. sql .. "\n")
+		end
+
+		local routing_patterns = {}
+        dbh:query(sql, function(row)
+            table.insert(routing_patterns, row)
+		end);
+		
+		local sms_carrier
+
+		for _, routing_pattern in pairs(routing_patterns) do
+			sms_routing_source = routing_pattern['sms_routing_source']
+			sms_routing_destination = routing_pattern['sms_routing_destination']
+
+			if (from_user:find(sms_routing_source) and to_user:find(sms_routing_destination)) then
+				sms_carrier = routing_pattern['sms_routing_target_details']
+				freeswitch.consoleLog("notice", "[sms] Using carrier for this SMS:" .. sms_carrier .. "\n")
+
+				return
+			end
+		end
+
+		if (sms_carrier == nil) then
+			freeswitch.consoleLog("notice", "[sms] Cannot find carrier for this SMS: From:" .. sms_message_from .. "  To: " .. sms_message_to .. " \n")
+			do return end
+		end
+
+		settings = settings(domain_uuid)
 		if (settings['sms'] ~= nil) then
-			http_method = '';
-			if (settings['sms']['http_method'] ~= nil) then
-				if (settings['message']['http_method']['text'] ~= nil) then
-					http_method = settings['message']['http_method']['text'];
-				end
-			end
-
-			http_content_type = '';
-			if (settings['message']['http_content_type'] ~= nil) then
-				if (settings['message']['http_content_type']['text'] ~= nil) then
-					http_content_type = settings['message']['http_content_type']['text'];
-				end
-			end
-
-			http_destination = '';
-			if (settings['message']['http_destination'] ~= nil) then
-				if (settings['message']['http_destination']['text'] ~= nil) then
-					http_destination = settings['message']['http_destination']['text'];
-				end
-			end
-
-			http_auth_enabled = 'false';
-			if (settings['message']['http_auth_enabled'] ~= nil) then
-				if (settings['message']['http_auth_enabled']['boolean'] ~= nil) then
-					http_auth_enabled = settings['message']['http_auth_enabled']['boolean'];
-				end
-			end
-
-			http_auth_type = '';
-			if (settings['message']['http_auth_type'] ~= nil) then
-				if (settings['message']['http_auth_type']['text'] ~= nil) then
-					http_auth_type = settings['message']['http_auth_type']['text'];
-				end
-			end
-
-			http_auth_user = '';
-			if (settings['message']['http_auth_user'] ~= nil) then
-				if (settings['message']['http_auth_user']['text'] ~= nil) then
-					http_auth_user = settings['message']['http_auth_user']['text'];
-				end
-			end
-
-			http_auth_password = '';
-			if (settings['message']['http_auth_password'] ~= nil) then
-				if (settings['message']['http_auth_password']['text'] ~= nil) then
-					http_auth_password = settings['message']['http_auth_password']['text'];
-				end
-			end
+			request_type = get_settings_parameter(settings, request_type) -- internal or curl. as of now - internal used
+			sms_carrier_url = get_settings_parameter(settings, sms_carrier .. "_url")
+			sms_carrier_user = get_settings_parameter(settings, sms_carrier .. "_user")
+			sms_carrier_key = get_settings_parameter(settings, sms_carrier .. "_key")
+			
+			-- Get all changes in URL line. TODO in the future. For now - hardcode it
+			-- for word in sms_carrier_url:gmatch("{%a+}") do 
+			--    print(word) 
+			-- end
+			sms_carrier_url = sms_carrier_url:gsub("${".. sms_carrier .. "_user}", sms_carrier_user)
+			sms_carrier_url = sms_carrier_url:gsub("${".. sms_carrier .. "_key}", sms_carrier_key)
 		end
 
 		--get the sip user outbound_caller_id
@@ -263,7 +268,7 @@
 		end
 
 		--replace variables for their value
-		http_destination = http_destination:gsub("${from}", from);
+		sms_carrier_url = sms_carrier_url:gsub("${from}", from);
 		
 		--send to the provider using curl
 		if (to_user ~= nil) then
