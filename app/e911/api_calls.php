@@ -137,7 +137,17 @@ function query_e911_data($did) {
 		return False;
 	}
 
-	$response_data = isset($response['soap:Body']['query911Response']['query911Result']['VILocations']['VILocation'])?$response['soap:Body']['query911Response']['query911Result']['VILocations']['VILocation']:False;
+	// Seems answer was changed.
+	$response_data = isset($response['soap:Body']['query911Response']['query911Result']['DID911s']['DID911'])?$response['soap:Body']['query911Response']['query911Result']['DID911s']['DID911']:False;
+	// Try old path as well
+	if (!$response_data) {
+		$response_data = isset($response['soap:Body']['query911Response']['query911Result']['VILocations']['VILocation'])?$response['soap:Body']['query911Response']['query911Result']['VILocations']['VILocation']:False;
+	}
+
+	// We cannot parse this!
+	if (!$response_data) {
+		return False;
+	}
 
 	$result = array();
 	$result['e911_address_1'] = isset($response_data['address1'])?$response_data['address1']:"";
