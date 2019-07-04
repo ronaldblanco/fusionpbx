@@ -311,13 +311,13 @@ function send_911_api($xml_soap_request) {
 
 	curl_close($curl);
 
-	//file_put_contents('/tmp/api_calls.log', "[REQUEST]: ".var_export($xml_soap_request)."\n", FILE_APPEND);
+	//file_put_contents('/tmp/api_calls.log', "[REQUEST]: ".json_encode($xml_soap_request)."\n", FILE_APPEND);
 	if ($err) {
-		//file_put_contents('/tmp/api_calls.log', "[ERROR]\n", FILE_APPEND);
+		//file_put_contents('/tmp/api_calls.log', "[ERROR]".json_encode($err)."\n", FILE_APPEND);
 		return False;
 	}
 	$response = xmlstr_to_array($response);
-	//file_put_contents('/tmp/api_calls.log', "[RESPONSE]: ".var_export($response)."\n", FILE_APPEND);
+	//file_put_contents('/tmp/api_calls.log', "[RESPONSE]: ".json_encode($response)."\n", FILE_APPEND);
 	return $response;
 
 }
