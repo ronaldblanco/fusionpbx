@@ -57,6 +57,10 @@ function event_socket_create($host, $port, $password) {
 }
 
 function event_socket_request($fp, $cmd) {
+	
+	if (!$fp) {
+		return False;
+	}
 	$esl = new event_socket($fp);
 	$result = $esl->request($cmd);
 	$esl->reset_fp();
