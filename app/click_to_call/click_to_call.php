@@ -83,6 +83,8 @@
 			$api_result['message'] .= "Connection to Event Socket failed";
 		}
 
+		$src = explode("@", $src)[0];
+
 		//mozilla thunderbird TBDialout workaround (seems it can only handle the first %NUM%)
 		$dest = ($dest == "%NUM%") ? $src_cid_number : $dest;
 
