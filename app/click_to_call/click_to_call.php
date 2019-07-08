@@ -56,17 +56,15 @@
 			"message" => "",
 		);
 
-	//retrieve submitted variables
-		$src = check_str($_GET['src']);
-		$src_cid_name = check_str($_GET['src_cid_name']);
-		$src_cid_number = check_str($_GET['src_cid_number']);
-
-		$dest = check_str($_GET['dest']);
-
-		$auto_answer = check_str($_GET['auto_answer']); //true,false
-		$rec = check_str($_GET['rec']); //true,false
-		$ringback = check_str($_GET['ringback']);
-		$context = check_str($_GET['context']);
+	//retrieve submitted variables         
+		$src = check_str($_GET['src']);         
+		$src_cid_name = isset($_GET['src_cid_name']) ? check_str($_GET['src_cid_name']) : "";         
+		$src_cid_number = isset($_GET['src_cid_number']) ? check_str($_GET['src_cid_number']) : "";          
+		$dest = check_str($_GET['dest']);          
+		$auto_answer = isset($_GET['auto_answer']) ? check_str($_GET['auto_answer']) : "false";         
+		$rec = check_str($_GET['rec']); //true,false         
+		$ringback = isset($_GET['ringback']) ? check_str($_GET['ringback']) : "";
+		$context = isset($_GET['context']) ? check_str($_GET['context']) : "";
 		$click_to_call_form = check_str($_GET['click_to_call_form']);
 
 		//clean up variable values
@@ -89,33 +87,32 @@
 		$dest = ($dest == "%NUM%") ? $src_cid_number : $dest;
 
 		// Check if src and dest are users
-		$switch_cmd = "user_exists id " . $src . " " . $domain_name;
+		$switch_cmd = "api user_exists id " . $src . " " . $domain_name;
 		$src_user_exists = (trim(event_socket_request($fp, $switch_cmd)) == "true") ? True : False;
 
-		$switch_cmd = "user_exists id " . $dest . " " . $domain_name;
+		$switch_cmd = "api user_exists id " . $dest . " " . $domain_name;
 		$dest_user_exists = (trim(event_socket_request($fp, $switch_cmd)) == "true") ? True : False;
 
 		//adjust variable values
-		if (strlen($src_cid_name) > 0) {
-			$switch_cmd = "user_data ". $src ."@" . $domain_name . " var";
+		if (strlen($src_cid_name) == 0 && $src_user_exists) {
+			$switch_cmd = "api user_data ". $src ."@" . $domain_name . " var";
 			$switch_cmd .= $dest_user_exists ? " effective_caller_id_name" : " outbound_caller_id_name";
 			$src_cid_name = trim(event_socket_request($fp, $switch_cmd));
-			$src_cid_name = (strlen($src_cid_name) > 0) ? $src_cid_name : $src;
+			$src_cid_name = (strlen($src_cid_name) > 0 && strpos($src_cid_number, '-ERR') === false) ? $src_cid_name : $src;
 		}
 
-		$src_cid_number = (strlen($src_cid_number) > 0) ? $src_cid_number : $src;
-		if (strlen($src_cid_number) > 0) {
-			$switch_cmd = "user_data ". $src ."@" . $domain_name . " var";
+		if (strlen($src_cid_number) == 0 && $src_user_exists) {
+			$switch_cmd = "api user_data ". $src ."@" . $domain_name . " var";
 			$switch_cmd .= $dest_user_exists ? " effective_caller_id_name" : " outbound_caller_id_number";
 			$src_cid_number = trim(event_socket_request($fp, $switch_cmd));
-			$src_cid_number = (strlen($src_cid_number) > 0) ? $src_cid_number : $src;
+			$src_cid_number = (strlen($src_cid_number) > 0 && strpos($src_cid_number, '-ERR') === false) ? $src_cid_number : $src;
 		}
 
 		$sip_auto_answer = ($auto_answer == "true") ? ",sip_auto_answer=true" : null;
 
 		// If rec is not set explicit - read user data from Fusion directory
 		if (strlen($rec) == 0 && $src_user_exists) {
-			$switch_cmd = "user_data ". $src ."@" . $domain_name . " var user_record";
+			$switch_cmd = "api user_data ". $src ."@" . $domain_name . " var user_record";
 			$rec_user_setting = trim(event_socket_request($fp, $switch_cmd));
 			if ($rec_user_setting == "all" || 
 				$rec_user_setting == "outbound" ||
@@ -130,14 +127,14 @@
 		$ringback_value = "";
 
 		if (strlen($ringback) > 0 && $ringback != 'moh') {
-			$switch_cmd = "eval $${" . $ringback . "}";
+			$switch_cmd = "api eval \$\${" . $ringback . "}";
 			$ringback_value = trim(event_socket_request($fp, $switch_cmd));
 		}
 
 		if ($ringback_value == "") {
-			$switch_cmd = "user_data ". $src ."@" . $domain_name . " var hold_music";
+			$switch_cmd = "api user_data ". $src ."@" . $domain_name . " var hold_music";
 			$ringback_value = trim(event_socket_request($fp, $switch_cmd));
-			$ringback_value = (strlen($ringback_value) > 0) ? $ringback_value : "local_stream://moh";
+			$ringback_value = (strlen($ringback_value) > 0) ? $ringback_value : "local_stream://default";
 		}
 
 
@@ -196,6 +193,11 @@
 		} else {
 			//source is an elsewhere number
 			$bridge_array = outbound_route_to_bridge($domain_uuid, $src);
+			if (!$bridge_array) {
+				$api_result['status'] = '404';
+				$api_result['message'] = "Cannot dial to source $src";
+				$echo_message .= "<div align='center'> <br /><br /><strong> Cannot dial to source " . $src . "</strong></div>\n";
+			}
 			$source = $source_common."}".$bridge_array[0];
 		}
 		unset($source_common);
@@ -215,7 +217,7 @@
 			//error message
 			$echo_message .= "<div align='center'><strong>Connection to Event Socket failed.</strong></div>";
 			$api_result['status'] = '500';
-			$api_result['message'] = "Connection to Event Socket failed.";
+			$api_result['message'] .= "Connection to Event Socket failed.";
 		} else {
 			//display the last command
 			$switch_cmd = "api originate " . $source . " " . $dest_command;
@@ -224,7 +226,7 @@
 			$result_originate = trim(event_socket_request($fp, $switch_cmd));
 			if (substr($result_originate, 0,3) == "+OK") {
 				$api_result['status'] = '200';
-				$api_result['message'] = "Call established from " . $src . " to " . $dest;
+				$api_result['message'] .= "Call established from " . $src . " to " . $dest;
 				//$uuid = substr($result, 4);
 				if ($rec == "true") {
 					//use the server's time zone to ensure it matches the time zone used by freeswitch
@@ -233,6 +235,9 @@
 					$switch_cmd = "api uuid_record ".$origination_uuid." start ".$record_path."/".$record_name;
 					$result_rec = trim(event_socket_request($fp, $switch_cmd));
 				}
+			}
+			else {
+				$api_result['message'] = "$switch_cmd -> $result_originate";
 			}
 			$echo_message .= "<div align='center'><br />".$result_originate."<br /><br /></div>\n";
 
