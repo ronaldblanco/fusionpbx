@@ -237,7 +237,7 @@
 				}
 			}
 			else {
-				$api_result['message'] = "$switch_cmd -> $result_originate";
+				$api_result['message'] = $result_originate;
 			}
 			$echo_message .= "<div align='center'><br />".$result_originate."<br /><br /></div>\n";
 
