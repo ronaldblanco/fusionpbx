@@ -98,7 +98,7 @@
 			$switch_cmd = "api user_data ". $src ."@" . $domain_name . " var";
 			$switch_cmd .= $dest_user_exists ? " effective_caller_id_name" : " outbound_caller_id_name";
 			$src_cid_name = trim(event_socket_request($fp, $switch_cmd));
-			$src_cid_name = (strlen($src_cid_name) > 0 && strpos($src_cid_number, '-ERR') === false) ? $src_cid_name : $src;
+			$src_cid_name = (strlen($src_cid_name) > 0 && strpos($src_cid_name, '-ERR') === false) ? $src_cid_name : $src;
 		}
 
 		if (strlen($src_cid_number) == 0 && $src_user_exists) {
