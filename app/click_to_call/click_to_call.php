@@ -134,7 +134,7 @@
 		if ($ringback_value == "") {
 			$switch_cmd = "api user_data ". $src ."@" . $domain_name . " var hold_music";
 			$ringback_value = trim(event_socket_request($fp, $switch_cmd));
-			$ringback_value = (strlen($ringback_value) > 0) ? $ringback_value : "local_stream://default";
+			$ringback_value = (strlen($ringback_value) > 0 && strpos($ringback_value, '-ERR') === false) ? $ringback_value : "local_stream://default";
 		}
 
 
