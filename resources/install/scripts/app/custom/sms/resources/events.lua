@@ -250,39 +250,51 @@
 			sms_carrier_url = get_settings_parameter(settings, sms_carrier .. "_url")
 			sms_carrier_user = get_settings_parameter(settings, sms_carrier .. "_user")
 			sms_carrier_key = get_settings_parameter(settings, sms_carrier .. "_key")
+			sms_carrier_body = get_settings_parameter(settings, sms_carrier .. "_body")
+			sms_carrier_content_type = get_settings_parameter(settings, sms_carrier .. "_content_type") or "application/json"
+			sms_carrier_method =  get_settings_parameter(settings, sms_carrier .. "_method") or 'post'
 			
 			-- Get all changes in URL line. TODO in the future. For now - hardcode it
 			-- for word in sms_carrier_url:gmatch("{%a+}") do 
 			--    print(word) 
 			-- end
-			sms_carrier_url = sms_carrier_url:gsub("${".. sms_carrier .. "_user}", sms_carrier_user)
-			sms_carrier_url = sms_carrier_url:gsub("${".. sms_carrier .. "_key}", sms_carrier_key)
 		end
 
 		--get the sip user outbound_caller_id
 		if (from_user ~= nil and from_host ~= nil) then
-			cmd = "user_data ".. from_user .."@"..from_host.." var outbound_caller_id_number";
+			cmd = "user_data ".. from_user .."@"..from_host.." var outbound_caller_id_number"
 			from = trim(api:executeString(cmd));
 		else
 			from = '';
 		end
 
 		--replace variables for their value
-		sms_carrier_url = sms_carrier_url:gsub("${from}", from);
-		
-		--send to the provider using curl
-		if (to_user ~= nil) then
-			cmd = [[curl ]].. http_destination ..[[ ]]
-			cmd = cmd .. [[-H "Content-Type: ]]..http_content_type..[[" ]];
-			if (http_auth_type == 'basic') then
-				cmd = cmd .. [[-H "Authorization: Basic ]]..base64.encode(http_auth_user..":"..http_auth_password)..[[" ]];
-			end
-			cmd = cmd .. [[-d '{"to":"]]..to_user..[[","text":"]]..message_text..[["}']]
-			result = api:executeString("system "..cmd);
-			--status = os.execute (cmd);
-
-			--debug - log the command
-			freeswitch.consoleLog("notice", "[message] " .. cmd.. "\n");
+		if (sms_carrier_url) then
+			sms_carrier_url = sms_carrier_user and sms_carrier_url:gsub("${user}", sms_carrier_user) or sms_carrier_url
+			sms_carrier_url = sms_carrier_key and sms_carrier_url:gsub("${key}", sms_carrier_key) or sms_carrier_url
+			sms_carrier_url = sms_carrier_url:gsub("${from}", from)
+			sms_carrier_url = sms_carrier_url:gsub("${to}", to_user)
+			sms_carrier_url = sms_carrier_url:gsub("${text}", text)
 		end
+
+		if (sms_carrier_body) then
+			sms_carrier_body = sms_carrier_user and sms_carrier_body:gsub("${user}", sms_carrier_user) or sms_carrier_body
+			sms_carrier_body = sms_carrier_key and sms_carrier_body:gsub("${key}", sms_carrier_key) or sms_carrier_body
+			sms_carrier_body = sms_carrier_body:gsub("${from}", from)
+			sms_carrier_body = sms_carrier_body:gsub("${to}", to_user)
+			sms_carrier_body = sms_carrier_body:gsub("${text}", text)
+		end
+			
+		
+		if (to_user == nil) then
+			freeswitch.consoleLog("notice", "[message] To is nil. Not sending... \n");
+			return
+		end
+
+		-- Send to the provider using curl
+
+		-- Form 
+
+
 
 	end
