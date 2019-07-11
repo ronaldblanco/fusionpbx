@@ -65,7 +65,6 @@ if (session:ready()) then
 
 	-- Answering the call
 	if (fifo_exit_key) then
-		session:execute("info")
 		fifo_exit_destination = session:getVariable("fifo_exit_destination") or "*99" .. session:getVariable("called_extension")
 		if (fifo_exit_destination == 'voicemail') then
 			fifo_exit_destination = "*99" .. session:getVariable("called_extension")
