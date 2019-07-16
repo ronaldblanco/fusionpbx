@@ -27,11 +27,11 @@ if (!class_exists('csv_file_process')) {
                 return;
             }
 
-            $this->is_import_devices = False;
+            $this->is_add_device = False;
             $this->csv_fields_order = False;
             $this->is_generate_vm_pass = False;
             $this->is_generate_ext_pass = False;
-            $this->is_is_add_device_profile = False;
+            $this->is_add_device_profile = False;
 
             //$this->numerical_fields = ['number_alias', 'call_timeout', 'voicemail_id'];
 
@@ -483,7 +483,7 @@ if (!class_exists('csv_file_process')) {
             $this->is_generate_vm_pass = !in_array('voicemail_password',  $csv_fields_order);
             $this->is_add_extension_user = in_array('extension_user', $csv_fields_order);
 
-            if ($this->is_import_devices) {
+            if ($this->is_add_device) {
                 $this->is_add_device_profile = in_array('device_profile',  $csv_fields_order);
             }
         }
