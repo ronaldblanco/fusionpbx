@@ -50,15 +50,15 @@
 // 	}
 
 //http get variables set to php variables
-	if (count($_GET)>0) {
-		$switch_cmd = trim(check_str($_GET["cmd"]));
-		$action = trim(check_str($_GET["action"]));
-		$data = trim(check_str($_GET["data"]));
-		$direction = trim(check_str($_GET["direction"]));
+	if (count($_GET) > 0) {
+		$switch_cmd = trim($_GET["cmd"]);
+		$action = trim($_GET["action"]);
+		$data = trim($_GET["data"]);
+		$direction = trim($_GET["direction"]);
 		$username = $_SESSION['username'];
 	}
 
-if (count($_GET) >0) {
+if (count($_GET) > 0) {
 
 	//setup the event socket connection
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -136,7 +136,6 @@ if (count($_GET) >0) {
 				echo 'access denied';
 				return;
 			}
-	
 
 			/*
 			//set the status so they are compatible with mod_callcenter
