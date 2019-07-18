@@ -4,6 +4,10 @@
 			<!--<action application="pre_answer"/>-->
 			<action application="export" data="dialed_extension=${destination_number}" inline="true"/>
 			<action application="limit" data="hash ${domain_name} ${destination_number} ${limit_max} ${limit_destination}" inline="false" />
+			<action application="set" data="extension_codec_string=${user_data ${destination_number}@${domain_name} var absolute_codec_string}" inline="true" />
+		</condition>
+		<condition field="${extension_codec_string}" expression="^$" break="never">
+			<anti-action application="export" data="nolocal:absolute_codec_string=${extension_codec_string}"/>
 		</condition>
 		<condition>
 			<!--<action application="set" data="ringback=${ringback}"/>-->
