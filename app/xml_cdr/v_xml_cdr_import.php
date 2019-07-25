@@ -620,7 +620,7 @@
 			
 			$custom_callback_enable = isset($_SESSION['cdr']['custom_callback_enable']['boolean']) ? filter_var($_SESSION['cdr']['custom_callback_enable']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
 
-			if ($custom_callback_enable) {
+			if ($custom_callback_enable && strlen($xml->variables->domain_uuid) > 0) {
 				$call_back_classes = $_SESSION['cdr']['custom_callback'];
 
 				// Add $call_back_classes with custom domain settings
