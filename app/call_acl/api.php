@@ -24,12 +24,10 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
     Igor Olhovskiy <igorolhovskiy@gmail.com>
-
-	Call Block is written by Gerrit Visser <gerrit308@gmail.com>
 */
 
 /*
-API enpoint to add call blocks via requests.
+API enpoint to add call ACL's via requests.
 
 domain.name/app/call_acl/api.php?action=allow&source=4321&destination=1234&order=10&key=<user_api_key>
 source - source
