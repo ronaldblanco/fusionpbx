@@ -120,7 +120,6 @@ if ($action == "add") {
             'date_added' => time(),
         );
 
-
         $prep_statement = $db->prepare(check_sql($sql));
         if (!$prep_statement->execute(array_values($insert_array))) {
             send_answer('500', json_encode($prep_statement->errorInfo()));
