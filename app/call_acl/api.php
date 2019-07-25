@@ -31,7 +31,7 @@
 /*
 API enpoint to add call blocks via requests.
 
-domain.name/app/call_acl/api.php?action=add&number=4321&key=<user_api_key>
+domain.name/app/call_acl/api.php?action=allow&source=4321&destination=1234&order=10&key=<user_api_key>
 source - source
 destination - destination
 order - order
