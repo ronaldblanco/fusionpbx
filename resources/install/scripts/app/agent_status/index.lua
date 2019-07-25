@@ -18,6 +18,9 @@
 		json = require "resources.functions.lunajson"
 	end
 
+--add BLF support for agent status
+	local presence_in = require "resources.functions.presence_in"
+
 --set the api
 	api = freeswitch.API();
 
@@ -163,6 +166,8 @@
 				event:addHeader("unique-id", agent_uuid);
 				event:addHeader("answer-state", "terminated");
 				event:fire();
+
+				blf_status = "true"
 			end
 
 		--set presence in - turn lamp on
@@ -180,7 +185,15 @@
 				event:addHeader("Presence-Call-Direction", "outbound");
 				event:addHeader("answer-state", "confirmed");
 				event:fire();
+
+				blf_status = "false"
 			end
+
+			if string.find(agent_name, 'agent+', nil, true) ~= 1 then
+				presence_in.turn_lamp( blf_status,
+					'agent+'..agent_name.."@"..domain_name
+				);
+			end		
 	end
 
 --unauthorized
