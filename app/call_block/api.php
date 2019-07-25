@@ -107,19 +107,24 @@ if ($action == "add") {
         $sql .= "call_block_enabled, ";
         $sql .= "date_added ";
         $sql .= ") ";
-        $sql .= "values ";
-        $sql .= "(";
-        $sql .= "'".$_SESSION['domain_uuid']."', ";
-        $sql .= "'".uuid()."', ";
-        $sql .= "'$call_block_name', ";
-        $sql .= "'$call_block_number', ";
-        $sql .= "0, ";
-        $sql .= "'$call_block_action', ";
-        $sql .= "'$call_block_enabled', ";
-        $sql .= "'".time()."' ";
-        $sql .= ")";
-        $db->exec(check_sql($sql));
-        unset($sql);
+        $sql .= "VALUES ";
+        $sql .= "(?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $insert_array = array(
+            'domain_uuid' => $_SESSION['domain_uuid'],
+            'call_block_uuid' => uuid(),
+            'call_block_name' => $call_block_name,
+            'call_block_count' => 0,
+            'call_block_action' => $call_block_action,
+            'call_block_enabled' => $call_block_enabled,
+            'date_added' => time(),
+        );
+
+
+        $prep_statement = $db->prepare(check_sql($sql));
+        if (!$prep_statement->execute(array_values($insert_array))) {
+            send_answer('500', json_encode($prep_statement->errorInfo()));
+        }
     }
     send_answer('200', 'Number added');
 } else {
