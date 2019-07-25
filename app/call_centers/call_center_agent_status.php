@@ -75,53 +75,75 @@
 		foreach($_POST['agents'] as $row) {
 			if (strlen($row['agent_status']) > 0) {
 				//agent set status
-					if ($fp) {
-						//set the user_status
-							if (!isset($row['queue_name'])) {
-								$sql  = "update v_users set ";
-								$sql .= "user_status = '".$row['agent_status']."' ";
-								$sql .= "where domain_uuid = '".$domain_uuid."' ";
-								$sql .= "and user_uuid = '".$row['user_uuid']."' ";
-								$prep_statement = $db->prepare(check_sql($sql));
-								$prep_statement->execute();
-							}
-
-						//set the call center status
-							if (!isset($row['queue_name'])) {
-								if ($row['agent_status'] == "Do Not Disturb") {
-									//set the default dnd action
-										$dnd_action = "add";
-									//set the call center status to Logged Out
-										$cmd = "api callcenter_config agent set status ".$row['agent_uuid']." 'Logged Out'";
-								}
-								else {
-									$cmd = "api callcenter_config agent set status ".$row['agent_uuid']." '".$row['agent_status']."'";
-								}
-								$response = event_socket_request($fp, $cmd);
-							}
-							//echo $cmd."\n";
-
-						//set the agent status to available and assign the agent to the queue with the tier
-							if (isset($row['queue_uuid']) && $row['agent_status'] == 'Available') {
-								//set the call center status
-								//$cmd = "api callcenter_config agent set status ".$row['agent_name']."@".$_SESSION['domain_name']." '".$row['agent_status']."'";
-								//$response = event_socket_request($fp, $cmd);
-
-								//assign the agent to the queue
-								$cmd = "api callcenter_config tier add ".$row['queue_uuid']." ".$row['agent_uuid']." 1 1";
-								//echo $cmd."<br />\n";
-								$response = event_socket_request($fp, $cmd);
-							}
-
-						//un-assign the agent from the queue
-							if (isset($row['queue_uuid']) && $row['agent_status'] == 'Logged Out') {
-								$cmd = "api callcenter_config tier del ".$row['queue_uuid']." ".$row['agent_uuid'];
-								//echo $cmd."<br />\n";
-								$response = event_socket_request($fp, $cmd);
-							}
-							usleep(200);
+				if ($fp) {
+					//set the user_status
+					if (!isset($row['queue_name'])) {
+						$sql  = "update v_users set ";
+						$sql .= "user_status = '".$row['agent_status']."' ";
+						$sql .= "where domain_uuid = '".$domain_uuid."' ";
+						$sql .= "and user_uuid = '".$row['user_uuid']."' ";
+						$prep_statement = $db->prepare(check_sql($sql));
+						$prep_statement->execute();
 					}
 
+					//set the call center status
+					if (!isset($row['queue_name'])) {
+						if ($row['agent_status'] == "Do Not Disturb") {
+							//set the default dnd action
+								$dnd_action = "add";
+							//set the call center status to Logged Out
+								$cmd = "api callcenter_config agent set status ".$row['agent_uuid']." 'Logged Out'";
+						}
+						else {
+							$cmd = "api callcenter_config agent set status ".$row['agent_uuid']." '".$row['agent_status']."'";
+						}
+						$response = event_socket_request($fp, $cmd);
+					}
+					//echo $cmd."\n";
+
+					//set the agent status to available and assign the agent to the queue with the tier
+					if (isset($row['queue_uuid']) && $row['agent_status'] == 'Available') {
+						//set the call center status
+						//$cmd = "api callcenter_config agent set status ".$row['agent_name']."@".$_SESSION['domain_name']." '".$row['agent_status']."'";
+						//$response = event_socket_request($fp, $cmd);
+
+						//assign the agent to the queue
+						$cmd = "api callcenter_config tier add ".$row['queue_uuid']." ".$row['agent_uuid']." 1 1";
+						//echo $cmd."<br />\n";
+						$response = event_socket_request($fp, $cmd);
+					}
+
+				//un-assign the agent from the queue
+					if (isset($row['queue_uuid']) && $row['agent_status'] == 'Logged Out') {
+						$cmd = "api callcenter_config tier del ".$row['queue_uuid']." ".$row['agent_uuid'];
+						//echo $cmd."<br />\n";
+						$response = event_socket_request($fp, $cmd);
+					}
+					usleep(200);
+
+					//set the blf status
+					//get the agents from the database
+					$sql = "select agent_name from v_call_center_agents ";
+					$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+					$sql .= "and call_center_agent_uuid = '".$row['agent_uuid']."' ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$agent_name = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+					if ($row['agent_status'] == 'Available') {
+						$answer_state = 'confirmed';
+					}
+					else {
+						$answer_state = 'terminated';
+					}
+					
+					$call_center_notify = new call_center_notify;
+					$call_center_notify->domain_name = $_SESSION['domain_name'];
+					$call_center_notify->agent_name = $agent_name[0]['agent_name'];
+					$call_center_notify->answer_state = $answer_state;
+					$call_center_notify->agent_uuid = $row['agent_uuid'];
+					$call_center_notify->send_call_center_notify();
+					unset($call_center_notify);
+				}
 			}
 		}
 	}
