@@ -16,14 +16,11 @@ if ( session:ready() ) then
     company_caller_id = session:getVariable("company_caller_id")
     if (company_caller_id) then
 
-        outbound_caller_id_number = session:getVariable("outbound_caller_id_number")
-        outbound_caller_id_number = outbound_caller_id_number and outbound_caller_id_number or ""
+        outbound_caller_id_number = session:getVariable("outbound_caller_id_number") or ""
 
-        caller_id_number = session:getVariable("caller_id_number")
-        caller_id_number = caller_id_number and caller_id_number or ""
+        caller_id_number = session:getVariable("caller_id_number") or ""
 
-        outbound_caller_id_name = session:getVariable("outbound_caller_id_name")
-        outbound_caller_id_name = outbound_caller_id_name and outbound_caller_id_name or ""
+        outbound_caller_id_name = session:getVariable("outbound_caller_id_name") or ""
 
         session:consoleLog("notice","[PREPARE_CALLERID]: company_caller_id: "..company_caller_id.." outbound_caller_id_number: "..outbound_caller_id_number.." outbound_caller_id_name:"..outbound_caller_id_name.." caller_id_number:"..caller_id_number.."\n")
         outbound_caller_id_name = string.lower(outbound_caller_id_name)
@@ -44,13 +41,12 @@ if ( session:ready() ) then
                 end
             end
         else
+        	-- We're using original caller_id_number. Make sure it's with leading "+"
             effective_caller_id = caller_id_number
+            if (string.sub(effective_caller_id, 1, 1) ~= "+") then
+            	effective_caller_id = "+" .. effective_caller_id
+            end
         end
-
-        -- if (argv[?] == 'astpp') then
-        --session:consoleLog("notice","[CONSERTIS_PREPARE_CALLERID]: Setting callerID headers to Outbound:  "..effective_caller_id.." Billing: "..company_caller_id.."\n")
-        --session:setVariable("effective_caller_id_name", effective_caller_id)
-        --session:setVariable("effective_caller_id_number", effective_caller_id)
 
         effective_caller_id_sip_header = effective_caller_id_sip_header or effective_caller_id
 
