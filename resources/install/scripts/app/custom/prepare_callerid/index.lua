@@ -41,11 +41,12 @@ if ( session:ready() ) then
                 end
             end
         else
-        	-- We're using original caller_id_number. Make sure it's with leading "+"
             effective_caller_id = caller_id_number
-            if (string.sub(effective_caller_id, 1, 1) ~= "+") then
-            	effective_caller_id = "+" .. effective_caller_id
-            end
+        end
+        
+        -- We're using original caller_id_number. Make sure it's with leading "+"
+        if (string.sub(effective_caller_id, 1, 1) ~= "+" or string.sub(effective_caller_id, 1, 1) ~= "r") then
+            effective_caller_id = "+" .. effective_caller_id
         end
 
         effective_caller_id_sip_header = effective_caller_id_sip_header or effective_caller_id
