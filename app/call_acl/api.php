@@ -67,7 +67,7 @@ if (count($parameters) > 0) {
     $destination = isset($parameters["destination"]) ? check_str($parameters["destination"]) : False;
     $order = isset($parameters["order"]) ? check_str($parameters["order"]) : False;
     $source = isset($parameters["source"]) ? check_str($parameters["source"]) : False;
-    $name = isset($parameters["name"]) ? check_str($parameters["name"]) : "$source/$destination/$action";
+    $name = isset($parameters["name"]) ? check_str($parameters["name"]) : "$action from $source to $destination";
     $enabled = isset($parameters["enabled"]) ? check_str($parameters["enabled"]) : 'true';
 }
 
