@@ -45,7 +45,7 @@ if ( session:ready() ) then
         end
         
         -- We're using original caller_id_number. Make sure it's with leading "+"
-        if (string.sub(effective_caller_id, 1, 1) ~= "+" or string.sub(effective_caller_id, 1, 1) ~= "r") then
+        if (string.sub(effective_caller_id, 1, 1) ~= "+" and string.sub(effective_caller_id, 1, 1) ~= "r") then
             effective_caller_id = "+" .. effective_caller_id
         end
 
