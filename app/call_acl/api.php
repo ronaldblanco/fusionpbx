@@ -81,7 +81,7 @@ if (!is_numeric($order) || intval($order) != $order) {
     return;
 }
 
-if ($action != 'allow' || $action != 'reject') {
+if ($action != 'allow' && $action != 'reject') {
     send_answer('406', "$action is not valid action");
     return;
 }
