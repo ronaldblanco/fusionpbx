@@ -129,7 +129,10 @@ else {
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_retry_limit']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_retry_sleep']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".basename($row['fax_uri'])."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_date']."&nbsp;</td>\n";
+
+			$tmp_fax_date = ($_SESSION['domain']['time_format']['text'] == '12h') ? date("j M Y g:i:sa", $row['fax_epoch']) : date("j M Y H:i:s", $row['fax_epoch']);
+			
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$tmp_fax_date."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_epoch']."&nbsp;</td>\n";
 			echo "	<td class='list_control_icons'>";
 			echo 		"<a href='fax_log_view.php?id=".$row['fax_log_uuid']."&fax_uuid=$fax_uuid' alt='".$text['button-view']."'>".$v_link_label_view."</a>";
