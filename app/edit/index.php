@@ -87,7 +87,7 @@
 
 //create a token
 	$key_name = '/app/edit/'.$mode;
-	if ($PHP_MAJOR_VERSION == 5) {
+	if (version_compare(phpversion(), '7.0.0', '<')) {
 		$_SESSION['keys'][$key_name] = bin2hex(openssl_random_pseudo_bytes(32));
 	} else {
 		$_SESSION['keys'][$key_name] = bin2hex(random_bytes(32));
