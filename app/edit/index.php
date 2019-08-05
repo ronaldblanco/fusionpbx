@@ -87,7 +87,11 @@
 
 //create a token
 	$key_name = '/app/edit/'.$mode;
-	$_SESSION['keys'][$key_name] = bin2hex(random_bytes(32));
+	if ($PHP_MAJOR_VERSION == 5) {
+		$_SESSION['keys'][$key_name] = bin2hex(openssl_random_pseudo_bytes(32));
+	} else {
+		$_SESSION['keys'][$key_name] = bin2hex(random_bytes(32));
+	}
 	$_SESSION['token'] = hash_hmac('sha256', $key_name, $_SESSION['keys'][$key_name]);
 
 ?>
