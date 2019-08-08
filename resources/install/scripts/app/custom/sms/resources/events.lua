@@ -246,10 +246,10 @@
 
 		settings = settings(domain_uuid)
 		if (settings['sms'] ~= nil) then
-			request_type = get_settings_parameter(settings, request_type) -- internal or curl. as of now - internal used
+			request_type = get_settings_parameter(settings, sms_carrier .. "_request_type") -- internal or curl. as of now - internal used
 			sms_carrier_url = get_settings_parameter(settings, sms_carrier .. "_url")
 			sms_carrier_user = get_settings_parameter(settings, sms_carrier .. "_user")
-			sms_carrier_key = get_settings_parameter(settings, sms_carrier .. "_key")
+			sms_carrier_password = get_settings_parameter(settings, sms_carrier .. "_password")
 			sms_carrier_body = get_settings_parameter(settings, sms_carrier .. "_body")
 			sms_carrier_content_type = get_settings_parameter(settings, sms_carrier .. "_content_type") or "application/json"
 			sms_carrier_method =  get_settings_parameter(settings, sms_carrier .. "_method") or 'post'
@@ -271,18 +271,18 @@
 		--replace variables for their value
 		if (sms_carrier_url) then
 			sms_carrier_url = sms_carrier_user and sms_carrier_url:gsub("${user}", sms_carrier_user) or sms_carrier_url
-			sms_carrier_url = sms_carrier_key and sms_carrier_url:gsub("${key}", sms_carrier_key) or sms_carrier_url
+			sms_carrier_url = sms_carrier_password and sms_carrier_url:gsub("${password}", sms_carrier_password) or sms_carrier_url
 			sms_carrier_url = sms_carrier_url:gsub("${from}", from)
 			sms_carrier_url = sms_carrier_url:gsub("${to}", to_user)
-			sms_carrier_url = sms_carrier_url:gsub("${text}", text)
+			sms_carrier_url = sms_carrier_url:gsub("${text}", sms_message_text)
 		end
 
 		if (sms_carrier_body) then
 			sms_carrier_body = sms_carrier_user and sms_carrier_body:gsub("${user}", sms_carrier_user) or sms_carrier_body
-			sms_carrier_body = sms_carrier_key and sms_carrier_body:gsub("${key}", sms_carrier_key) or sms_carrier_body
+			sms_carrier_body = sms_carrier_password and sms_carrier_body:gsub("${password}", sms_carrier_password) or sms_carrier_body
 			sms_carrier_body = sms_carrier_body:gsub("${from}", from)
 			sms_carrier_body = sms_carrier_body:gsub("${to}", to_user)
-			sms_carrier_body = sms_carrier_body:gsub("${text}", text)
+			sms_carrier_body = sms_carrier_body:gsub("${text}", sms_message_text)
 		end
 			
 		
@@ -292,9 +292,8 @@
 		end
 
 		-- Send to the provider using curl
-
-		-- Form 
-
-
-
+		if (request_type == "internal") then
+			cmd = "curl " .. sms_carrier_url .. " content-type " .. sms_carrier_content_type .. " " .. sms_carrier_method .. " " .. sms_carrier_body
+			api:executeString(cmd)
+		end
 	end
