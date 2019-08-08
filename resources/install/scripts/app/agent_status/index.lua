@@ -154,44 +154,50 @@
 			end
 
 		--set the presence to terminated - turn the lamp off:
+			agent_blf_used_id = agent_name
+
+			if agent_id ~= nil and agent_id:len() > 0 then
+				agent_blf_used_id = agent_id
+
+
 			if (action == "logout") then
-				event = freeswitch.Event("PRESENCE_IN");
-				event:addHeader("proto", "sip");
-				event:addHeader("event_type", "presence");
-				event:addHeader("alt_event_type", "dialog");
-				event:addHeader("Presence-Call-Direction", "outbound");
-				event:addHeader("state", "Active (1 waiting)");
-				event:addHeader("from", agent_name.."@"..domain_name);
-				event:addHeader("login", agent_name.."@"..domain_name);
-				event:addHeader("unique-id", agent_uuid);
-				event:addHeader("answer-state", "terminated");
-				event:fire();
+				event = freeswitch.Event("PRESENCE_IN")
+				event:addHeader("proto", "sip")
+				event:addHeader("event_type", "presence")
+				event:addHeader("alt_event_type", "dialog")
+				event:addHeader("Presence-Call-Direction", "outbound")
+				event:addHeader("state", "Active (1 waiting)")
+				event:addHeader("from", agent_blf_used_id.."@"..domain_name)
+				event:addHeader("login", agent_blf_used_id.."@"..domain_name)
+				event:addHeader("unique-id", agent_uuid)
+				event:addHeader("answer-state", "terminated")
+				event:fire()
 
 				blf_status = "true"
 			end
 
 		--set presence in - turn lamp on
 			if (action == "login") then
-				event = freeswitch.Event("PRESENCE_IN");
-				event:addHeader("proto", "sip");
-				event:addHeader("login", agent_name.."@"..domain_name);
-				event:addHeader("from", agent_name.."@"..domain_name);
-				event:addHeader("status", "Active (1 waiting)");
-				event:addHeader("rpid", "unknown");
-				event:addHeader("event_type", "presence");
-				event:addHeader("alt_event_type", "dialog");
-				event:addHeader("event_count", "1");
-				event:addHeader("unique-id", agent_uuid);
-				event:addHeader("Presence-Call-Direction", "outbound");
-				event:addHeader("answer-state", "confirmed");
-				event:fire();
+				event = freeswitch.Event("PRESENCE_IN")
+				event:addHeader("proto", "sip")
+				event:addHeader("login", agent_blf_used_id.."@"..domain_name)
+				event:addHeader("from", agent_blf_used_id.."@"..domain_name)
+				event:addHeader("status", "Active (1 waiting)")
+				event:addHeader("rpid", "unknown")
+				event:addHeader("event_type", "presence")
+				event:addHeader("alt_event_type", "dialog")
+				event:addHeader("event_count", "1")
+				event:addHeader("unique-id", agent_uuid)
+				event:addHeader("Presence-Call-Direction", "outbound")
+				event:addHeader("answer-state", "confirmed")
+				event:fire()
 
 				blf_status = "false"
 			end
 
-			if string.find(agent_name, 'agent+', nil, true) ~= 1 then
+			if string.find(agent_blf_used_id, 'agent+', nil, true) ~= 1 then
 				presence_in.turn_lamp( blf_status,
-					'agent+'..agent_name.."@"..domain_name,
+					'agent+'..agent_blf_used_id.."@"..domain_name,
 					uuid
 				);
 			end		

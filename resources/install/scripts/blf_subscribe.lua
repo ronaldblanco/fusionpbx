@@ -84,7 +84,7 @@ local find_agent_status do
 
 	local find_agent_uuid_sql = [[select t1.call_center_agent_uuid
 	from v_call_center_agents t1 inner join v_domains t2 on t1.domain_uuid = t2.domain_uuid
-	where t2.domain_name = :domain_name and t1.agent_name = :agent_name
+	where t2.domain_name = :domain_name and (t1.agent_name = :agent_name or t1.agent_id = :agent_name)
 	]]
 	
 	function find_agent_status(user)

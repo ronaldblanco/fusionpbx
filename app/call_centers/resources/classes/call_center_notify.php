@@ -25,7 +25,7 @@ if (!class_exists('call_center_notify')) {
     class call_center_notify {
         public $debug;
         public $domain_name;
-        public $agent_name;
+        public $agent_id;
         public $answer_state;
         public $agent_uuid;
     //feature_event method
@@ -39,8 +39,8 @@ if (!class_exists('call_center_notify')) {
                 $event .= "alt_event_type: dialog\n";
                 $event .= "Presence-Call-Direction: outbound\n";
                 $event .= "state: Active (1 waiting)\n";
-                $event .= "from: agent+".$this->agent_name."@".$this->domain_name."\n";
-                $event .= "login: agent+".$this->agent_name."@".$this->domain_name."\n";
+                $event .= "from: agent+".$this->agent_id."@".$this->domain_name."\n";
+                $event .= "login: agent+".$this->agent_id."@".$this->domain_name."\n";
                 $event .= "unique-id: ".$this->agent_uuid."\n";
                 $event .= "answer-state: ".$this->answer_state."\n";
                 
