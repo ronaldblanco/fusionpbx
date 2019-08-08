@@ -250,10 +250,6 @@
 					if ($_SESSION['ivr_menu']['application']['text'] == "lua") {
 						$dialplan_xml .= "		<action application=\"lua\" data=\"ivr_menu.lua\"/>\n";
 					} else {
-						if (strlen($ivr_menu_cid_prefix) > 0) { // Added as lua xml dialplan handler not adding cid_prefix
-							$dialplan_xml .= "		<action application=\"set\" data=\"caller_id_name=" . $ivr_menu_cid_prefix . "\${caller_id_name}\"/>\n";
-							$dialplan_xml .= "		<action application=\"set\" data=\"effective_caller_id_name=" . $ivr_menu_cid_prefix . "\${caller_id_name}\"/>\n";
-						}
 						$dialplan_xml .= "		<action application=\"ivr\" data=\"".$ivr_menu_uuid."\"/>\n";
 					}
 
