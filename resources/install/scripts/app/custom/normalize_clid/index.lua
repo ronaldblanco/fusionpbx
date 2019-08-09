@@ -21,7 +21,7 @@ if ( session:ready() ) then
 
     -- Check if call is forwarded
     if (ani:len() > 5) then -- Seems, we have forwaded call
-        freeswitch.consoleLog("notice", "[NORMALIZE CALLERID] Call is forwarded. Setting callerid to " callerid_prefix .. ani .. "\n")
+        freeswitch.consoleLog("notice", "[NORMALIZE CALLERID] Call is forwarded. Setting callerid to " .. callerid_prefix .. ani .. "\n")
         session:setVariable("effective_caller_id_name", callerid_prefix .. ani)
         session:setVariable("effective_caller_id_number", callerid_prefix .. ani)
         do return end
@@ -63,7 +63,7 @@ if ( session:ready() ) then
         if (prepend_ani == 'true') then
             company_caller_id = company_caller_id .. ani
         end
-        freeswitch.consoleLog("notice", "[NORMALIZE CALLERID] Callerid is set based on company_caller_id: " callerid_prefix .. company_caller_id .. "\n")
+        freeswitch.consoleLog("notice", "[NORMALIZE CALLERID] Callerid is set based on company_caller_id: " .. callerid_prefix .. company_caller_id .. "\n")
         session:setVariable("effective_caller_id_name", callerid_prefix .. company_caller_id)
         session:setVariable("effective_caller_id_number", callerid_prefix .. company_caller_id)
         do return end
