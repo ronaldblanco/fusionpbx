@@ -25,11 +25,7 @@
 --	POSSIBILITY OF SUCH DAMAGE.
 
 
-local log       = require "resources.functions.log".sms
-
-log.warning("Starting SMS feature")
-
-local uuid                           = env:getHeader("uuid")
+local log = require "resources.functions.log".sms
 
 --[=====[
 

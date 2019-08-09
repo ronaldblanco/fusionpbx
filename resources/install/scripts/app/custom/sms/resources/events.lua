@@ -227,6 +227,11 @@
 		
 		local sms_carrier
 
+		if (len(routing_patterns) == 0) then
+			freeswitch.consoleLog("notice", "[sms] Routing table is empty. Exiting.\n")
+			do return end
+		end
+
 		for _, routing_pattern in pairs(routing_patterns) do
 			sms_routing_source = routing_pattern['sms_routing_source']
 			sms_routing_destination = routing_pattern['sms_routing_destination']

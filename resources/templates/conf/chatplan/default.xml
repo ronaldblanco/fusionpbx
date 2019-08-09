@@ -12,7 +12,7 @@
                 <extension name="sms-catch-all">
                         <condition field="to" expression="^\+?(\d+)$">
                         	    <action application="set" data="final_delivery=true"/>
-                                    <action application="lua" data="app_custom.lua sms"/>
+                                    <action application="lua" data="app_custom.lua sms internal"/>
                         </condition>
                 </extension>
                 <extension name="other">
