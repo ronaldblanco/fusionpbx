@@ -35,26 +35,23 @@
 --get the session variables
 	if (session:ready()) then
 		--general variables
-			domain_uuid = session:getVariable("domain_uuid");
-			domain_name = session:getVariable("domain_name");
-			context = session:getVariable("context");
-			uuid = session:get_uuid();
-			agent_authorized = session:getVariable("agent_authorized");
-			agent_id = session:getVariable("agent_id");
-			agent_password = session:getVariable("agent_password");
+			domain_uuid = session:getVariable("domain_uuid")
+			domain_name = session:getVariable("domain_name")
+			context = session:getVariable("context")
+			uuid = session:get_uuid()
+			agent_authorized = session:getVariable("agent_authorized")
+			agent_id = session:getVariable("agent_id")
+			agent_password = session:getVariable("agent_password")
 
 		--set the sounds path for the language, dialect and voice
-			default_language = session:getVariable("default_language");
-			default_dialect = session:getVariable("default_dialect");
-			default_voice = session:getVariable("default_voice");
-			if (not default_language) then default_language = 'en'; end
-			if (not default_dialect) then default_dialect = 'us'; end
-			if (not default_voice) then default_voice = 'callie'; end
+			default_language = session:getVariable("default_language") or 'en'
+			default_dialect = session:getVariable("default_dialect") or 'us'
+			default_voice = session:getVariable("default_voice") or 'callie'
 	end
 
 --set default as access denied
 	if (agent_authorized == nil or agent_authorized ~= 'true') then
-		agent_authorized = 'false';
+		agent_authorized = 'false'
 	end
 
 --define the sounds directory
@@ -92,13 +89,13 @@
 
 	dbh:query(sql, params, function(row)
 		--set the variables
-			agent_uuid = row.call_center_agent_uuid;
-			agent_name = row.agent_name;
-			agent_id = row.agent_id;
-			user_uuid = row.user_uuid;
+			agent_uuid = row.call_center_agent_uuid
+			agent_name = row.agent_name
+			agent_id = row.agent_id
+			user_uuid = row.user_uuid
 		--authorize the user
-			agent_authorized = 'true';
-	end);
+			agent_authorized = 'true'
+	end)
 
 --show the results
 	if (agent_id) then
@@ -126,9 +123,9 @@
 			end
 
 		--send a login or logout to mod_callcenter
-			cmd = "callcenter_config agent set status "..agent_uuid.." '"..status.."'";
-			freeswitch.consoleLog("notice", "[user status][login] "..cmd.."\n");
-			result = api:executeString(cmd);
+			cmd = "callcenter_config agent set status "..agent_uuid.." '"..status.."'"
+			freeswitch.consoleLog("notice", "[user status][login] "..cmd.."\n")
+			result = api:executeString(cmd)
 
 		--update the user status
 			if (user_uuid ~= nil and user_uuid ~= '') then
@@ -142,15 +139,15 @@
 				dbh:query(sql, params, function(row)
 
 					--set the user_status in the users table
-						local sql = "UPDATE v_users SET ";
-						sql = sql .. "user_status = :status ";
-						sql = sql .. "WHERE user_uuid = :user_uuid ";
-						local params = {status = status, user_uuid = user_uuid};
+						local sql = "UPDATE v_users SET "
+						sql = sql .. "user_status = :status "
+						sql = sql .. "WHERE user_uuid = :user_uuid "
+						local params = {status = status, user_uuid = user_uuid}
 						if (debug["sql"]) then
-							freeswitch.consoleLog("notice", "[call_center] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
+							freeswitch.consoleLog("notice", "[call_center] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n")
 						end
-						dbh:query(sql, params);
-				end);
+						dbh:query(sql, params)
+				end)
 			end
 
 		--set the presence to terminated - turn the lamp off:
@@ -158,7 +155,7 @@
 
 			if agent_id ~= nil and agent_id:len() > 0 then
 				agent_blf_used_id = agent_id
-
+			end
 
 			if (action == "logout") then
 				event = freeswitch.Event("PRESENCE_IN")
