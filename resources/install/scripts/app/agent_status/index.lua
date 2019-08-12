@@ -170,7 +170,7 @@
 				event:addHeader("answer-state", "terminated")
 				event:fire()
 
-				blf_status = "true"
+				blf_status = "off"
 			end
 
 		--set presence in - turn lamp on
@@ -189,7 +189,7 @@
 				event:addHeader("answer-state", "confirmed")
 				event:fire()
 
-				blf_status = "false"
+				blf_status = "on"
 			end
 
 			if string.find(agent_blf_used_id, 'agent+', nil, true) ~= 1 then
