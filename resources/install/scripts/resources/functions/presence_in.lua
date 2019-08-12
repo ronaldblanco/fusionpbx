@@ -24,7 +24,7 @@ local function turn_lamp(on, user, uuid)
 	event:addHeader("login", user);
 	event:addHeader("unique-id", uuid);
 	event:addHeader("status", "Active (1 waiting)");
-	if on then
+	if on and on ~= 'false' then
 		event:addHeader("answer-state", "confirmed");
 		event:addHeader("rpid", "unknown");
 		event:addHeader("event_count", "1");
