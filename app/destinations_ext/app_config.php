@@ -93,6 +93,14 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Possibility to detect silence on this destination";
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_callerid_name_prepend";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "CallerID name prepend";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_callerid_number_prepend";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "CallerID number prepend";
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "destination_ext_enabled";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = "Enable destinations ext";

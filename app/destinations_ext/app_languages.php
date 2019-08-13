@@ -26,6 +26,10 @@ $text['label-detail_action_ext']['en-us'] = "Extensions number action";
 
 $text['label-detail_action_invalid']['en-us'] = "Invalid number action";
 
+$text['label-destination_ext_callerid_name_prepend']['en-us'] = "CallerID Name Prefix";
+
+$text['label-destination_ext_callerid_number_prepend']['en-us'] = "CallerID Number Prefix";
+
 $text['label-destination_ext_variable']['en-us'] = "Variable to store extension";
 
 $text['label-destination_ext_variable_no_extension']['en-us'] = "Alternate value for store extension";
@@ -46,6 +50,10 @@ $text['description-destination_ext_variable_no_extension']['en-us'] = "Alternate
 $text['description-destination_ext_number']['en-us'] = "Destinations main number";
 
 $text['description-destination_ext_enabled']['en-us'] = "Enable or disable current destination";
+
+$text['description-destination_ext_callerid_name_prepend']['en-us'] = "Set a prefix on the caller ID name.";
+
+$text['description-destination_ext_callerid_number_prepend']['en-us'] = "Set a prefix on the caller ID number.";
 
 $text['description-destination_ext_silence_detect']['en-us'] = "EXPERIMENTAL! Silence detect on incoming call on this channel. Will hangup if silence on incoming call is detected";
 

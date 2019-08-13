@@ -1930,4 +1930,8 @@ function number_pad($number,$n) {
 		//return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 	}
 
+	function escape_backward($string) {
+		return htmlentities($string, ENT_QUOTES, 'UTF-8');
+	}
+
 ?>
