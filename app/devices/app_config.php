@@ -1552,6 +1552,13 @@
 		$vendors[$y]['functions'][$z]['value'] = "shared";
 		$vendors[$y]['functions'][$z]['groups'][] = "superadmin";
 		$vendors[$y]['functions'][$z]['groups'][] = "admin";
+		$z++;
+		$vendors[$y]['functions'][$z]['uuid'] = "70c9723f-a7a5-445a-a5ab-affb331ac545";
+		$vendors[$y]['functions'][$z]['label'] = "label-agent";
+		$vendors[$y]['functions'][$z]['name'] = "agent";
+		$vendors[$y]['functions'][$z]['value'] = "agent";
+		$vendors[$y]['functions'][$z]['groups'][] = "superadmin";
+		$vendors[$y]['functions'][$z]['groups'][] = "admin";
 //linksys
 		$y++;
 		$vendors[$y]['uuid'] = "8116f44f-ccd6-46d5-8e65-46cc2c8cca32";

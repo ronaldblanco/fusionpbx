@@ -661,6 +661,26 @@ $text['label-shared_line']['ru-ru'] = "Общая линия";
 $text['label-shared_line']['sv-se'] = "Delad Linje";
 $text['label-shared_line']['uk-ua'] = "";
 
+$text['label-agent']['en-us'] = "Agent";
+$text['label-agent']['ar-eg'] = "Agent";
+$text['label-agent']['de-at'] = "Agent"; //copied from de-de
+$text['label-agent']['de-ch'] = "Agent"; //copied from de-de
+$text['label-agent']['de-de'] = "Agent";
+$text['label-agent']['es-cl'] = "Agent";
+$text['label-agent']['es-mx'] = "Agent"; //copied from es-cl
+$text['label-agent']['fr-ca'] = "Agent"; //copied from fr-fr
+$text['label-agent']['fr-fr'] = "Agent";
+$text['label-agent']['he-il'] = "Agent";
+$text['label-agent']['it-it'] = "Agent";
+$text['label-agent']['nl-nl'] = "Agent";
+$text['label-agent']['pl-pl'] = "Agent";
+$text['label-agent']['pt-br'] = "Agent";
+$text['label-agent']['pt-pt'] = "Agent";
+$text['label-agent']['ro-ro'] = "Agent";
+$text['label-agent']['ru-ru'] = "Агент";
+$text['label-agent']['sv-se'] = "Agent";
+$text['label-agent']['uk-ua'] = "Агент";
+
 $text['label-settings']['en-us'] = "Settings";
 $text['label-settings']['ar-eg'] = "الأعدادات";
 $text['label-settings']['de-at'] = "Einstellungen"; //copied from de-de
