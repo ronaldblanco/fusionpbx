@@ -446,15 +446,17 @@ include "root.php";
 								$dial_string .= "[".implode(",", $variables)."]".$bridge[0];
 							}
 							elseif ($_SESSION['domain']['bridge']['text'] == "loopback") {
+								$sleep_time = "sleep=".($row["follow_me_delay"] * 1000);
 								//$dial_string .= "loopback/".$row["follow_me_destination"]."/".$this->domain_name;
-								$dial_string .= "loopback/export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
+								$dial_string .= "loopback/".$sleep_time."\,export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
 							}
 							elseif ($_SESSION['domain']['bridge']['text'] == "lcr") {
 								$dial_string .= "[".implode(",", $variables)."]lcr/".$_SESSION['lcr']['profile']['text']."/".$this->domain_name."/".$row["follow_me_destination"];
 							}
 							else {
 								//$dial_string .= "loopback/".$row["follow_me_destination"]."/".$this->domain_name;
-								$dial_string .= "loopback/export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
+								$sleep_time = "sleep=".($row["follow_me_delay"] * 1000);
+								$dial_string .= "loopback/".$sleep_time."\,export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
 							}
 						}
 						else {

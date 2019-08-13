@@ -40,7 +40,7 @@ if ( session:ready() ) then
     end
 
     -- Check for outbound callerid number...
-    outbound_caller_id_number = session:getVariable("outbound_caller_id_number")
+    outbound_caller_id_number = session:getVariable("outbound_caller_id_number") or ""
 
     if (outbound_caller_id_number:len() > 0) then
 
