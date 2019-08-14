@@ -1926,7 +1926,8 @@ function number_pad($number,$n) {
 
 //escape user data
 	function escape($string) {
-		return htmlentities($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		return escape_backward($string);
+		// return htmlentities($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 		//return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 	}
 
