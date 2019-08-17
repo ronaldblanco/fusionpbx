@@ -24,8 +24,37 @@
 --	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 --	POSSIBILITY OF SUCH DAMAGE.
 
+opthelp = [[
+ -s, --source=OPTARG	Source of the message
+ -d, --debug			Debug flag			
+]]
+
 
 local log = require "resources.functions.log".sms
+
+local Settings = require "resources.functions.lazy_settings"
+local Database = require "resources.functions.database"
+require "resources.functions.trim";
+
+api = freeswitch.API();
+
+local db = dbh or Database.new('system')
+local settings = Settings.new(db, domain_name, domain_uuid)
+
+-- local call_block_matching = settings:get('call block', 'call_block_matching', 'text');
+
+opts, args, err = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
+
+if opts == nil then
+    log.error("[sms] Options are not parsable " .. err)
+    do return end
+end
+
+local sms_source = opts.s or 'internal'
+
+if opts.d then
+	log.info("[sms] Message source is " .. sms_source)
+end
 
 --[=====[
 
@@ -47,18 +76,6 @@ local function urlencode(s)
 	end)
 	return s
 end
-
---define uuid function
-local random = math.random;
-local function uuid()
-	local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
-	return string.gsub(template, '[xy]', function (c)
-		local v = (c == 'x') and random(0, 0xf) or random(8, 0xb);
-		return string.format('%x', v);
-	end)
-end
-
-
 
 --get the argv values
 	script_name = argv[0];
