@@ -462,6 +462,7 @@
 	echo "			<td class='vtable' style='text-align: center;'>".$text['label-order']."</td>\n";
 	echo "			<td></td>\n";
 	echo "		</tr>\n";
+	$current_phrase_order = 0;
 	if (is_array($phrase_details)) {
 		foreach($phrase_details as $field) {
 			//clean up output for display
@@ -492,6 +493,7 @@
 			echo 		"<a href='phrase_detail_delete.php?pdid=".escape($field['phrase_detail_uuid'])."&pid=".escape($phrase_uuid)."&a=delete&lang=".escape($phrase_language)."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>";
 			echo "	</td>\n";
 			echo "</tr>\n";
+			$current_phrase_order = (int)$field['phrase_detail_order'] + 1;
 		}
 	}
 	echo "<tr>\n";
@@ -515,7 +517,11 @@
 	echo "		<select name='phrase_detail_order' class='formfld'>\n";
 	for ($i = 0; $i <= 999; $i++) {
 		$i_padded = str_pad($i, 3, '0', STR_PAD_LEFT);
-		echo "		<option value='".escape($i_padded)."'>".escape($i_padded)."</option>\n";
+		if ($i == $current_phrase_order) {
+			echo "		<option selected value='".escape($i_padded)."'>".escape($i_padded)."</option>\n";
+		} else {
+			echo "		<option value='".escape($i_padded)."'>".escape($i_padded)."</option>\n";
+		}
 	}
 	echo "		</select>\n";
 	echo "	</td>\n";
