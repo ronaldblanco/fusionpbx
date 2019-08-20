@@ -77,11 +77,11 @@
 			current_time_zone = session:getVariable("timezone");
 			effective_caller_id_number = session:getVariable("effective_caller_id_number");
 			voicemail_greeting_number = session:getVariable("voicemail_greeting_number");
-			skip_instructions = session:getVariable("skip_instructions");
-			skip_greeting = session:getVariable("skip_greeting");
-			vm_message_ext = session:getVariable("vm_message_ext");
-			vm_say_caller_id_number = session:getVariable("vm_say_caller_id_number");
-			vm_say_date_time = session:getVariable("vm_say_date_time");
+			skip_instructions = session:getVariable("skip_instructions") or session:getVariable("voicemail_skip_instructions")
+			skip_greeting = session:getVariable("skip_greeting") or session:getVariable("voicemail_skip_greeting")
+			vm_message_ext = session:getVariable("vm_message_ext")
+			vm_say_caller_id_number = session:getVariable("vm_say_caller_id_number") or session:getVariable("voicemail_say_caller_id_number")
+			vm_say_date_time = session:getVariable("vm_say_date_time") or session:getVariable("voicemail_say_date_time")
 			vm_disk_quota = session:getVariable("vm-disk-quota");
 			record_silence_threshold = session:getVariable("record-silence-threshold");
 			voicemail_authorized = session:getVariable("voicemail_authorized");
