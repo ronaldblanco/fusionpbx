@@ -79,11 +79,11 @@
 			voicemail_greeting_number = session:getVariable("voicemail_greeting_number");
 			skip_instructions = session:getVariable("skip_instructions") or session:getVariable("voicemail_skip_instructions")
 			skip_greeting = session:getVariable("skip_greeting") or session:getVariable("voicemail_skip_greeting")
-			vm_message_ext = session:getVariable("vm_message_ext")
-			vm_say_caller_id_number = session:getVariable("vm_say_caller_id_number") or session:getVariable("voicemail_say_caller_id_number")
-			vm_say_date_time = session:getVariable("vm_say_date_time") or session:getVariable("voicemail_say_date_time")
-			vm_disk_quota = session:getVariable("vm-disk-quota");
-			record_silence_threshold = session:getVariable("record-silence-threshold");
+			vm_message_ext = session:getVariable("vm_message_ext") or 'wav'
+			vm_say_caller_id_number = session:getVariable("vm_say_caller_id_number") or session:getVariable("voicemail_say_caller_id_number") or 'true'
+			vm_say_date_time = session:getVariable("vm_say_date_time") or session:getVariable("voicemail_say_date_time") or 'true'
+			vm_disk_quota = session:getVariable("vm-disk-quota") or session:getVariable("vm_disk_quota") or session:getVariable("voicemail_disk_quota");
+			record_silence_threshold = session:getVariable("record-silence-threshold") or 300
 			voicemail_authorized = session:getVariable("voicemail_authorized");
 			sip_from_user = session:getVariable("sip_from_user");
 			sip_number_alias = session:getVariable("sip_number_alias");
@@ -97,29 +97,11 @@
 			if (string.sub(caller_id_number, 1, 1) == "/") then
 				caller_id_number = string.sub(caller_id_number, 2, -1);
 			end
-			if (not record_silence_threshold) then
-				record_silence_threshold = 300;
-			end
-			if (not vm_disk_quota) then
-				vm_disk_quota = session:getVariable("vm_disk_quota");
-			end
-			if (not vm_message_ext) then
-				vm_message_ext = 'wav';
-			end
-			if (not vm_say_caller_id_number) then
-				vm_say_caller_id_number = "true";
-			end
-			if (not vm_say_date_time) then
-				vm_say_date_time = "true";
-			end
 
 		--set the sounds path for the language, dialect and voice
-			default_language = session:getVariable("default_language");
-			default_dialect = session:getVariable("default_dialect");
-			default_voice = session:getVariable("default_voice");
-			if (not default_language) then default_language = 'en'; end
-			if (not default_dialect) then default_dialect = 'us'; end
-			if (not default_voice) then default_voice = 'callie'; end
+			default_language = session:getVariable("default_language") or 'en'
+			default_dialect = session:getVariable("default_dialect") or 'us'
+			default_voice = session:getVariable("default_voice") or 'callie'
 
 		--get the domain_uuid
 			domain_uuid = session:getVariable("domain_uuid");
