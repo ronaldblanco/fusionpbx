@@ -41,8 +41,6 @@ api = freeswitch.API();
 local db = dbh or Database.new('system')
 local settings = Settings.new(db, domain_name, domain_uuid)
 
--- local call_block_matching = settings:get('call block', 'call_block_matching', 'text');
-
 opts, args, err = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
 
 if opts == nil then
