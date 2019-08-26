@@ -94,6 +94,7 @@ end
 
 function Settings:_load(category, subcategory, name)
   local domain_uuid = self._domain_uuid
+  local domain_name = self._domain_name
   local db = self._db
   if type(self._db) == 'string' then
     db = Database.new(self._db)
@@ -102,22 +103,30 @@ function Settings:_load(category, subcategory, name)
   local found = false
 
   --get the domain settings
-  if domain_uuid then
+  if domain_uuid or domain_name then
     local sql = "SELECT domain_setting_uuid,domain_setting_category,domain_setting_subcategory,domain_setting_name,domain_setting_value "
-    sql = sql .. "FROM v_domain_settings ";
-    sql = sql .. "WHERE domain_uuid = :domain_uuid ";
-    sql = sql .. "AND domain_setting_enabled = 'true' ";
-    sql = sql .. "AND domain_setting_category = :category ";
-    sql = sql .. "AND domain_setting_subcategory = :subcategory ";
-    sql = sql .. "AND domain_setting_name = :name ";
-    sql = sql .. "AND domain_setting_value is not null ";
-    sql = sql .. "ORDER BY domain_setting_category, domain_setting_subcategory ASC ";
+    sql = sql .. "FROM v_domain_settings "
+    if domain_uuid then
+      sql = sql .. "WHERE domain_uuid = :domain_uuid "
+    else -- This means domain_name is present
+      sql = sql .. "WHERE domain_uuid = ("
+      sql = sql .. "SELECT domain_uuid FROM v_domains"
+      sql = sql .. " WHERE domain_name = :domain_name"
+      sql = sql .. " LIMIT 1)"
+    end
+    sql = sql .. "AND domain_setting_enabled = 'true' "
+    sql = sql .. "AND domain_setting_category = :category "
+    sql = sql .. "AND domain_setting_subcategory = :subcategory "
+    sql = sql .. "AND domain_setting_name = :name "
+    sql = sql .. "AND domain_setting_value is not null "
+    sql = sql .. "ORDER BY domain_setting_category, domain_setting_subcategory ASC "
     local params = {
       domain_uuid = domain_uuid,
+      domain_name = domain_name,
       category = category,
       subcategory = subcategory,
       name = name,
-    };
+    }
 
     db:query(sql, params, function(row)
       found = true;

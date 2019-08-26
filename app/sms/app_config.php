@@ -113,6 +113,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sms_message_direction";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sms_message_status";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 
 		$y=1;
 		$apps[$x]['db'][$y]['table']['name'] = "v_sms_routing";
