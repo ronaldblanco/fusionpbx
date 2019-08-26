@@ -30,7 +30,7 @@ opthelp = [[
 ]]
 
 
-function save_sms_to_database(params)
+function save_sms_to_database(db, params)
 	sql = "INSERT INTO v_sms_messages "
 	sql = sql .."( "
 	sql = sql .."domain_uuid, "
@@ -160,7 +160,7 @@ if sms_source == 'internal' then
 			sms_message_text = sms_message_text,
 		}
 
-		save_sms_to_database(params)
+		save_sms_to_database(db, params)
 
 		do return end
 	end
@@ -177,7 +177,7 @@ if sms_source == 'internal' then
 			sms_message_status = 'Error. No TO user specified',
 			sms_message_text = sms_message_text,
 		}
-		save_sms_to_database(params)
+		save_sms_to_database(db, params)
 
 		log.error('To user is empty. Discarding sent')
 		do return end
@@ -203,7 +203,7 @@ if sms_source == 'internal' then
 	
 	local sms_carrier
 
-	if (len(routing_patterns) == 0) then
+	if (#routing_patterns == 0) then
 
 		local params= {
 			domain_uuid = domain_uuid,
@@ -214,7 +214,7 @@ if sms_source == 'internal' then
 			sms_message_status = 'Error. No routing patterns',
 			sms_message_text = sms_message_text,
 		}
-		save_sms_to_database(params)
+		save_sms_to_database(db, params)
 
 		log.notice("External routing table is empty. Exiting.")
 
@@ -243,7 +243,7 @@ if sms_source == 'internal' then
 			sms_message_status = 'Error. No carrier found',
 			sms_message_text = sms_message_text,
 		}
-		save_sms_to_database(params)
+		save_sms_to_database(db, params)
 
 		log.warning("Cannot find carrier for this SMS: From:" .. sms_message_from .. "  To: " .. sms_message_to)
 		do return end
@@ -291,7 +291,7 @@ if sms_source == 'internal' then
 		sms_message_status = 'Sent. ' .. sms_carrier ,
 		sms_message_text = sms_message_text,
 	}
-	save_sms_to_database(params)
+	save_sms_to_database(db, params)
 
 
 else 
