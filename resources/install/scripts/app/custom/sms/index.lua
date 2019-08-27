@@ -25,8 +25,11 @@
 --	POSSIBILITY OF SUCH DAMAGE.
 
 opthelp = [[
- -s, --source=OPTARG	Source of the message
- -d, --debug			Debug flag			
+ -s, --source=OPTARG	Source of the message. Internal or external
+ -d, --debug			Debug flag
+ -f, --from=OPTARG		From. Mandatory in a case of external
+ -t, --to=OPTARG		To. Mandatory in case of external
+ -m, --message=OPTARG	Message. Optional in a case of external
 ]]
 
 
@@ -293,6 +296,8 @@ if sms_source == 'internal' then
 	}
 	save_sms_to_database(db, params)
 
+elseif sms_source == 'external' then
+	if opts.d then log.info("Message source is external. Saving to database and preforming routing") end
 
 else 
 	log.warning("[sms] Source " .. sms_source .. " is not yet implemented")
