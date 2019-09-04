@@ -77,6 +77,7 @@ opts, args, err = require('app.custom.functions.optargs').from_opthelp(opthelp, 
 
 if opts == nil then
 	log.error("Options are not parsable " .. err)
+
 	message:chat_execute("stop")
     do return end
 end
@@ -123,6 +124,7 @@ if sms_source == 'internal' then
 		from_user_exists = api:executeString(cmd)
 	else 
 		log.error("From user or from domain is not existed. Cannot process this message as internal")
+
 		message:chat_execute("stop")
 		do return end
 	end
@@ -141,12 +143,14 @@ if sms_source == 'internal' then
 	
 	if (from_user_exists == 'false') then
 		log.error("From user is not exists. Cannot process this request")
+
 		message:chat_execute("stop")
 		do return end
 	end
 
 	if not domain_uuid then
 		log.error("Please make sure " .. domain_name .. " is existed on the system")
+
 		message:chat_execute("stop")
 		do return end
 	end
@@ -188,6 +192,7 @@ if sms_source == 'internal' then
 		save_sms_to_database(db, params)
 
 		log.error('To user is empty. Discarding sent')
+		
 		message:chat_execute("stop")
 		do return end
 	end
