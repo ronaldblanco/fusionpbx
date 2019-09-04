@@ -32,6 +32,26 @@ opthelp = [[
  -m, --message=OPTARG	Message. Optional in a case of external
 ]]
 
+local function convert_pattern(pattern)
+    
+    -- Cleanup pattern-related magical characters
+    converted_pattern = pattern:gsub("%(", "%%(")
+    converted_pattern = converted_pattern:gsub("%)", "%%)")
+    converted_pattern = converted_pattern:gsub("%%", "%%%%")
+    converted_pattern = converted_pattern:gsub("%.", "%%.")
+    converted_pattern = converted_pattern:gsub("%[", "%%[")
+    converted_pattern = converted_pattern:gsub("%]", "%%]")
+    converted_pattern = converted_pattern:gsub("%+", "%%+")
+    converted_pattern = converted_pattern:gsub("%-", "%%-")
+    converted_pattern = converted_pattern:gsub("%?", "%%?")
+
+    -- Internal convention x - any digit, * - any number of digits
+    converted_pattern = converted_pattern:gsub("x", "%%d")
+    converted_pattern = converted_pattern:gsub("%*", ".*")
+
+    return converted_pattern
+
+end
 
 function save_sms_to_database(db, params)
 	sql = "INSERT INTO v_sms_messages "
@@ -192,7 +212,7 @@ if sms_source == 'internal' then
 		save_sms_to_database(db, params)
 
 		log.error('To user is empty. Discarding sent')
-		
+
 		message:chat_execute("stop")
 		do return end
 	end
@@ -213,6 +233,7 @@ if sms_source == 'internal' then
 	local routing_patterns = {}
 	db:query(sql, params, function(row)
 		table.insert(routing_patterns, row)
+		if opts.d then log.info("Adding carrier " .. row['sms_routing_target_details'] .. "to pool") end
 	end);
 	
 	local sms_carrier
@@ -239,6 +260,11 @@ if sms_source == 'internal' then
 	for _, routing_pattern in pairs(routing_patterns) do
 		sms_routing_source = routing_pattern['sms_routing_source']
 		sms_routing_destination = routing_pattern['sms_routing_destination']
+
+		if opts.d then log.info("Testing F:" .. from_user .. " -> " .. sms_routing_source .. " and  D:" .. to_user .. " -> " .. sms_routing_destination) end
+
+		sms_routing_source      = convert_pattern(sms_routing_source:lower())
+		sms_routing_destination = convert_pattern(sms_routing_destination:lower())
 
 		if (from_user:find(sms_routing_source) and to_user:find(sms_routing_destination)) then
 			sms_carrier = routing_pattern['sms_routing_target_details']
@@ -270,12 +296,12 @@ if sms_source == 'internal' then
 	local sms_carrier_url = settings:get('sms', sms_carrier .. "_url", 'text')
 	local sms_carrier_user = settings:get('sms', sms_carrier .. "_user", 'text')
 	local sms_carrier_password = settings:get("sms", sms_carrier .. "_password", 'text')
-	local sms_carrier_body_type = settings:get("sms", sms_carrier .. "_body", "text")
+	local sms_carrier_body = settings:get("sms", sms_carrier .. "_body", "text")
 	local sms_carrier_content_type = settings:get("sms", sms_carrier .. "_content_type", "text") or "application/json"
 	local sms_carrier_method =  settings:get("sms", sms_carrier .. "_method", "text") or 'post'
 
 	--get the sip user outbound_caller_id
-	cmd = "user_data ".. from_user .."@"..from_host.." var outbound_caller_id_number"
+	cmd = "user_data " .. sms_message_from .. " var outbound_caller_id_number"
 	caller_id_from = trim(api:executeString(cmd)) or from_user
 
 	--replace variables for their value
@@ -285,6 +311,11 @@ if sms_source == 'internal' then
 		sms_carrier_url = sms_carrier_url:gsub("${from}", caller_id_from)
 		sms_carrier_url = sms_carrier_url:gsub("${to}", to_user)
 		sms_carrier_url = sms_carrier_url:gsub("${text}", sms_message_text)
+	else 
+		log.warning("Cannot find carrier url for " .. sms_carrier)
+
+		message:chat_execute("stop")
+		do return end
 	end
 
 	if (sms_carrier_body) then
@@ -293,10 +324,15 @@ if sms_source == 'internal' then
 		sms_carrier_body = sms_carrier_body:gsub("${from}", caller_id_from)
 		sms_carrier_body = sms_carrier_body:gsub("${to}", to_user)
 		sms_carrier_body = sms_carrier_body:gsub("${text}", sms_message_text)
+	else 
+		sms_carrier_body = ""
 	end
 
 	-- Send to the provider using curl
 	cmd = "curl " .. sms_carrier_url .. " content-type " .. sms_carrier_content_type .. " " .. sms_carrier_method .. " " .. sms_carrier_body
+
+	if opts.d then log.info("Using CURL command " .. cmd) end
+
 	api:executeString(cmd)
 
 	local params= {
