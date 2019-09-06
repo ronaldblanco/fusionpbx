@@ -35,7 +35,7 @@ opthelp = [[
 local function convert_pattern(pattern)
     
     -- Cleanup pattern-related magical characters
-    converted_pattern = pattern:gsub("%(", "%%(")
+    local converted_pattern = pattern:gsub("%(", "%%(")
     converted_pattern = converted_pattern:gsub("%)", "%%)")
     converted_pattern = converted_pattern:gsub("%%", "%%%%")
     converted_pattern = converted_pattern:gsub("%.", "%%.")
@@ -53,8 +53,8 @@ local function convert_pattern(pattern)
 
 end
 
-function save_sms_to_database(db, params)
-	sql = "INSERT INTO v_sms_messages "
+local function save_sms_to_database(db, params)
+	local sql = "INSERT INTO v_sms_messages "
 	sql = sql .."( "
 	sql = sql .."domain_uuid, "
 	sql = sql .."sms_message_uuid, "
@@ -77,7 +77,17 @@ function save_sms_to_database(db, params)
 	sql = sql ..")"
 
 	--run the query
-	db:query(sql, params);
+	db:query(sql, params)
+end
+
+local function number_translate(number, translate_profile) 
+	if (not translate_profile or #translate_profile == 0) then
+		return number
+	end
+
+	cmd = "translate " .. number .. " " .. translate_profile
+
+	return trim(api:executeString(cmd)) or number
 end
 
 local log = require "resources.functions.log".sms
@@ -311,11 +321,9 @@ if sms_source == 'internal' then
 	caller_id_from = trim(api:executeString(cmd)) or from_user
 
 	--Do from/to modifications
-	if (#sms_routing_number_translation_source > 0) then
-	end
+	caller_id_from = number_translate(caller_id_from, sms_routing_number_translation_source)
 
-	if (#sms_routing_number_translation_destination > 0) then
-	end
+	to_user = number_translate(to_user, sms_routing_number_translation_destination)
 
 	--replace variables for their value
 	if (sms_carrier_url) then
