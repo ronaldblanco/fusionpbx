@@ -153,7 +153,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sms_routing_modification_uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sms_routing_number_translation_source";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "sms_routing_number_translation_destination";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";

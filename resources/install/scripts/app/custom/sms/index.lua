@@ -80,7 +80,6 @@ function save_sms_to_database(db, params)
 	db:query(sql, params);
 end
 
-
 local log = require "resources.functions.log".sms
 
 local Settings = require "resources.functions.lazy_settings"
@@ -220,7 +219,8 @@ if sms_source == 'internal' then
 	-- Get routing rules for this message type.
 	sql =        "SELECT sms_routing_source, "
 	sql = sql .. "sms_routing_destination, "
-	sql = sql .. "sms_routing_target_details"
+	sql = sql .. "sms_routing_target_details, "
+	sql = sql .. "sms_routing_modification_uuid, "
 	sql = sql .. " FROM v_sms_routing WHERE"
 	sql = sql .. " domain_uuid = :domain_uuid"
 	sql = sql .. " AND sms_routing_target_type = 'carrier'"
@@ -234,9 +234,11 @@ if sms_source == 'internal' then
 	db:query(sql, params, function(row)
 		table.insert(routing_patterns, row)
 		if opts.d then log.info("Adding carrier " .. row['sms_routing_target_details'] .. "to pool") end
-	end);
+	end)
 	
 	local sms_carrier
+	local sms_routing_number_translation_source
+	local sms_routing_number_translation_destination
 
 	if (#routing_patterns == 0) then
 
@@ -267,7 +269,11 @@ if sms_source == 'internal' then
 		sms_routing_destination = convert_pattern(sms_routing_destination:lower())
 
 		if (from_user:find(sms_routing_source) and to_user:find(sms_routing_destination)) then
+			
 			sms_carrier = routing_pattern['sms_routing_target_details']
+			sms_routing_number_translation_source = routing_pattern['sms_routing_number_translation_source']
+			sms_routing_number_translation_destination = routing_pattern['sms_routing_number_translation_destination']
+
 			if opts.d then log.notice("Using " .. sms_carrier .. " for this SMS") end
 			break
 		end
@@ -303,6 +309,13 @@ if sms_source == 'internal' then
 	--get the sip user outbound_caller_id
 	cmd = "user_data " .. sms_message_from .. " var outbound_caller_id_number"
 	caller_id_from = trim(api:executeString(cmd)) or from_user
+
+	--Do from/to modifications
+	if (#sms_routing_number_translation_source > 0) then
+	end
+
+	if (#sms_routing_number_translation_destination > 0) then
+	end
 
 	--replace variables for their value
 	if (sms_carrier_url) then
