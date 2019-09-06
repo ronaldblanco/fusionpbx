@@ -87,7 +87,25 @@ local function number_translate(number, translate_profile)
 
 	cmd = "translate " .. number .. " " .. translate_profile
 
-	return trim(api:executeString(cmd)) or number
+	translated_number = trim(api:executeString(cmd)) or ""
+
+	if #translated_number > 0 then
+		return translated_number
+	end
+
+	return number
+end
+
+local function text_cleanup(text)
+	
+	local converted_text = 	   text:gsub("\'", "`")
+	converted_text = converted_text:gsub("’", "`")
+	converted_text = converted_text:gsub("‘", "`")
+
+	converted_text = converted_text:gsub("“", "\"")
+	converted_text = converted_text:gsub("”", "\"")
+
+	return converted_text
 end
 
 local log = require "resources.functions.log".sms
@@ -230,7 +248,8 @@ if sms_source == 'internal' then
 	sql =        "SELECT sms_routing_source, "
 	sql = sql .. "sms_routing_destination, "
 	sql = sql .. "sms_routing_target_details, "
-	sql = sql .. "sms_routing_modification_uuid, "
+	sql = sql .. "sms_routing_number_translation_source, "
+	sql = sql .. "sms_routing_number_translation_destination "
 	sql = sql .. " FROM v_sms_routing WHERE"
 	sql = sql .. " domain_uuid = :domain_uuid"
 	sql = sql .. " AND sms_routing_target_type = 'carrier'"
@@ -324,6 +343,9 @@ if sms_source == 'internal' then
 	caller_id_from = number_translate(caller_id_from, sms_routing_number_translation_source)
 
 	to_user = number_translate(to_user, sms_routing_number_translation_destination)
+
+	-- Cleanup text
+	sms_message_text = text_cleanup(sms_message_text)
 
 	--replace variables for their value
 	if (sms_carrier_url) then
