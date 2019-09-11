@@ -392,6 +392,45 @@ if sms_source == 'internal' then
 elseif sms_source == 'external' then
 	if opts.d then log.info("Message source is external. Saving to database and preforming routing") end
 
+	if not opts.f or not opts.t or not opts.m then
+		log.warning("From/To/Message is not specified, aborting")
+
+		local params= {
+			domain_uuid = '',
+			sms_message_uuid = api:executeString("create_uuid"),
+			sms_message_from = opts.f or "NA",
+			sms_message_to = opts.t or "NA",
+			sms_message_direction = 'receive',
+			sms_message_status = 'Error. No mandatory fields found',
+			sms_message_text = opts.m or "NA",
+		}
+		save_sms_to_database(db, params)
+
+		do return end
+	end
+
+	-- Get routing rules for this message type.
+	sql =        "SELECT domain_uuid, "
+	sql = sql .. "sms_routing_destination, "
+	sql = sql .. "sms_routing_target_details, "
+	sql = sql .. "sms_routing_number_translation_source, "
+	sql = sql .. "sms_routing_number_translation_destination "
+	sql = sql .. " FROM v_sms_routing WHERE"
+	sql = sql .. " sms_routing_source LIKE :sms_routing_source"
+	sql = sql .. " AND sms_routing_target_type = 'internal'"
+	sql = sql .. " AND sms_routing_enabled = 'true'"
+
+	local params = {
+		sms_routing_source = opts.f
+	}
+
+	local routing_patterns = {}
+	db:query(sql, params, function(row)
+		table.insert(routing_patterns, row)
+		if opts.d then log.info("Adding internal destination " .. row['sms_routing_target_details'] .. "to pool") end
+	end)
+
+	
 else 
 	log.warning("[sms] Source " .. sms_source .. " is not yet implemented")
 end
