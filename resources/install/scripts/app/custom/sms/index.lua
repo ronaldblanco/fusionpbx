@@ -389,7 +389,10 @@ if sms_source == 'internal' then
 	}
 	save_sms_to_database(db, params)
 
+
+--- External SMS routing
 elseif sms_source == 'external' then
+
 	if opts.d then log.info("Message source is external. Saving to database and preforming routing") end
 
 	if not opts.f or not opts.t or not opts.m then
@@ -409,15 +412,19 @@ elseif sms_source == 'external' then
 		do return end
 	end
 
+	sms_message_from = opts.f
+	sms_message_to = opts.t
+	sms_message_text = opts.m
+
 	-- Get routing rules for this message type.
 	sql =        "SELECT domain_uuid, "
+	sql = sql .. "sms_routing_source, "
 	sql = sql .. "sms_routing_destination, "
 	sql = sql .. "sms_routing_target_details, "
 	sql = sql .. "sms_routing_number_translation_source, "
 	sql = sql .. "sms_routing_number_translation_destination "
 	sql = sql .. " FROM v_sms_routing WHERE"
-	sql = sql .. " sms_routing_source LIKE :sms_routing_source"
-	sql = sql .. " AND sms_routing_target_type = 'internal'"
+	sql = sql .. " sms_routing_target_type = 'internal'"
 	sql = sql .. " AND sms_routing_enabled = 'true'"
 
 	local params = {
@@ -430,7 +437,113 @@ elseif sms_source == 'external' then
 		if opts.d then log.info("Adding internal destination " .. row['sms_routing_target_details'] .. "to pool") end
 	end)
 
+	if (#routing_patterns == 0) then
+
+		local params= {
+			domain_uuid = '',
+			sms_message_uuid = api:executeString("create_uuid"),
+			sms_message_from = sms_message_from,
+			sms_message_to = sms_message_to,
+			sms_message_direction = 'receive',
+			sms_message_status = 'Error. No routing patterns',
+			sms_message_text = sms_message_text,
+		}
+		save_sms_to_database(db, params)
+
+		log.notice("External routing table is empty. Exiting.")
+
+		message:chat_execute("stop")
+		do return end
+	end
+
+	local domain_uuid
+	local to_domain
+	local sms_routing_number_translation_source
+	local sms_routing_number_translation_destination
+
+	for _, routing_pattern in pairs(routing_patterns) do
+		sms_routing_source = routing_pattern['sms_routing_source']
+		sms_routing_destination = routing_pattern['sms_routing_destination']
+
+		if opts.d then log.info("Testing F:" .. from_user .. " -> " .. sms_routing_source .. " and  D:" .. to_user .. " -> " .. sms_routing_destination) end
+
+		sms_routing_source      = convert_pattern(sms_routing_source:lower())
+		sms_routing_destination = convert_pattern(sms_routing_destination:lower())
+
+		if (from_user:find(sms_routing_source) and to_user:find(sms_routing_destination)) then
+			
+			domain_uuid = routing_pattern['domain_uuid']
+			sms_routing_number_translation_source = routing_pattern['sms_routing_number_translation_source']
+			sms_routing_number_translation_destination = routing_pattern['sms_routing_number_translation_destination']
+
+			if opts.d then log.notice("Using domain uuid  " .. domain_uuid .. " for this SMS") end
+			break
+		end
+	end
+
+	if domain_uuid then
+		-- Get domain_name by UUID
+		sql =        "SELECT domain_name, "
+		sql = sql .. " FROM v_domains WHERE"
+		sql = sql .. " domain_uuid = :domain_uuid"
+		sql = sql .. " AND domain_enabled = 'true'"
+
+		local params = {
+			domain_uuid = domain_uuid,
+		}
+
+		db:query(sql, params, function(row)
+			to_domain = row['domain_name']
+			if opts.d then log.info("Domain name " .. domain_name .. "found") end
+		end)
+	end
+
+	if not to_domain then
+
+		local params= {
+			domain_uuid = domain_uuid or '',
+			sms_message_uuid = api:executeString("create_uuid"),
+			sms_message_from = sms_message_from,
+			sms_message_to = sms_message_to,
+			sms_message_direction = 'receive',
+			sms_message_status = 'Error. No domain name found',
+			sms_message_text = sms_message_text,
+		}
+		save_sms_to_database(db, params)
+
+		log.notice("Could not find routing rules for this SMS. Exiting.")
+
+		message:chat_execute("stop")
+		do return end
+	end
+
+	from_user = number_translate(sms_message_from, sms_routing_number_translation_source)
+
+	to_user = number_translate(sms_message_to, sms_routing_number_translation_destination)
+
+	sms_message_to = to_user .. '@' .. to_domain
+	cmd = "user_exists id ".. to_user .." "..to_domain
+	to_user_exists = api:executeString(cmd)
 	
+
+	if (to_user_exists ~= 'true') then
+		local params= {
+			domain_uuid = domain_uuid,
+			sms_message_uuid = api:executeString("create_uuid"),
+			sms_message_from = sms_message_from .. "(" .. from_user .. ")",
+			sms_message_to = sms_message_to .. "(" .. to_user .. ")",
+			sms_message_direction = 'receive',
+			sms_message_status = 'Error. User to deliver is not found',
+			sms_message_text = sms_message_text,
+		}
+		save_sms_to_database(db, params)
+
+		log.notice("To user is not exists. Exiting.")
+
+		message:chat_execute("stop")
+		do return end
+	end
+
 else 
 	log.warning("[sms] Source " .. sms_source .. " is not yet implemented")
 end
