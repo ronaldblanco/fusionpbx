@@ -521,7 +521,6 @@ elseif sms_source == 'external' then
 
 	to_user = number_translate(sms_message_to, sms_routing_number_translation_destination)
 
-	sms_message_to = to_user .. '@' .. to_domain
 	cmd = "user_exists id ".. to_user .." "..to_domain
 	to_user_exists = api:executeString(cmd)
 	
@@ -543,6 +542,34 @@ elseif sms_source == 'external' then
 		message:chat_execute("stop")
 		do return end
 	end
+
+	-- Sending message
+
+	local event = freeswitch.Event("CUSTOM", "SMS::SEND_MESSAGE");
+	event:addHeader("proto", "sip");
+	event:addHeader("dest_proto", "sip");
+	event:addHeader("from", from_user);
+	event:addHeader("from_full", "sip:" .. from_user .. "@" .. to_domain);
+	event:addHeader("to", "sip:" .. to_user .. '@' .. to_domain);
+	event:addHeader("type", "text/html");
+	event:addHeader("replying", "true");
+	event:addHeader("sip_profile", "internal");
+	event:addBody(sms_message_text);
+    
+	event:fire();
+	   
+	local params= {
+		domain_uuid = domain_uuid,
+		sms_message_uuid = api:executeString("create_uuid"),
+		sms_message_from = sms_message_from .. "(" .. from_user .. ")",
+		sms_message_to = sms_message_to .. "(" .. to_user .. ")",
+		sms_message_direction = 'receive',
+		sms_message_status = 'Sent',
+		sms_message_text = sms_message_text,
+	}
+	save_sms_to_database(db, params)
+
+	log.notice("Message sent to " .. to_user .. '@' .. to_domain)
 
 else 
 	log.warning("[sms] Source " .. sms_source .. " is not yet implemented")
