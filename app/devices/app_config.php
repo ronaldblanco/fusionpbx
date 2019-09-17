@@ -1253,13 +1253,6 @@
 		$vendors[$y]['functions'][$z]['value'] = "recorder";
 		$vendors[$y]['functions'][$z]['groups'][] = "superadmin";
 		$vendors[$y]['functions'][$z]['groups'][] = "admin";
-		$z++;
-		$vendors[$y]['functions'][$z]['uuid'] = "971596e7-5958-4116-add0-b2b321a916f7";
-		$vendors[$y]['functions'][$z]['label'] = "label-keyevent";
-		$vendors[$y]['functions'][$z]['name'] = "keyevent";
-		$vendors[$y]['functions'][$z]['value'] = "keyevent";
-		$vendors[$y]['functions'][$z]['groups'][] = "superadmin";
-		$vendors[$y]['functions'][$z]['groups'][] = "admin";
 //polycom
 		$y++;
 		$vendors[$y]['uuid'] = "6baf1a7e-7a43-4a66-9007-bbb911bf947b";
