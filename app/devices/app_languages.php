@@ -4041,6 +4041,26 @@ $text['label-security_class']['ru-ru'] = "";
 $text['label-security_class']['sv-se'] = "";
 $text['label-security_class']['uk-ua'] = "";
 
+$text['label-keyevent']['en-us'] = "Keyevent";
+$text['label-keyevent']['ar-eg'] = "";
+$text['label-keyevent']['de-at'] = "";
+$text['label-keyevent']['de-ch'] = "";
+$text['label-keyevent']['de-de'] = "";
+$text['label-keyevent']['es-cl'] = "";
+$text['label-keyevent']['es-mx'] = "";
+$text['label-keyevent']['fr-ca'] = "";
+$text['label-keyevent']['fr-fr'] = "";
+$text['label-keyevent']['he-il'] = "";
+$text['label-keyevent']['it-it'] = "";
+$text['label-keyevent']['nl-nl'] = "";
+$text['label-keyevent']['pl-pl'] = "";
+$text['label-keyevent']['pt-br'] = "";
+$text['label-keyevent']['pt-pt'] = "";
+$text['label-keyevent']['ro-ro'] = "";
+$text['label-keyevent']['ru-ru'] = "";
+$text['label-keyevent']['sv-se'] = "";
+$text['label-keyevent']['uk-ua'] = "";
+
 $text['label-add_to_conference']['en-us'] = "Add to Conference";
 $text['label-add_to_conference']['ar-eg'] = "";
 $text['label-add_to_conference']['de-at'] = "";
