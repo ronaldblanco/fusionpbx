@@ -221,6 +221,10 @@
                     $dialplan["dialplan_xml"] .= "	<condition field=\"\${call_direction}\" expression=\"inbound\"/>\n";
                     $dialplan["dialplan_xml"] .= "	<condition field=\"\${invalid_ext_id}\" expression=\"^" . $invalid_name_id . "\$\">\n";
 
+                    if (strlen($destination_ext_variable) > 0 && strlen($destination_ext_variable_no_extension) > 0) {
+                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"" . $destination_ext_variable . "=" . $destination_ext_variable_no_extension . "\"/>\n";
+                    }
+
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
                     $dialplan_detail_type = array_shift($actions);
                     $dialplan_detail_data = join(':', $actions);
@@ -257,6 +261,16 @@
                     $dialplan_detail_order += 10;
 
                     //add the actions
+
+                    if (strlen($destination_ext_variable) > 0 && strlen($destination_ext_variable_no_extension) > 0) {
+                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = $destination_ext_variable . "=" . $destination_ext_variable_no_extension;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                        $dialplan_detail_order += 10;
+                        $y += 1;
+                    }
 
                     $actions = explode(":", $dialplan_details[0]["dialplan_detail_data"]);
                     $dialplan_detail_type = array_shift($actions);
