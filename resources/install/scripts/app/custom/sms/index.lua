@@ -118,7 +118,7 @@ api = freeswitch.API();
 
 local db = dbh or Database.new('system')
 --exits the script if we didn't connect properly
-assert(db:connected());
+assert(db:connected())
 
 opts, args, err = require('app.custom.functions.optargs').from_opthelp(opthelp, argv)
 
