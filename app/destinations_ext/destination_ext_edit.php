@@ -85,22 +85,22 @@
 
     if (count($_POST) > 0) {
         //set the variables
-        $domain_uuid = escape_backward(check_str($_POST["domain_uuid"]));
-        $destination_ext_uuid = escape_backward(check_str($_POST["destination_ext_uuid"]));
-        $destination_ext_dialplan_main_uuid = escape_backward(check_str($_POST["destination_ext_dialplan_main_uuid"]));
+        $domain_uuid = trim($_POST["domain_uuid"]);
+        $destination_ext_uuid = trim($_POST["destination_ext_uuid"]);
+        $destination_ext_dialplan_main_uuid = trim($_POST["destination_ext_dialplan_main_uuid"]);
         $destination_ext_dialplan_main_details = array_values($_POST["destination_ext_dialplan_main_details"]);
-        $destination_ext_dialplan_extensions_uuid = escape_backward(check_str($_POST["destination_ext_dialplan_extensions_uuid"]));
+        $destination_ext_dialplan_extensions_uuid = trim($_POST["destination_ext_dialplan_extensions_uuid"]);
         $destination_ext_dialplan_extensions_details = array_values($_POST["destination_ext_dialplan_extensions_details"]);
         $destination_ext_dialplan_invalid_details = array_values($_POST["destination_ext_dialplan_invalid_details"]);
-        $destination_ext_number = escape_backward(check_str($_POST["destination_ext_number"]));
-        $db_destination_ext_number = escape_backward(check_str($_POST["db_destination_ext_number"]));
-        $destination_ext_variable = escape_backward(check_str($_POST["destination_ext_variable"]));
-        $destination_ext_variable_no_extension = escape_backward(check_str($_POST["destination_ext_variable_no_extension"]));
-        $destination_ext_silence_detect = escape_backward(check_str($_POST["destination_ext_silence_detect"]));
-        $destination_ext_callerid_name_prepend = escape_backward(check_str($_POST["destination_ext_callerid_name_prepend"]));
-        $destination_ext_callerid_number_prepend = escape_backward(check_str($_POST["destination_ext_callerid_number_prepend"]));
-        $destination_ext_enabled = escape_backward(check_str($_POST["destination_ext_enabled"]));
-        $destination_ext_description = escape_backward(check_str($_POST["destination_ext_description"]));
+        $destination_ext_number = trim($_POST["destination_ext_number"]);
+        $db_destination_ext_number = trim($_POST["db_destination_ext_number"]);
+        $destination_ext_variable = trim($_POST["destination_ext_variable"]);
+        $destination_ext_variable_no_extension = trim($_POST["destination_ext_variable_no_extension"]);
+        $destination_ext_silence_detect = trim($_POST["destination_ext_silence_detect"]);
+        $destination_ext_callerid_name_prepend = trim($_POST["destination_ext_callerid_name_prepend"]);
+        $destination_ext_callerid_number_prepend = trim($_POST["destination_ext_callerid_number_prepend"]);
+        $destination_ext_enabled = trim($_POST["destination_ext_enabled"]);
+        $destination_ext_description = trim($_POST["destination_ext_description"]);
         
         //convert the number to a regular expression
         $destination_ext_number_regex = string_to_regex($destination_ext_number);
@@ -1124,7 +1124,7 @@
     echo "  ".$text['label-destination_ext_number']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_ext_number' maxlength='255' value=\"" . escape_backward($destination_ext_number) . "\" required='required'>\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_number' maxlength='255' value=\"" . escape($destination_ext_number) . "\" required='required'>\n";
     echo "<br />\n";
     echo $text['description-destination_ext_number']."\n";
     echo "</td>\n";
@@ -1146,7 +1146,7 @@
 
     foreach($dialplan_details as $row) {
 
-        $row = array_map('escape_backward', $row);
+        $row = array_map('escape', $row);
 
         if ($row["dialplan_detail_tag"] != "condition") {
             if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
@@ -1207,13 +1207,13 @@
 
         $dialplan_details = array();
         $dialplan_details[1] = array();
-        $dialplan_details[1]['dialplan_detail_data'] = "transfer:$1 XML " . escape_backward($destination_ext_domain);
+        $dialplan_details[1]['dialplan_detail_data'] = "transfer:$1 XML " . escape($destination_ext_domain);
         $dialplan_details[1]['dialplan_detail_tag'] = "action";
     }
 
     foreach($dialplan_details as $row) {
 
-        $row = array_map('escape_backward', $row);
+        $row = array_map('escape', $row);
 
         if ($row["dialplan_detail_tag"] != "condition") {
             if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
@@ -1282,7 +1282,7 @@
 
     foreach($dialplan_details as $row) {
 
-        $row = array_map('escape_backward', $row);
+        $row = array_map('escape', $row);
 
         if ($row["dialplan_detail_tag"] != "condition") {
             if ($row["dialplan_detail_tag"] == "action" && $row["dialplan_detail_type"] == "set") {
@@ -1332,7 +1332,7 @@
             echo "    <option value=''>".$text['select-global']."</option>\n";
         }
         foreach ($_SESSION['domains'] as $row) {
-            $row = array_map('escape_backward', $row);
+            $row = array_map('escape', $row);
 
             if ($row['domain_uuid'] == $domain_uuid) {
                 echo "    <option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
@@ -1348,7 +1348,7 @@
         echo "</tr>\n";
     }
     else {
-        echo "<input type='hidden' name='domain_uuid' value='" . escape_backward($domain_uuid) ."'>\n";
+        echo "<input type='hidden' name='domain_uuid' value='" . escape($domain_uuid) ."'>\n";
     }
 
     // CallerID name prepend
@@ -1357,7 +1357,7 @@
     echo "  ".$text['label-destination_ext_callerid_name_prepend']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_ext_callerid_name_prepend' id='destination_ext_callerid_name_prepend' maxlength='255' value=\"" . escape_backward($destination_ext_callerid_name_prepend) . "\">\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_callerid_name_prepend' id='destination_ext_callerid_name_prepend' maxlength='255' value=\"" . escape($destination_ext_callerid_name_prepend) . "\">\n";
     echo "<br />\n";
     echo $text['description-destination_ext_callerid_name_prepend']."\n";
     echo "</td>\n";
@@ -1369,7 +1369,7 @@
     echo "  ".$text['label-destination_ext_callerid_number_prepend']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_ext_callerid_number_prepend' id='destination_ext_callerid_number_prepend' maxlength='255' value=\"" . escape_backward($destination_ext_callerid_name_prepend) . "\">\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_callerid_number_prepend' id='destination_ext_callerid_number_prepend' maxlength='255' value=\"" . escape($destination_ext_callerid_name_prepend) . "\">\n";
     echo "<br />\n";
     echo $text['description-destination_ext_callerid_number_prepend']."\n";
     echo "</td>\n";
@@ -1381,7 +1381,7 @@
     echo "  ".$text['label-destination_ext_variable']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_ext_variable' id='destination_ext_variable' maxlength='255' value=\"" . escape_backward($destination_ext_variable) . "\">\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_variable' id='destination_ext_variable' maxlength='255' value=\"" . escape($destination_ext_variable) . "\">\n";
     echo "<br />\n";
     echo $text['description-destination_ext_variable']."\n";
     echo "</td>\n";
@@ -1393,7 +1393,7 @@
     echo "  ".$text['label-destination_ext_variable_no_extension']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_ext_variable_no_extension' id='destination_ext_variable_no_extension' maxlength='255' value=\"" . escape_backward($destination_ext_variable_no_extension) . "\">\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_variable_no_extension' id='destination_ext_variable_no_extension' maxlength='255' value=\"" . escape($destination_ext_variable_no_extension) . "\">\n";
     echo "<br />\n";
     echo $text['description-destination_ext_variable_no_extension']."\n";
     echo "</td>\n";
@@ -1415,7 +1415,7 @@
         echo "  <option value='true' ".$selected[1].">".$text['label-true']."</option>\n";
         echo "  <option value='false' ".$selected[2].">".$text['label-false']."</option>\n";
         unset($selected);
-        echo "  </select>&ensp;" . escape_backward($destination_ext_silence_detect_algo) ."\n";
+        echo "  </select>&ensp;" . escape($destination_ext_silence_detect_algo) ."\n";
         echo "<br />\n";
         echo $text['description-destination_ext_silence_detect']."\n";
         echo "</td>\n";
@@ -1447,7 +1447,7 @@
     echo "  ".$text['label-destination_ext_description']."\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "  <input class='formfld' type='text' name='destination_ext_description' maxlength='255' value=\"" . escape_backward($destination_ext_description) . "\">\n";
+    echo "  <input class='formfld' type='text' name='destination_ext_description' maxlength='255' value=\"" . escape($destination_ext_description) . "\">\n";
     echo "<br />\n";
     echo $text['description-destination_ext_description']."\n";
     echo "</td>\n";
@@ -1455,10 +1455,10 @@
     echo "  <tr>\n";
     echo "      <td colspan='2' align='right'>\n";
     if ($action == "update") {
-        echo "      <input type='hidden' name='db_destination_ext_number' value='" . escape_backward($destination_ext_number) . "'>\n";
-        echo "      <input type='hidden' name='destination_ext_dialplan_main_uuid' value='" . escape_backward($destination_ext_dialplan_main_uuid) . "'>\n";
-        echo "      <input type='hidden' name='destination_ext_dialplan_extensions_uuid' value='" . escape_backward($destination_ext_dialplan_extensions_uuid) . "'>\n";
-        echo "      <input type='hidden' name='destination_ext_uuid' value='" . escape_backward($destination_ext_uuid) . "'>\n";
+        echo "      <input type='hidden' name='db_destination_ext_number' value='" . escape($destination_ext_number) . "'>\n";
+        echo "      <input type='hidden' name='destination_ext_dialplan_main_uuid' value='" . escape($destination_ext_dialplan_main_uuid) . "'>\n";
+        echo "      <input type='hidden' name='destination_ext_dialplan_extensions_uuid' value='" . escape($destination_ext_dialplan_extensions_uuid) . "'>\n";
+        echo "      <input type='hidden' name='destination_ext_uuid' value='" . escape($destination_ext_uuid) . "'>\n";
     }
     echo "          <br>";
     echo "          <input type='submit' class='btn' value='".$text['button-save']."'>\n";

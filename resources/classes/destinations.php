@@ -261,8 +261,7 @@ class destinations {
 					$select_label = str_replace("\${context}", $_SESSION['domain_name'], $select_label);
 					$select_label = str_replace("&#9993", 'email-icon', $select_label);
 					$select_label = escape(trim($select_label));
-					$select_label = str_replace('{email-icon}', '&#9993', $select_label); // Actually same as below, but with HTML5 flavor
-					$select_label = str_replace('&lbrace;email-icon&rcub;', '&#9993', $select_label);
+					$select_label = str_replace('email-icon', '&#9993', $select_label);
 					if ($select_value == $destination_value) { $selected = "selected='selected' "; $select_found = true; } else { $selected = ''; }
 					if ($label2 == 'destinations') { $select_label = format_phone($select_label); }
 					$response .= "			<option value='".escape($select_value)."' ".$selected.">".$select_label."</option>\n";
