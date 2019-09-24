@@ -111,9 +111,10 @@ if ($action == "add") {
         $sql .= "(?, ?, ?, ?, ?, ?, ?, ?)";
 
         $insert_array = array(
-            'domain_uuid' => $_SESSION['domain_uuid'],
+            'domain_uuid' => $domain_uuid,
             'call_block_uuid' => uuid(),
             'call_block_name' => $call_block_name,
+            'call_block_number' => $call_block_number,
             'call_block_count' => 0,
             'call_block_action' => $call_block_action,
             'call_block_enabled' => $call_block_enabled,
@@ -123,6 +124,7 @@ if ($action == "add") {
         $prep_statement = $db->prepare(check_sql($sql));
         if (!$prep_statement->execute(array_values($insert_array))) {
             send_answer('500', json_encode($prep_statement->errorInfo()));
+            return;
         }
     }
     send_answer('200', 'Number added');
