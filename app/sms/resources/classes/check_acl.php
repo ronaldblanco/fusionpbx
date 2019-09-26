@@ -3,7 +3,7 @@
 if (!class_exists('check_acl')) {
 	class check_acl {
 
-		private $allow_nodes;
+		private $acl_nodes;
 
 		public function __construct($db, $domain_name) {
 
@@ -20,6 +20,16 @@ if (!class_exists('check_acl')) {
 			$sql .= "WHERE v_access_controls.access_control_name = 'sms'";
 			$sql .= " AND v_access_control_nodes.node_domain = '" . $domain_name . "'";
 			$sql .= " ORDER BY node_policy DESC";
+
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+
+			if (count($result) == 0) {
+				return;
+			}
+			
+			$this->acl_nodes = $result;
 
 		}
 
