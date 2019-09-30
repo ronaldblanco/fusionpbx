@@ -51,7 +51,7 @@
 	$order = check_str($_GET["order"]);
 
 //get the fax extensions
-	if (if_group("superadmin") || if_group("admin")) {
+	if (if_group("superadmin") || if_group("admin") || permission_exists("fax_extension_all")) {
 		//show all fax extensions
 		$sql = "select count(*) as num_rows from v_fax ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -83,7 +83,7 @@
 	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
 	$offset = $rows_per_page * $page;
 
-	if (if_group("superadmin") || if_group("admin")) {
+	if (if_group("superadmin") || if_group("admin") || permission_exists("fax_extension_all")) {
 		//show all fax extensions
 		$sql = "select * from v_fax ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
