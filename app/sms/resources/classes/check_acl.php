@@ -33,33 +33,13 @@ if (!class_exists('check_acl')) {
 
 		}
 
-		function check_acl_1() {
-			global $db, $debug, $domain_uuid, $domain_name;
-
-			//select node_cidr from v_access_control_nodes where node_cidr != '';
-			$sql = "select node_cidr from v_access_control_nodes where node_cidr != '' and node_type = 'allow'";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-			if (count($result) == 0) {
-				die("No ACL's");
-			}
-			foreach ($result as &$row) {
-				$allowed_ips[] = $row['node_cidr'];
-			}
-
-			$acl = new IP4Filter($allowed_ips);
-
-			return $acl->check($_SERVER['REMOTE_ADDR'], $allowed_ips);
-		}
-
-		function ipCIDRCheck ($IP, $CIDR) {
-			list ($net, $mask) = split ("/", $CIDR);
+		function check($ip, $cidr){
+			list ($net, $mask) = split ("/", $cidr);
 		
 			$ip_net = ip2long ($net);
 			$ip_mask = ~((1 << (32 - $mask)) - 1);
 		
-			$ip_ip = ip2long ($IP);
+			$ip_ip = ip2long ($ip);
 		
 			$ip_ip_net = $ip_ip & $ip_mask;
 		
