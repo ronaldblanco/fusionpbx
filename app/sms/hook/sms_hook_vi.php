@@ -14,5 +14,5 @@ if (!$acl->check($ip_addr)) {
     die(0);
 }
 
-echo json_encode($_SERVER, JSON_PRETTY_PRINT);
+error_log($_SERVER, JSON_PRETTY_PRINT);
 ?>
