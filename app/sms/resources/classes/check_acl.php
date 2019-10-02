@@ -1,4 +1,4 @@
-<?
+<?php
 
 if (!class_exists('check_acl')) {
 	class check_acl {
@@ -12,8 +12,8 @@ if (!class_exists('check_acl')) {
 			//deny				deny			1.1.1.1/32
 			//deny				allow			0.0.0.0/0
 
-			$sql =  "SELECT v_access_controls.access_control_default as default_policy";
-			$sql .= " v_access_control_nodes.node_type as node_policy";
+			$sql =  "SELECT v_access_controls.access_control_default as default_policy,";
+			$sql .= " v_access_control_nodes.node_type as node_policy,";
 			$sql .= " v_access_control_nodes.node_cidr as node_cidr ";
 			$sql .= "FROM v_access_control_nodes JOIN v_access_controls";
 			$sql .= " ON v_access_controls.access_control_uuid = v_access_control_nodes.access_control_uuid ";
@@ -30,11 +30,10 @@ if (!class_exists('check_acl')) {
 			}
 			
 			$this->acl_nodes = $result;
-
 		}
 
-		function check($ip, $cidr){
-			list ($net, $mask) = split ("/", $cidr);
+		private function single_check($ip, $cidr) {
+			list ($net, $mask) = explode("/", $cidr);
 		
 			$ip_net = ip2long ($net);
 			$ip_mask = ~((1 << (32 - $mask)) - 1);
@@ -44,6 +43,27 @@ if (!class_exists('check_acl')) {
 			$ip_ip_net = $ip_ip & $ip_mask;
 		
 			return ($ip_ip_net == $ip_net);
+		}
+
+		public function check($ip) {
+
+			if (!$this->acl_nodes) {
+				return False;
+			}
+
+			$last_policy = 'deny';
+
+			foreach ($this->acl_nodes as $acl_node) {
+				
+				$node_cidr = $acl_node['node_cidr'];
+				$last_policy = $acl_node['default_policy'];
+
+				if ($this->single_check($ip, $node_cidr)) {
+					return $acl_node['node_policy'] == 'allow';
+				}
+			}
+
+			return $last_policy == 'allow';
 		}
 	}
 }
