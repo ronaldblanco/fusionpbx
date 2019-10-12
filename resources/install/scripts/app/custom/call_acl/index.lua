@@ -2,12 +2,7 @@
 
 -- connect to the database
 require "resources.functions.database_handle"
-
-local dbh = database_handle('system')
-
-local function log(message)
-    freeswitch.consoleLog("NOTICE", "[call_acl] "..message.."\n");
-end
+local log = require"resources.functions.log".call_acl
 
 local function convert_pattern(pattern)
     
@@ -32,16 +27,18 @@ end
 
 if (session:ready()) then
 
-    local sql = ""
-
     local source = session:getVariable("caller_id_number")
     local destination = session:getVariable("destination_number")
 
     if (source == nil or destination == nil) then
-        log("Cannot get callerid or destination number")
+        log.notice("Cannot get callerid or destination number")
         return
     end
 
+    local dbh = database_handle('system')
+    local sql = ""
+
+    local domain_id = session:getVariable("domain_uuid")
 
     if (domain_id == nil) then
         domain_id = session:getVariable("domain_name") or session:getVariable("sip_invite_domain")
@@ -107,5 +104,5 @@ if (session:ready()) then
         end
     end
 
-    log("ACL processing end. Contunue call")
+    log.notice("ACL processing end. Contunue call")
 end
