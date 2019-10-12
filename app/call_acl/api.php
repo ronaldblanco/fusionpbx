@@ -34,6 +34,8 @@ source - source
 destination - destination
 order - order
 action - Alllow/Reject
+method - add/delete. By default - add
+uuid - uuid of deleted value. Valid for delete method
 */
 
 //includes
@@ -69,53 +71,80 @@ if (count($parameters) > 0) {
     $source = isset($parameters["source"]) ? check_str($parameters["source"]) : False;
     $name = isset($parameters["name"]) ? check_str($parameters["name"]) : "$action from $source to $destination";
     $enabled = isset($parameters["enabled"]) ? check_str($parameters["enabled"]) : 'true';
+    $method = isset($parameters["method"]) ? check_str($parameters["method"]) : 'add';
+    $uuid = isset($parameters["uuid"]) ? check_str($parameters["uuid"]) : False;
 }
 
-if (!($action && $destination && $order && $source)) {
-    send_answer('406', 'Not all parameters found');
-    return;
+if ($method == 'add') {
+    if (!($action && $destination && $order && $source)) {
+        send_answer('406', 'Not all parameters found');
+        return;
+    }
+
+    if (!is_numeric($order) || intval($order) != $order) {
+        send_answer('406', 'Order is not numeric');
+        return;
+    }
+
+    if ($action != 'allow' && $action != 'reject') {
+        send_answer('406', "$action is not valid action");
+        return;
+    }
+
+    $sql = "INSERT INTO v_call_acl ";
+    $sql .= "(";
+    $sql .= "domain_uuid, ";
+    $sql .= "call_acl_uuid, ";
+    $sql .= "call_acl_order, ";
+    $sql .= "call_acl_name, ";
+    $sql .= "call_acl_source, ";
+    $sql .= "call_acl_destination, ";
+    $sql .= "call_acl_action, ";
+    $sql .= "call_acl_enabled ";
+    $sql .= ") ";
+    $sql .= "VALUES ";
+    $sql .= "(?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $uuid = uuid();
+
+    $insert_array = array(
+        'domain_uuid' => $_SESSION['domain_uuid'],
+        'call_acl_uuid' => $uuid,
+        'call_acl_order' => $order,
+        'call_acl_name' => $name,
+        'call_acl_source' => $source,
+        'call_acl_destination' => $destination,
+        'call_acl_action' => $action,
+        `call_acl_enabled` => $enabled
+    );
+
+    $prep_statement = $db->prepare(check_sql($sql));
+    if (!$prep_statement->execute(array_values($insert_array))) {
+        send_answer('500', json_encode($prep_statement->errorInfo()));
+    } else {
+        send_answer('200', $uuid);
+    }
 }
 
-if (!is_numeric($order) || intval($order) != $order) {
-    send_answer('406', 'Order is not numeric');
-    return;
+if ($method == 'delete') {
+    if (!$uuid) {
+        send_answer('406', 'Not all parameters found');
+        return;
+    }
+
+    $sql = "DELETE FROM v_call_acl";
+    $sql .= " WHERE call_acl_uuid = :call_acl_uuid";
+
+    $prep_statement = $db->prepare(check_sql($sql));
+
+    $prep_statement->bindValue('call_acl_uuid', $uuid);
+
+    if (!$prep_statement->execute()) {
+        send_answer('500', json_encode($prep_statement->errorInfo()));
+    } else {
+        send_answer('200', $uuid);
+    }
 }
 
-if ($action != 'allow' && $action != 'reject') {
-    send_answer('406', "$action is not valid action");
-    return;
-}
-
-$sql = "INSERT INTO v_call_acl ";
-$sql .= "(";
-$sql .= "domain_uuid, ";
-$sql .= "call_acl_uuid, ";
-$sql .= "call_acl_order, ";
-$sql .= "call_acl_name, ";
-$sql .= "call_acl_source, ";
-$sql .= "call_acl_destination, ";
-$sql .= "call_acl_action, ";
-$sql .= "call_acl_enabled ";
-$sql .= ") ";
-$sql .= "VALUES ";
-$sql .= "(?, ?, ?, ?, ?, ?, ?, ?)";
-
-$insert_array = array(
-    'domain_uuid' => $_SESSION['domain_uuid'],
-    'call_acl_uuid' => uuid(),
-    'call_acl_order' => $order,
-    'call_acl_name' => $name,
-    'call_acl_source' => $source,
-    'call_acl_destination' => $destination,
-    'call_acl_action' => $action,
-    `call_acl_enabled` => $enabled
-);
-
-$prep_statement = $db->prepare(check_sql($sql));
-if (!$prep_statement->execute(array_values($insert_array))) {
-    send_answer('500', json_encode($prep_statement->errorInfo()));
-} else {
-    send_answer('200', 'Number added');
-}
-
+send_answer('404', 'Method not found');
 ?>
