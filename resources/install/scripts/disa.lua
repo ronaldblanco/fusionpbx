@@ -42,66 +42,28 @@
 
 --get and save the variables
 	if (session:ready()) then
-		sound_greeting = session:getVariable("sound_greeting");
-		sound_pin = session:getVariable("sound_pin");
-		sound_extension = session:getVariable("sound_extension");
-		pin_number = session:getVariable("pin_number");
-		sounds_dir = session:getVariable("sounds_dir");
-		caller_id_name = session:getVariable("caller_id_name");
-		caller_id_number = session:getVariable("caller_id_number");
-		predefined_destination = session:getVariable("predefined_destination");
-		fallback_destination = session:getVariable("fallback_destination");
-		digit_min_length = session:getVariable("digit_min_length");
-		digit_max_length = session:getVariable("digit_max_length");
-		digit_timeout = session:getVariable("digit_timeout");
-		context = session:getVariable("context");
-		privacy = session:getVariable("privacy");
-		max_tries = session:getVariable("max_tries");
-		pin_tries = session:getVariable("pin_tries");
-		extension_tries = session:getVariable("extension_tries");
-	end
+		-- sound related part
+		sounds_dir = session:getVariable("sounds_dir")
+		default_language = session:getVariable("default_language") or 'en'
+		default_dialect = session:getVariable("default_dialect") or 'us'
+		default_voice = session:getVariable("default_voice") or 'callie'
+		sound_greeting = session:getVariable("sound_greeting")
+		sound_extension = session:getVariable("sound_extension") or sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-enter_destination_telephone_number.wav"
+		sound_pin = session:getVariable("sound_pin") or sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-please_enter_pin_followed_by_pound.wav"
 
---set the sounds path for the language, dialect and voice
-	if (session:ready()) then
-		default_language = session:getVariable("default_language");
-		default_dialect = session:getVariable("default_dialect");
-		default_voice = session:getVariable("default_voice");
-		if (not default_language) then default_language = 'en'; end
-		if (not default_dialect) then default_dialect = 'us'; end
-		if (not default_voice) then default_voice = 'callie'; end
-	end
-
---set defaults
-	if (not digit_min_length) then
-		digit_min_length = "7";
-	end
-
-	if (not digit_max_length) then
-		digit_max_length = "11";
-	end
-
-	if (not digit_timeout) then
-	    digit_timeout = "5000";
-	end
-
-	if (not sound_pin) then
-	    sound_pin = sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-please_enter_pin_followed_by_pound.wav";
-	end
-
-	if (not sound_extension) then
-	    sound_extension = sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-enter_destination_telephone_number.wav";
-	end
-
-	if (not max_tries) then
-	    max_tries = "3";
-	end
-
-	if (not pin_tries) then
-	    pin_tries = max_tries;
-	end
-
-	if (not extension_tries) then
-	    extension_tries = max_tries;
+		pin_number = session:getVariable("pin_number")
+		caller_id_name = session:getVariable("disa_caller_id_name") or session:getVariable("caller_id_name")
+		caller_id_number = session:getVariable("disa_caller_id_number") or session:getVariable("caller_id_number")
+		predefined_destination = session:getVariable("predefined_destination")
+		fallback_destination = session:getVariable("fallback_destination")
+		digit_min_length = session:getVariable("digit_min_length") or "7"
+		digit_max_length = session:getVariable("digit_max_length") or "11"
+		digit_timeout = session:getVariable("digit_timeout") or "5000"
+		context = session:getVariable("context")
+		privacy = session:getVariable("privacy")
+		max_tries = session:getVariable("max_tries") or "3"
+		pin_tries = session:getVariable("pin_tries") or max_tries
+		extension_tries = session:getVariable("extension_tries") or max_tries
 	end
 
 --if the sound_greeting is provided then play it
@@ -113,7 +75,7 @@
 --if the pin number is provided then require it
 	if (session:ready() and pin_number) then
 		min_digits = string.len(pin_number);
-		max_digits = string.len(pin_number)+1;
+		max_digits = string.len(pin_number) + 1;
 		digits = session:playAndGetDigits(min_digits, max_digits, pin_tries, digit_timeout, "#", sound_pin, "", "\\d+");
 		if (digits == pin_number) then
 			--pin is correct
