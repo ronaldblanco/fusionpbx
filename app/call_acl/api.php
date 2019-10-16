@@ -124,6 +124,7 @@ if ($method == 'add') {
     } else {
         send_answer('200', $uuid);
     }
+    exit;
 }
 
 if ($method == 'delete') {
@@ -144,6 +145,7 @@ if ($method == 'delete') {
     } else {
         send_answer('200', $uuid);
     }
+    exit;
 }
 
 send_answer('404', 'Method not found');
