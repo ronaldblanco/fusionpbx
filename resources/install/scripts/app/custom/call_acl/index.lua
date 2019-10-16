@@ -91,13 +91,13 @@ if (session:ready()) then
             call_acl_destination = convert_pattern(call_acl_destination:lower())
 
             if (source:find(call_acl_source) and destination:find(call_acl_destination)) then
-                log("[" ..source.. "/" .. call_acl_source.. "][" ..destination.. "/" .. call_acl_destination.. "] ACL " .. call_acl_name .. " matched")
+                log.notice("[" ..source.. "/" .. call_acl_source.. "][" ..destination.. "/" .. call_acl_destination.. "] ACL " .. call_acl_name .. " matched")
                 if call_acl_action == 'reject' then
-                    log("ACL is reject. Stop process call")
+                    log.notice("ACL is reject. Stop process call")
                     session:execute('hangup', "BEARERCAPABILITY_NOTAUTH")
                 else 
                     -- We found pattern match and this is allow (means not reject)
-                    log("ACL is allow. Stop process ACLs")
+                    log.notice("ACL is allow. Stop process ACLs")
                 end
                 return
             end
