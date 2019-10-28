@@ -88,7 +88,7 @@
 <user_name idx="{$row.line_number}" perm="R">{$row.user_id}</user_name>
 <user_pass idx="{$row.line_number}" perm="R">{$row.password}</user_pass>
 <user_host idx="{$row.line_number}" perm="R">{$row.server_address}</user_host>
-{if $row.sip_transport neq "dns srv"}<user_outbound idx="{$row.line_number}" perm="R">{if $row.outbound_proxy neq ''}{$row.outbound_proxy}{else}{$row.server_address}{/if};transport={$row.sip_transport}</user_outbound>{/if}
+<user_outbound idx="{$row.line_number}" perm="R">{if $row.outbound_proxy_primary neq ""}{$row.outbound_proxy_primary}{else}{$row.server_address}{/if}{if $row.sip_transport neq "dns srv"};transport={$row.sip_transport}{/if}</user_outbound>
 {if $row.auth_id neq ''}<user_pname idx="{$row.line_number}" perm="R">{$row.auth_id}</user_pname>{/if}
 <user_server_type idx="{$row.line_number}" perm="R">Default</user_server_type>
 <user_srtp idx="{$row.line_number}" perm="R">{if isset ($snom_enable_srtp)}{$snom_enable_srtp}{else}off{/if}</user_srtp>
