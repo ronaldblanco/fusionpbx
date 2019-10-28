@@ -2,12 +2,7 @@
 
 -- connect to the database
 require "resources.functions.database_handle"
-
-local dbh = database_handle('system')
-
-local function log(message)
-    freeswitch.consoleLog("NOTICE", "[call_acl] "..message.."\n");
-end
+local log = require"resources.functions.log".call_acl
 
 local function convert_pattern(pattern)
     
@@ -32,16 +27,18 @@ end
 
 if (session:ready()) then
 
-    local sql = ""
-
     local source = session:getVariable("caller_id_number")
     local destination = session:getVariable("destination_number")
 
     if (source == nil or destination == nil) then
-        log("Cannot get callerid or destination number")
+        log.notice("Cannot get callerid or destination number")
         return
     end
 
+    local dbh = database_handle('system')
+    local sql = ""
+
+    local domain_id = session:getVariable("domain_uuid")
 
     if (domain_id == nil) then
         domain_id = session:getVariable("domain_name") or session:getVariable("sip_invite_domain")
@@ -94,18 +91,18 @@ if (session:ready()) then
             call_acl_destination = convert_pattern(call_acl_destination:lower())
 
             if (source:find(call_acl_source) and destination:find(call_acl_destination)) then
-                log("[" ..source.. "/" .. call_acl_source.. "][" ..destination.. "/" .. call_acl_destination.. "] ACL " .. call_acl_name .. " matched")
+                log.notice("[" ..source.. "/" .. call_acl_source.. "][" ..destination.. "/" .. call_acl_destination.. "] ACL " .. call_acl_name .. " matched")
                 if call_acl_action == 'reject' then
-                    log("ACL is reject. Stop process call")
+                    log.notice("ACL is reject. Stop process call")
                     session:execute('hangup', "BEARERCAPABILITY_NOTAUTH")
                 else 
                     -- We found pattern match and this is allow (means not reject)
-                    log("ACL is allow. Stop process ACLs")
+                    log.notice("ACL is allow. Stop process ACLs")
                 end
                 return
             end
         end
     end
 
-    log("ACL processing end. Contunue call")
+    log.notice("ACL processing end. Contunue call")
 end

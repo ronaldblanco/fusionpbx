@@ -147,8 +147,10 @@
 			session:execute("transfer", destination_number .. " XML " .. context);
 		else
 			--exteernal call
-			session:execute("set", "effective_caller_id_name="..caller_id_name);
-			session:execute("set", "effective_caller_id_number="..caller_id_number);
-			session:execute("transfer", destination_number .. " XML " .. context);
+			session:execute("set", "effective_caller_id_name="..caller_id_name)
+			session:execute("set", "caller_id_name="..caller_id_name)
+			session:execute("set", "effective_caller_id_number="..caller_id_number)
+			session:execute("set", "caller_id_number="..caller_id_number)
+			session:execute("transfer", destination_number .. " XML " .. context)
 		end
 	end
