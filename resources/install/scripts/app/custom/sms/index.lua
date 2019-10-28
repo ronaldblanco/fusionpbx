@@ -24,6 +24,9 @@
 --	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 --	POSSIBILITY OF SUCH DAMAGE.
 
+
+-- lua app_custom.lua sms -f 123456789 -t 123456777 -m 'Hello World!' -s external
+
 opthelp = [[
  -s, --source=OPTARG	Source of the message. Internal or external
  -d, --debug			Debug flag
