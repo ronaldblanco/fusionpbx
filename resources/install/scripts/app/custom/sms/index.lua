@@ -434,7 +434,7 @@ elseif sms_source == 'external' then
 	local routing_patterns = {}
 	db:query(sql, params, function(row)
 		table.insert(routing_patterns, row)
-		if opts.d then log.info("Adding internal destination " .. row['sms_routing_target_details'] .. "to pool") end
+		if opts.d then log.info("Adding internal destination " .. row['sms_routing_target_details'] .. " to pool") end
 	end)
 
 	if (#routing_patterns == 0) then
@@ -465,16 +465,17 @@ elseif sms_source == 'external' then
 		sms_routing_source = routing_pattern['sms_routing_source']
 		sms_routing_destination = routing_pattern['sms_routing_destination']
 
-		if opts.d then log.info("Testing F:" .. from_user .. " -> " .. sms_routing_source .. " and  D:" .. to_user .. " -> " .. sms_routing_destination) end
+		if opts.d then log.info("Testing F:" .. sms_message_from .. " -> " .. sms_routing_source .. " and  D:" .. sms_message_to .. " -> " .. sms_routing_destination) end
 
 		sms_routing_source      = convert_pattern(sms_routing_source:lower())
 		sms_routing_destination = convert_pattern(sms_routing_destination:lower())
 
-		if (from_user:find(sms_routing_source) and to_user:find(sms_routing_destination)) then
+		if (sms_message_from:find(sms_routing_source) and sms_message_to:find(sms_routing_destination)) then
 			
 			domain_uuid = routing_pattern['domain_uuid']
 			sms_routing_number_translation_source = routing_pattern['sms_routing_number_translation_source']
 			sms_routing_number_translation_destination = routing_pattern['sms_routing_number_translation_destination']
+			to_user = routing_pattern['sms_routing_target_details']
 
 			if opts.d then log.notice("Using domain uuid  " .. domain_uuid .. " for this SMS") end
 			break
@@ -483,7 +484,7 @@ elseif sms_source == 'external' then
 
 	if domain_uuid then
 		-- Get domain_name by UUID
-		sql =        "SELECT domain_name, "
+		sql =        "SELECT domain_name "
 		sql = sql .. " FROM v_domains WHERE"
 		sql = sql .. " domain_uuid = :domain_uuid"
 		sql = sql .. " AND domain_enabled = 'true'"
@@ -494,7 +495,7 @@ elseif sms_source == 'external' then
 
 		db:query(sql, params, function(row)
 			to_domain = row['domain_name']
-			if opts.d then log.info("Domain name " .. domain_name .. "found") end
+			if opts.d then log.info("Domain name " .. to_domain .. " found") end
 		end)
 	end
 
@@ -513,13 +514,10 @@ elseif sms_source == 'external' then
 
 		log.notice("Could not find routing rules for this SMS. Exiting.")
 
-		message:chat_execute("stop")
 		do return end
 	end
 
 	from_user = number_translate(sms_message_from, sms_routing_number_translation_source)
-
-	to_user = number_translate(sms_message_to, sms_routing_number_translation_destination)
 
 	cmd = "user_exists id ".. to_user .." "..to_domain
 	to_user_exists = api:executeString(cmd)
@@ -539,22 +537,31 @@ elseif sms_source == 'external' then
 
 		log.notice("To user is not exists. Exiting.")
 
-		message:chat_execute("stop")
 		do return end
 	end
 
 	-- Sending message
+	sms_message_to_normalized = number_translate(sms_message_to, sms_routing_number_translation_destination)
 
 	local event = freeswitch.Event("CUSTOM", "SMS::SEND_MESSAGE");
-	event:addHeader("proto", "sip");
-	event:addHeader("dest_proto", "sip");
-	event:addHeader("from", from_user);
-	event:addHeader("from_full", "sip:" .. from_user .. "@" .. to_domain);
-	event:addHeader("to", "sip:" .. to_user .. '@' .. to_domain);
-	event:addHeader("type", "text/html");
-	event:addHeader("replying", "true");
-	event:addHeader("sip_profile", "internal");
-	event:addBody(sms_message_text);
+		event:addHeader("proto", "sip");
+		event:addHeader("dest_proto", "sip");
+		event:addHeader("from", from_user)
+		event:addHeader("from_user", from_user);
+		event:addHeader("from_host", to_domain);
+		event:addHeader("from_full", "sip:" .. from_user .."@".. to_domain);
+		event:addHeader("to", to_user .. "@".. to_domain);
+		event:addHeader("to_user", to_user);
+		event:addHeader("to_host", to_domain)
+		event:addHeader("subject", sms_message_to_normalized);
+		event:addHeader("replying", "true");
+		event:addHeader("sip_profile", "internal");
+		event:addHeader("type", "text/plain");
+		event:addBody(sms_message_text);
+	
+	if opts.d then
+		log.notice(event:serialize())
+	end
     
 	event:fire();
 	   
