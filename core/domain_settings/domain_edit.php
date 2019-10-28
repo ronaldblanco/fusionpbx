@@ -94,6 +94,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('domain_add')) {
 				$sql = "select count(*) as num_rows from v_domains ";
 				$sql .= "where domain_name = '".$domain_name."' ";
+				$sql .= "OR domain_name = '".strtolower($domain_name)."' ";
 				$prep_statement = $db->prepare($sql);
 				if ($prep_statement) {
 				$prep_statement->execute();
@@ -131,6 +132,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 					break;
 				}
 				unset($sql, $prep_statement);
+
+				$domain_name = strtolower($domain_name);
 
 				// update domain name, description
 				$sql = "update v_domains set ";
