@@ -330,6 +330,7 @@
 								sip_bypass_media = row.sip_bypass_media;
 								absolute_codec_string = row.absolute_codec_string;
 								force_ping = row.force_ping;
+								extension_ringback = row.extension_ringback
 								forward_all_enabled = row.forward_all_enabled;
 								forward_all_destination = row.forward_all_destination;
 								forward_busy_enabled = row.forward_busy_enabled;
@@ -574,6 +575,9 @@
 							end
 							if (force_ping ~= nil) and (string.len(force_ping) > 0) then
 								table.insert(xml, [[								<variable name="force_ping" value="]] .. force_ping .. [["/>]]);
+							end
+							if (extension_ringback ~= nil) and (string.len(extension_ringback) > 0) then
+								table.insert(xml, [[								<variable name="extension_ringback" value="]] .. extension_ringback .. [["/>]]);
 							end
 							if (sip_bypass_media ~= nil) and (sip_bypass_media == "bypass-media") then
 								table.insert(xml, [[								<variable name="bypass_media" value="true"/>]]);

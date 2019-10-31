@@ -120,6 +120,7 @@
 			$sip_bypass_media = $_POST["sip_bypass_media"];
 			$absolute_codec_string = $_POST["absolute_codec_string"];
 			$force_ping = $_POST["force_ping"];
+			$extension_ringback = $_POST["extension_ringback"];
 			$dial_string = $_POST["dial_string"];
 			$enabled = $_POST["enabled"];
 			$description = $_POST["description"];
@@ -366,6 +367,7 @@
 									if (permission_exists('extension_force_ping')) {
 										$array["extensions"][$i]["force_ping"] = $force_ping;
 									}
+									$array["extensions"][$i]["extension_ringback"] = $extension_ringback;
 									if (permission_exists('extension_dial_string')) {
 										$array["extensions"][$i]["dial_string"] = $dial_string;
 									}
@@ -646,6 +648,7 @@
 			$sip_bypass_media = $row["sip_bypass_media"];
 			$absolute_codec_string = $row["absolute_codec_string"];
 			$force_ping = $row["force_ping"];
+			$extension_ringback = $row['extension_ringback'];
 			$dial_string = $row["dial_string"];
 			$enabled = $row["enabled"];
 			$description = $row["description"];
@@ -1731,6 +1734,21 @@
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    ".$text['label-extension_ringback']."\n";
+	echo "</td>\n";
+
+	require_once "app/music_on_hold/resources/classes/switch_music_on_hold.php";
+	echo "<td class='vtable' align='left'>\n";
+	require_once "resources/classes/ringbacks.php";
+	$ringbacks = new ringbacks;
+	echo $ringbacks->select('extension_ringback', $extension_ringback);
+	echo "<br />\n";
+	echo $text['description-extension_ringback']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	if (permission_exists('extension_domain')) {
 		echo "<tr>\n";

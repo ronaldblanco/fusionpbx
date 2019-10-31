@@ -473,6 +473,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "force_ping";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "extension_ringback";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 
 		$y++;
 		$apps[$x]['db'][$y]['table']['name'] = "v_extension_users";

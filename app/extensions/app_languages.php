@@ -621,6 +621,8 @@ $text['label-force_ping']['ru-ru'] = "Force ping";
 $text['label-force_ping']['sv-se'] = "Force ping";
 $text['label-force_ping']['uk-ua'] = "";
 
+$text['label-extension_ringback']['en-us'] = "Ringback";
+
 $text['label-rewrite_tls_contact_port']['en-us'] = "Rewrite TLS Contact Port";
 $text['label-rewrite_tls_contact_port']['ar-eg'] = "";
 $text['label-rewrite_tls_contact_port']['de-at'] = "TLS Contact-Port überschreiben"; //copied from de-de
@@ -2020,6 +2022,8 @@ $text['description-force_ping']['ro-ro'] = "";
 $text['description-force_ping']['ru-ru'] = "Использовать OPTIONS, чтобы определить доступность Внутреннего Номера";
 $text['description-force_ping']['sv-se'] = "Använd OPTIONS för att avgöra om anknytningen är nåbar";
 $text['description-force_ping']['uk-ua'] = "";
+
+$text['description-extension_ringback']['en-us'] = "Which ringback to use when calling this extension";
 
 $text['description-missed_call']['en-us'] = "Select the notification type, and enter the appropriate destination.";
 $text['description-missed_call']['ar-eg'] = "";

@@ -139,6 +139,8 @@ $columns[] = 'forward_caller_id_uuid';
 $columns[] = 'absolute_codec_string';
 $columns[] = 'forward_user_not_registered_destination';
 $columns[] = 'forward_user_not_registered_enabled';
+$columns[] = 'force_ping';
+$columns[] = 'extension_ringback';
 
 $c = 0;
 $row_style["0"] = "row_style0";
