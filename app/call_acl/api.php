@@ -128,22 +128,37 @@ if ($method == 'add') {
 }
 
 if ($method == 'delete') {
-    if (!$uuid) {
+    if (!$uuid or strlen($source) == 0) {
         send_answer('406', 'Not all parameters found');
         return;
     }
 
-    $sql = "DELETE FROM v_call_acl";
-    $sql .= " WHERE call_acl_uuid = :call_acl_uuid";
+    if ($uuid) {
+        $sql = "DELETE FROM v_call_acl";
+        $sql .= " WHERE call_acl_uuid = :call_acl_uuid";
 
-    $prep_statement = $db->prepare(check_sql($sql));
+        $prep_statement = $db->prepare(check_sql($sql));
 
-    $prep_statement->bindValue('call_acl_uuid', $uuid);
+        $prep_statement->bindValue('call_acl_uuid', $uuid);
 
-    if (!$prep_statement->execute()) {
-        send_answer('500', json_encode($prep_statement->errorInfo()));
-    } else {
-        send_answer('200', $uuid);
+        if (!$prep_statement->execute()) {
+            send_answer('500', json_encode($prep_statement->errorInfo()));
+        } else {
+            send_answer('200', $uuid);
+        }
+    } elseif (strlen($source) > 0) {
+        $sql = "DELETE FROM v_call_acl";
+        $sql .= " WHERE call_acl_source = :call_acl_source ";
+        $sql .= " AND domain_uuid = :domain_uuid";
+
+        $prep_statement = $db->prepare(check_sql($sql));
+        $prep_statement->bindValue('call_acl_source', $source);
+        $prep_statement->bindValue('domain_uuid', $_SESSION['domain_uuid']);
+        if (!$prep_statement->execute()) {
+            send_answer('500', json_encode($prep_statement->errorInfo()));
+        } else {
+            send_answer('200', "OK");
+        }
     }
     exit;
 }
