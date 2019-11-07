@@ -20,5 +20,4 @@ $apps[$x]['menu'][0]['category'] = "internal";
 $apps[$x]['menu'][0]['path'] = "/app/sms/sms.php";
 //$apps[$x]['menu'][0]['groups'][] = "admin";
 //$apps[$x]['menu'][0]['groups'][] = "superadmin";
-
 ?>
