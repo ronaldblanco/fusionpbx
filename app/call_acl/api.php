@@ -128,7 +128,7 @@ if ($method == 'add') {
 }
 
 if ($method == 'delete') {
-    if (!$uuid or strlen($source) == 0) {
+    if (!$uuid and strlen($source) == 0) {
         send_answer('406', 'Not all parameters found');
         return;
     }
