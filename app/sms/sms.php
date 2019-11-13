@@ -92,10 +92,11 @@ if (strlen($order_by)> 0) {
 else {
 	$sql .= "ORDER BY sms_message_timestamp DESC";
 }
-$sql .= "limit $rows_per_page offset $offset ";
+$sql .= " LIMIT $rows_per_page OFFSET $offset ";
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 $sms_messages = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+
 unset ($prep_statement, $sql);
 
 //set the alternating styles
@@ -129,129 +130,53 @@ echo "</table>\n";
 echo "<br />";
 
 echo "<form name='frm' method='post' action='sms_message_delete.php'>\n";
-
-
---------- HERE ---------------
-
 echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 echo "<tr>\n";
-if (permission_exists('extension_delete') && is_array($extensions)) {
+
+if (permission_exists('sms_message_delete')) {
 	echo "<th style='width: 30px; text-align: center; padding: 0px;'><input type='checkbox' id='chk_all' onchange=\"(this.checked) ? check('all') : check('none');\"></th>";
 }
-if ($_GET['show'] == "all" && permission_exists('extension_all')) {
-	echo th_order_by('domain_name', $text['label-domain'], $order_by, $order, $param);
-}
-echo th_order_by('extension', $text['label-extension'], $order_by, $order);
-echo th_order_by('call_group', $text['label-call_group'], $order_by, $order);
-//echo th_order_by('voicemail_mail_to', $text['label-voicemail_mail_to'], $order_by, $order);
-if (permission_exists('extension_toll_allow_show')) {
-	echo th_order_by('toll_allow', $text['label-toll_allow'], $order_by, $order, $param);
-}
-echo th_order_by('user_context', $text['label-user_context'], $order_by, $order);
-if (permission_exists('extension_registered')) {
-	 echo th_order_by('description', $text['label-is_registered'], $order_by, $order);
- }
-echo th_order_by('enabled', $text['label-enabled'], $order_by, $order);
-echo th_order_by('description', $text['label-description'], $order_by, $order);
 
-echo "<td class='list_control_icon'>\n";
-if (permission_exists('extension_add')) {
-	if ($_SESSION['limit']['extensions']['numeric'] == '' || ($_SESSION['limit']['extensions']['numeric'] != '' && $total_extensions < $_SESSION['limit']['extensions']['numeric'])) {
-		echo "<a href='extension_edit.php' alt='".$text['button-add']."'>".$v_link_label_add."</a>";
-	}
-}
-if (permission_exists('extension_delete') && is_array($extensions)) {
-	echo "<a href='javascript:void(0);' onclick=\"if (confirm('".$text['confirm-delete']."')) { document.forms.frm.submit(); }\" alt='".$text['button-delete']."'>".$v_link_label_delete."</a>";
-}
-echo "</td>\n";
+echo th_order_by('sms_message_timestamp', $text['label-sms_message_timestamp'], $order_by, $order);
+echo th_order_by('sms_message_from', $text['label-sms_message_from'], $order_by, $order);
+echo th_order_by('sms_message_to', $text['label-sms_message_to'], $order_by, $order);
+echo " <th>" . $text['label-sms_message_text'] . "</th>\n";
+echo th_order_by('sms_message_direction', $text['label-sms_message_direction'], $order_by, $order);
+echo th_order_by('sms_message_status', $text['label-sms_message_status'], $order_by, $order);
+
 echo "</tr>\n";
 
-if (is_array($extensions)) {
+if (is_array($sms_messages)) {
 
-	foreach($extensions as $row) {
-		$tr_link = (permission_exists('extension_edit')) ? " href='extension_edit.php?id=".escape($row['extension_uuid'])."'" : null;
-		echo "<tr ".$tr_link.">\n";
-		if (permission_exists('extension_delete')) {
+	$sms_message_ids = array();
+
+	foreach($sms_messages as $row) {
+		echo "<tr>\n";
+		if (permission_exists('sms_message_delete')) {
 			echo "	<td valign='top' class='".$row_style[$c]." tr_link_void' style='text-align: center; vertical-align: middle; padding: 0px;'>";
-			echo "		<input type='checkbox' name='id[]' id='checkbox_".escape($row['extension_uuid'])."' value='".escape($row['extension_uuid'])."' onclick=\"if (!this.checked) { document.getElementById('chk_all').checked = false; }\">";
-			echo "	</td>";
-			$ext_ids[] = 'checkbox_'.$row['extension_uuid'];
+			echo "		<input type='checkbox' name='id[]' id='checkbox_".escape($row['sms_message_uuid'])."' value='".escape($row['sms_message_uuid'])."' onclick=\"if (!this.checked) { document.getElementById('chk_all').checked = false; }\">";
+			echo "	</td>\n";
+			$sms_message_ids[] = 'checkbox_'.$row['sms_message_uuid'];
 		}
-		if ($_GET['show'] == "all" && permission_exists('extension_all')) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($_SESSION['domains'][$row['domain_uuid']]['domain_name'])."</td>\n";
-		}
-		echo "	<td valign='top' class='".$row_style[$c]."'>";
-		if (permission_exists('extension_edit')) {
-			echo "<a href='extension_edit.php?id=".escape($row['extension_uuid'])."'>".escape($row['extension'])."</a>";
-		}
-		else {
-			echo escape($row['extension']);
-		}
+		echo "	<td valign='top' class='".$row_style[$c]."' width='15%'>";
+
+		echo escape($row['sms_message_timestamp']);
+
 		echo "</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['call_group'])."&nbsp;</td>\n";
-		if (permission_exists('extension_toll_allow_show')) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['toll_allow'])."&nbsp;</td>\n";
-		}
-		//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_mail_to']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['user_context'])."</td>\n";
-
-		if (permission_exists('extension_registered')) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>";
-			$extension_number = $row['extension'].'@'.$_SESSION['domain_name'];
-			$extension_number_alias = $row['number_alias'];
-			if(strlen($extension_number_alias) > 0) {
-				$extension_number_alias .= '@'.$_SESSION['domain_name'];
-			}
-			$found_count = 0;
-			foreach ($registrations as $array) {
-				if (
-					($extension_number == $array['user']) ||
-					($extension_number_alias != '' &&
-						$extension_number_alias == $array['user']
-					)
-				) {
-					$found_count++;
-				}
-			}
-			if ($found_count > 0) {
-				echo "Yes ($found_count)";
-			} else {
-				echo "No";
-			}
-			unset($extension_number, $extension_number_alias, $found_count, $array);
-			echo "&nbsp;</td>\n";
-		}
-
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape(ucwords($row['enabled']))."</td>\n";
-		echo "	<td valign='top' class='row_stylebg' width='30%'>".escape($row['description'])."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".escape($row['sms_message_from'])."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".escape($row['sms_message_to'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='50%'>".escape($row['sms_message_text'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".escape($row['sms_message_direction'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='5%'>".escape($row['sms_message_status'])."</td>\n";
 
 		echo "	<td class='list_control_icons'>";
-		if (permission_exists('extension_edit')) {
-			echo "<a href='extension_edit.php?id=".escape($row['extension_uuid'])."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
-		}
-		if (permission_exists('extension_delete')) {
-			echo "<a href='extension_delete.php?id[]=".escape($row['extension_uuid'])."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
+		if (permission_exists('sms_message_delete')) {
+			echo "<a href='sms_message_delete.php?id[]=".escape($row['sms_message_uuid'])."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 		}
 		echo "</td>\n";
 		echo "</tr>\n";
 		$c = ($c) ? 0 : 1;
 	}
-	unset($extensions, $row);
-}
-
-if (is_array($extensions)) {
-	echo "<tr>\n";
-	echo "	<td colspan='20' class='list_control_icons'>\n";
-	if (permission_exists('extension_add')) {
-		if ($_SESSION['limit']['extensions']['numeric'] == '' || ($_SESSION['limit']['extensions']['numeric'] != '' && $total_extensions < $_SESSION['limit']['extensions']['numeric'])) {
-			echo "<a href='extension_edit.php' alt='".$text['button-add']."'>".$v_link_label_add."</a>";
-		}
-	}
-	if (permission_exists('extension_delete')) {
-		echo "<a href='javascript:void(0);' onclick=\"if (confirm('".$text['confirm-delete']."')) { document.forms.frm.submit(); }\" alt='".$text['button-delete']."'>".$v_link_label_delete."</a>";
-	}
-	echo "	</td>\n";
-	echo "</tr>\n";
 }
 
 echo "</table>";
@@ -262,15 +187,15 @@ if (strlen($paging_controls) > 0) {
 	echo $paging_controls."\n";
 }
 
-echo "<br /><br />".((is_array($extensions)) ? "<br /><br />" : null);
+echo "<br /><br />";
 
 // check or uncheck all checkboxes
-if (sizeof($ext_ids) > 0) {
+if (sizeof($sms_message_ids) > 0) {
 	echo "<script>\n";
 	echo "	function check(what) {\n";
 	echo "		document.getElementById('chk_all').checked = (what == 'all') ? true : false;\n";
-	foreach ($ext_ids as $ext_id) {
-		echo "		document.getElementById('".$ext_id."').checked = (what == 'all') ? true : false;\n";
+	foreach ($sms_message_ids as $sms_message_id) {
+		echo "		document.getElementById('".$sms_message_id."').checked = (what == 'all') ? true : false;\n";
 	}
 	echo "	}\n";
 	echo "</script>\n";
