@@ -94,9 +94,11 @@
 		sql = sql .. " OR presence_id = '" .. member_full_name .. "'"
 		sql = sql .. " LIMIT 1" -- We don't need more than 1 result at all
 		
-		if not pcall(dbh:query(sql, function(row)
-						chan_state = row.state
-					end)) then
+		dbh:query(sql, function(row)
+            chan_state = row.state
+		end)
+		
+		if chan_state == nil then
 			chan_state = (trim(api:executeString("show channels like " .. member_full_name)) ~= '0 total.') and 'active' or false
 		end
 
