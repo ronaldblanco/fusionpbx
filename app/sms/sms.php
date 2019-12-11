@@ -112,7 +112,9 @@ echo "		<b>".$text['header-sms_message']." (".$total_sms_messages.")</b><br>\n";
 echo "	</td>\n";
 echo "		<form method='get' action=''>\n";
 echo "			<td style='vertical-align: top; text-align: right; white-space: nowrap;'>\n";
-echo "				<input type='button' class='btn' value='" . $text['button-sms_routing'] . "' onclick=\"window.location='sms_routing.php';\">\n";
+if (permission_exists('sms_routing_view')) { // Show button only if SMS routing view enabled
+	echo "				<input type='button' class='btn' value='" . $text['button-sms_routing'] . "' onclick=\"window.location='sms_routing.php';\">\n";
+}
 echo "				<input type='text' class='txt' style='width: 150px; margin-left: 15px;' name='search' id='search' value='" . escape($search) . "'>";
 echo "				<input type='submit' class='btn' name='submit' value='" . $text['button-search'] . "'>";
 if ($paging_controls_mini != '') {
@@ -201,7 +203,7 @@ if (sizeof($sms_message_ids) > 0) {
 	echo "</script>\n";
 }
 
-if (is_array($extensions)) {
+if (is_array($sms_messages)) {
 	// check all checkboxes
 	key_press('ctrl+a', 'down', 'document', null, null, "check('all');", true);
 
