@@ -58,7 +58,13 @@
 										$db->exec(check_sql($sql));
 										unset($sql);
 									//remove local recording file
-										@unlink($recording_directory.'/'.$recording_filename);
+										$tmp_full_recording_path = $recording_directory.'/'.$recording_filename;
+										if ($_SESSION['call_recordings']['delete_recording_file']['bool'] != 'false') {
+											@unlink($tmp_full_recording_path);
+										} else {
+											rename($tmp_full_recording_path, $tmp_full_recording_path . ".bak");
+										}
+										unset($tmp_full_recording_path);
 								}
 						}
 					}
@@ -82,7 +88,13 @@
 								$recording_directory = $_SESSION['switch']['recordings']['dir'].'/'.$domain_name;
 							//remove local file, if any
 								if (file_exists($recording_directory.'/'.$recording_filename)) {
-									@unlink($recording_directory.'/'.$recording_filename);
+									$tmp_full_recording_path = $recording_directory.'/'.$recording_filename;
+									if ($_SESSION['call_recordings']['delete_recording_file']['bool'] != 'false') {
+										@unlink($tmp_full_recording_path);
+									} else {
+										rename($tmp_full_recording_path, $tmp_full_recording_path . ".bak");
+									}
+									unset($tmp_full_recording_path);
 								}
 							//decode base64, save to local file
 								$recording_decoded = base64_decode($recording_base64);

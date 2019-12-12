@@ -188,8 +188,10 @@ if (strlen($id) > 0) {
 					}
 
 				//delete the recordings
-					if (strlen($_SESSION['switch'][recordings]['dir']) > 0) {
-						system('rm -rf '.$_SESSION['switch']['recordings']['dir'].'/'.$_SESSION['domain_name'].'/'.$domain_name);
+					if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
+						if ($_SESSION['call_recordings']['delete_recording_file']['bool'] != 'false') {
+							system('rm -rf '.$_SESSION['switch']['recordings']['dir'].'/'.$_SESSION['domain_name'].'/'.$domain_name);
+						}
 					}
 
 				//delete voicemail

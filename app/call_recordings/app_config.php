@@ -34,6 +34,16 @@
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 
+		// Default Settings
+		$y = 0;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "9fe8e702-12af-413b-997c-071105ce0723";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "call_recordings";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "delete_recording_file";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "bool";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Delete or rename recording file on";
+
 	//Call Recordings
 		$y = 2;
 		$apps[$x]['db'][$y]['table']['name'] = 'v_call_recordings';

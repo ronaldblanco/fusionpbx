@@ -67,7 +67,13 @@ if (strlen($id)>0) {
 
 	//delete the recording
 		if (file_exists($_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name']."/".$filename)) {
-			@unlink($_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name']."/".$filename);
+			$tmp_full_recording_path = $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name']."/".$filename;
+			if ($_SESSION['call_recordings']['delete_recording_file']['bool'] != 'false') {
+				@unlink($tmp_full_recording_path);
+			} else {
+				rename($tmp_full_recording_path, $tmp_full_recording_path . ".bak");
+			}
+			unset($tmp_full_recording_path);
 		}
 }
 

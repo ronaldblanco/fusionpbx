@@ -103,7 +103,11 @@ if (!class_exists('call_recordings')) {
 
 				//if base64, remove temp recording file
 					if ($_SESSION['call_recordings']['storage_type']['text'] == 'base64' && $row['call_recording_base64'] != '') {
-						@unlink($full_recording_path);
+						if ($_SESSION['call_recordings']['delete_recording_file']['bool'] != 'false') {
+							@unlink($full_recording_path);
+						} else {
+							rename($full_recording_path, $full_recording_path . ".bak");
+						}
 					}
 			}
 		} //end download method
@@ -155,7 +159,13 @@ if (!class_exists('call_recordings')) {
 												foreach($array as &$field) {
 													//delete the file on the file system
 														if (file_exists($field['call_recording_path'].'/'.$field['call_recording_name'])) {
-															unlink($field['call_recording_path'].'/'.$field['call_recording_name']);
+															$tmp_full_recording_path = $field['call_recording_path'].'/'.$field['call_recording_name'];
+															if ($_SESSION['call_recordings']['delete_recording_file']['bool'] != 'false') {
+																unlink($tmp_full_recording_path);
+															} else {
+																rename($tmp_full_recording_path, $tmp_full_recording_path . ".bak");
+															}
+															unset($tmp_full_recording_path);
 														}
 													//delete call recordings in the database
 														$sql = "delete from v_call_recordings ";
