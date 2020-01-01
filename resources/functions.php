@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2016
+	Portions created by the Initial Developer are Copyright (C) 2008-2019
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -27,7 +27,7 @@
 
 	if (!function_exists('software_version')) {
 		function software_version() {
-			return '4.4.10';
+			return '4.4.11';
 		}
 	}
 
@@ -367,6 +367,10 @@
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
+			$table_name = preg_replace("#[^a-zA-Z0-9_]#", "", $table_name);
+			$field_name = preg_replace("#[^a-zA-Z0-9_]#", "", $field_name);
+			$field_value = preg_replace("#[^a-zA-Z0-9_]#", "", $field_value);
+		
 			if (strlen($field_value) > 0) {
 			$html .= "<select id=\"".$field_value."\" name=\"".$field_value."\" class='formfld' style='".$style."'>\n";
 			$html .= "<option value=\"\"></option>\n";
@@ -387,18 +391,18 @@
 					if (strlen($field[$field_name]) > 0) {
 						if ($field_current_value == $field[$field_name]) {
 							if (strlen($field_value) > 0) {
-								$html .= "<option value=\"".$field[$field_value]."\" selected>".$field[$field_name]."</option>\n";
+								$html .= "<option value=\"".urlencode($field[$field_value])."\" selected>".urlencode($field[$field_name])."</option>\n";
 							}
 							else {
-								$html .= "<option value=\"".$field[$field_name]."\" selected>".$field[$field_name]."</option>\n";
+								$html .= "<option value=\"".urlencode($field[$field_name])."\" selected>".urlencode($field[$field_name])."</option>\n";
 							}
 						}
 						else {
 							if (strlen($field_value) > 0) {
-								$html .= "<option value=\"".$field[$field_value]."\">".$field[$field_name]."</option>\n";
+								$html .= "<option value=\"".urlencode($field[$field_value])."\">".urlencode($field[$field_name])."</option>\n";
 							}
 							else {
-								$html .= "<option value=\"".$field[$field_name]."\">".$field[$field_name]."</option>\n";
+								$html .= "<option value=\"".urlencode($field[$field_name])."\">".urlencode($field[$field_name])."</option>\n";
 							}
 						}
 					}
@@ -417,6 +421,11 @@
 		function html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange, $field_value = '') {
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
+
+
+			$field_name = preg_replace("#[^a-zA-Z0-9_]#", "", $field_name);
+			$column_title = preg_replace("#[^a-zA-Z0-9_]#", "", $column_title);
+			$field_value = preg_replace("#[^a-zA-Z0-9_]#", "", $field_value);
 
 			$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' onchange=\"".$onchange."\">\n";
 			$html .= "<option value=''></option>\n";
@@ -460,20 +469,58 @@
 
 	if (!function_exists('th_order_by')) {
 		//html table header order by
-		function th_order_by($field_name, $columntitle, $order_by, $order, $app_uuid = '', $css = '', $additional_get_params='', $description='') {
-			if (strlen($app_uuid) > 0) { $app_uuid = "&app_uuid=".$app_uuid; }	// accomodate need to pass app_uuid where necessary (inbound/outbound routes lists)
-			if (strlen($additional_get_params) > 0) {$additional_get_params = '&'.$additional_get_params; } // you may need to pass other parameters
-			$html = "<th ".$css." nowrap>";
+		function th_order_by($field_name, $column_title, $order_by, $order, $app_uuid = '', $css = '', $http_get_params = '', $description = '') {
+			if (is_uuid($app_uuid) > 0) { $app_uuid = "&app_uuid=".$app_uuid; }	// accomodate need to pass app_uuid where necessary (inbound/outbound routes lists)
+
+			$field_name = preg_replace("#[^a-zA-Z0-9_]#", "", $field_name);
+			$column_title = preg_replace("#[^a-zA-Z0-9_]#", "", $column_title);
+			$field_value = preg_replace("#[^a-zA-Z0-9_]#", "", $field_value);
+
+			$sanitized_parameters = '';
+			if (isset($http_get_params) && strlen($http_get_params) > 0) {
+				$parameters = explode('&', $http_get_params);
+				if (is_array($parameters)) {
+					foreach ($parameters as $parameter) {
+						$array = explode('=', $parameter);
+						$key = preg_replace('#[^a-zA-Z0-9_\-]#', '', $array['0']);
+						$value = urldecode($array['1']);
+						if ($key == 'order_by' && strlen($value) > 0) {
+							//validate order by
+							$sanitized_parameters .= "&order_by=". preg_replace('#[^a-zA-Z0-9_\-]#', '', $value);
+						}
+						else if ($key == 'order' && strlen($value) > 0) {
+							//validate order
+							switch ($value) {
+								case 'asc':
+									$sanitized_parameters .= "&order=asc";
+									break;
+								case 'desc':
+									$sanitized_parameters .= "&order=desc";
+									break;
+							}
+						}
+						else if (strlen($value) > 0 && is_numeric($value)) {
+							$sanitized_parameters .= "&".$key."=".$value;
+						}
+						else {
+							$sanitized_parameters .= "&".$key."=".urlencode($value);
+						}
+					}
+				}
+			}
+
+			$html = "<th ".$css." nowrap='nowrap'>";
 			$description = (strlen($description) > 0) ? $description . ', ': '';
-			if (strlen($order_by) == 0)
+			if (strlen($order_by) == 0) {
 				$order = 'asc';
+			}
 			if ($order == "asc") {
 				$description .= 'sort(ascending)';
-				$html .= "<a href='?order_by=$field_name&order=desc".$app_uuid."$additional_get_params' title='$description'>$columntitle</a>";
+				$html .= "<a href='?order_by=".urlencode($field_name)."&order=desc".urlencode($app_uuid).$sanitized_parameters."' title='".urlencode($description)."'>".urlencode($column_title)."</a>";
 			}
 			else {
 				$description .= 'sort(descending)';
-				$html .= "<a href='?order_by=$field_name&order=asc".$app_uuid."$additional_get_params' title='$description'>$columntitle</a>";
+				$html .= "<a href='?order_by=".urlencode($field_name)."&order=asc".urlencode($app_uuid).$sanitized_parameters."' title='".urlencode($description)."'>".urlencode($column_title)."</a>";
 			}
 			$html .= "</th>";
 			return $html;
