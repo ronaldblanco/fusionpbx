@@ -42,5 +42,7 @@ $text['label-sms_routing_enabled']['en-us'] = "Enabled";
 
 $text['label-sms_routing_description']['en-us'] = "Description";
 
+$text['label-delete-complete']['en-us'] = "Delete Complete";
 
+$text['label-delete-error']['en-us'] = "Delete Error!";
 ?>

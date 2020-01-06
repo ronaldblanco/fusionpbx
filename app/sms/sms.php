@@ -146,6 +146,12 @@ echo " <th>" . $text['label-sms_message_text'] . "</th>\n";
 echo th_order_by('sms_message_direction', $text['label-sms_message_direction'], $order_by, $order);
 echo th_order_by('sms_message_status', $text['label-sms_message_status'], $order_by, $order);
 
+echo "<td class='list_control_icon'>\n";
+if (permission_exists('sms_message_delete') && is_array($sms_messages)) {
+	echo "<a href='javascript:void(0);' onclick=\"if (confirm('".$text['confirm-delete']."')) { document.forms.frm.submit(); }\" alt='".$text['button-delete']."'>".$v_link_label_delete."</a>";
+}
+echo "</td>\n";
+
 echo "</tr>\n";
 
 if (is_array($sms_messages)) {

@@ -42,20 +42,31 @@ $text = $language->get();
 
 
 //check for the ids
-if (is_array($_REQUEST) && sizeof($_REQUEST) > 0 && sizeof($_REQUEST["id"]) > 0) {
+if (is_array($_REQUEST) && sizeof($_REQUEST) > 0) {
 
 	$sql = "DELETE FROM v_sms_messages WHERE domain_uuid = '$domain_uuid'";
-	$sql .= " AND ( 1 == 1 OR ";
+	$sql .= " AND ( 0 = 1";
 
 	$sms_message_uuids = $_REQUEST["id"];
 
 	foreach($sms_message_uuids as $sms_message_uuid) {
-
+		$sql .= " OR sms_message_uuid = '$sms_message_uuid'";
 	}
+	$sql .= ")";
+
+	$prep_statement = $db->prepare($sql);
+	if ($prep_statement) {
+		
+		$prep_statement->execute();
+		$_SESSION["message"] = $text['label-delete-complete'];
+	} else {
+		$_SESSION["message"] = $text['label-delete-error'];
+	}
+} else {
+	$_SESSION["message"] = $text['label-delete-error'];
 }
 
 //redirect the browser
-$_SESSION["message"] = $text['label-delete-complete'];
 header("Location: sms.php");
 return;
 
