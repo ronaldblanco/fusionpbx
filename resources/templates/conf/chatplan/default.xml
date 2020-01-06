@@ -9,9 +9,16 @@
                 </extension>
         </context>   
         <context name="public">
-                <extension name="demo">
+                <extension name="sms-catch-all">
+                        <condition field="to" expression="^\+?(\d+)$">
+                        	    <action application="set" data="final_delivery=true"/>
+                                    <action application="lua" data="app_custom.lua sms --source=internal"/>
+                        </condition>
+                </extension>
+                <extension name="other">
                         <condition field="to" expression="^(.*)$">
-                                    <!-- <action application="lua" data="app.lua sms outbound"/> -->
+                                <action application="set" data="final_delivery=true"/>
+                                <!-- <action application="send"/> -->
                         </condition>
                 </extension>
         </context>
