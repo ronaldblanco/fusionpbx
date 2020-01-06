@@ -23,8 +23,6 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 	Igor Olhovskiy <igorolhovskiy@gmail.com>
-
-	Call ACL is written on Call Block base by Gerrit Visser <gerrit308@gmail.com>
 */
 require_once "root.php";
 require_once "resources/require.php";
@@ -129,12 +127,18 @@ require_once "resources/require.php";
 			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_source'])."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_destination'])."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_target_type'])."</td>\n";
+			if ($row['sms_routing_target_type'] == 'carrier') {
+				$sms_routing_target_type_normalized = $text['label-sms_routing_target_type_carrier'];
+			} elseif ($row['sms_routing_target_type'] == 'internal') {
+				$sms_routing_target_type_normalized = $text['label-sms_routing_target_type_internal'];
+			}
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$sms_routing_target_type_normalized."</td>\n";
+			
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_target_details'])."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_number_translation_source'])."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_number_translation_destination'])."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_enabled'])."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$text['label-'.escape($row['sms_routing_description'])]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['sms_routing_description'])."</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('sms_routing_edit')) {
 				echo "<a href='sms_routing_edit.php?id=".escape($row['sms_routing_uuid'])."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
