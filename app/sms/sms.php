@@ -167,11 +167,10 @@ if (is_array($sms_messages)) {
 			echo "	</td>\n";
 			$sms_message_ids[] = 'checkbox_'.$row['sms_message_uuid'];
 		}
-		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>";
 
-		echo escape($row['sms_message_timestamp']);
-
-		echo "</td>\n";
+		$sms_message_timestamp = ($_SESSION['domain']['time_format']['text'] == '12h') ? date("j M Y g:i:sa", strtotime($row['sms_message_timestamp'])) : date("j M Y H:i:s", strtotime($row['sms_message_timestamp']));
+		
+		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".$sms_message_timestamp."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."' width='13%'>".escape($row['sms_message_from'])."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."' width='12%'>".escape($row['sms_message_to'])."</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."' width='45%'>".escape($row['sms_message_text'])."</td>\n";

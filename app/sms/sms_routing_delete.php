@@ -22,13 +22,12 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-
-	Call Block is written by Gerrit Visser <gerrit308@gmail.com>
+	Igor Olhovskiy <igorolhovskiy@gmail.com>
 */
 include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-if (permission_exists('sms_delete')) {
+if (permission_exists('sms_routing_delete')) {
 	//access granted
 }
 else {
@@ -41,25 +40,24 @@ else {
 	$text = $language->get();
 
 //set the variable
-	if (count($_GET)>0) {
-		$id = $_GET["id"][0];
+	if (count($_GET) > 0) {
+		$id = escape(check_str($_GET["id"]));
 	}
 
 //delete the extension
-	if (strlen($id)>0) {
+	if (strlen($id) > 0) {
 
-		//delete the call block
-			$sql = "delete from v_sms_destinations ";
-			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-			$sql .= "and sms_destination_uuid = '$id' ";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			unset($prep_statement, $sql);
+		$sql = "DELETE FROM v_sms_routing";
+		$sql .= " WHERE domain_uuid = '".$_SESSION['domain_uuid']."'";
+		$sql .= " AND sms_routing_uuid = '$id'";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
 	}
 
 	//redirect the browser
-		$_SESSION["message"] = $text['label-delete-complete'];
-		header("Location: sms.php");
-		return;
+	$_SESSION["message"] = $text['label-delete-complete'];
+	header("Location: sms_routing.php");
+	return;
 
 ?>

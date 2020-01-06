@@ -287,6 +287,7 @@
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='sms_routing_number_translation_source'>\n";
+	echo "<option value=''> </option>\n";
 	foreach ($number_translation_name_list as $number_translation) {
 
 		$number_translation_name = $number_translation['number_translation_name'];
@@ -307,6 +308,7 @@
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='sms_routing_number_translation_destination'>\n";
+	echo "<option value=''> </option>\n";
 	foreach ($number_translation_name_list as $number_translation) {
 
 		$number_translation_name = $number_translation['number_translation_name'];
