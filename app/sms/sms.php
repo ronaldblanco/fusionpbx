@@ -131,7 +131,7 @@ echo "	</tr>\n";
 echo "</table>\n";
 echo "<br />";
 
-echo "<form name='frm' method='post' action='sms_message_delete.php'>\n";
+echo "<form name='frm' method='post' action='sms_delete.php'>\n";
 echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 echo "<tr>\n";
 
@@ -160,20 +160,20 @@ if (is_array($sms_messages)) {
 			echo "	</td>\n";
 			$sms_message_ids[] = 'checkbox_'.$row['sms_message_uuid'];
 		}
-		echo "	<td valign='top' class='".$row_style[$c]."' width='15%'>";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>";
 
 		echo escape($row['sms_message_timestamp']);
 
 		echo "</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".escape($row['sms_message_from'])."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".escape($row['sms_message_to'])."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' width='50%'>".escape($row['sms_message_text'])."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' width='10%'>".escape($row['sms_message_direction'])."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."' width='5%'>".escape($row['sms_message_status'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='13%'>".escape($row['sms_message_from'])."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='12%'>".escape($row['sms_message_to'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='45%'>".escape($row['sms_message_text'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='5%'>".escape($row['sms_message_direction'])."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."' width='15%'>".escape($row['sms_message_status'])."</td>\n";
 
 		echo "	<td class='list_control_icons'>";
 		if (permission_exists('sms_message_delete')) {
-			echo "<a href='sms_message_delete.php?id[]=".escape($row['sms_message_uuid'])."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
+			echo "<a href='sms_delete.php?id[]=".escape($row['sms_message_uuid'])."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 		}
 		echo "</td>\n";
 		echo "</tr>\n";
