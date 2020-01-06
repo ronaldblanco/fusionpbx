@@ -119,9 +119,9 @@ require_once "resources/paging.php";
 
 			$tr_link = (permission_exists('e911_edit')) ? "href='e911_edit.php?id=".$row['e911_uuid']."'" : null;
 			echo "<tr ".$tr_link.">\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_did']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_callername']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['e911_city']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".escape(format_phone($row['e911_did']))."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['e911_callername'])."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['e911_city'])."&nbsp;</td>\n";
 			if ($row['e911_validated'] == '') {
   				echo "	<td valign='top' class='".$row_style[$c]."'>".$text['label-false']."&nbsp;</td>\n";
 			} else {

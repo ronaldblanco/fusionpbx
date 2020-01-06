@@ -103,7 +103,7 @@
         }
     }
 
-    if (isset($_REQUEST["id"])) {
+    if (isset($_REQUEST["id"]) && !$e911_success_got_from_server) {
         $action = "update";
         $e911_uuid = check_str($_REQUEST["id"]);
     }
@@ -160,22 +160,25 @@
 
     		if ($action == "add" && permission_exists('e911_add')) {
 
-                // Make api calls here; Seems never would be used
-                if (validate_e911_data($e911_data)) {
-                    if (add_e911_data($e911_data)) {
-                        if ($e911_alert_email_enable == 'True') {
-                            if (!add_e911_alert($e911_alert_email)) {
-                                $e911_alert_email_enable = "False";
-                            }
-                        }
-                    } else {
-                        $e911_validated = "Not added";
-                        $e911_alert_email_enable = "False";
-                    }
-                } else {
-                    $e911_validated = "Not validated";
-                    $e911_alert_email_enable = "False";
-                }
+				// TOO MUCH PAIN HERE...
+				if (!$e911_success_got_from_server) {
+					// Make api calls here; Seems never would be used
+					if (validate_e911_data($e911_data)) {
+						if (add_e911_data($e911_data)) {
+							if ($e911_alert_email_enable == 'True') {
+								if (!add_e911_alert($e911_alert_email)) {
+									$e911_alert_email_enable = "False";
+								}
+							}
+						} else {
+							$e911_validated = "Not added";
+							$e911_alert_email_enable = "False";
+						}
+					} else {
+						$e911_validated = "Not validated";
+						$e911_alert_email_enable = "False";
+					}
+				}
 
     			//prepare the uuids
     			$e911_uuid = uuid();
