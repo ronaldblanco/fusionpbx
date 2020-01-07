@@ -59,7 +59,7 @@ if (!$included) {
 	//pre-populate the form
 		if (strlen($_REQUEST['id']) > 0 && $_POST["persistformvar"] != "true") {
 			$fax_uuid = check_str($_REQUEST["id"]);
-			if (if_group("superadmin") || if_group("admin")) {
+			if (if_group("superadmin") || if_group("admin") || permission_exists('fax_extension_all')) {
 				//show all fax extensions
 				$sql = "select fax_uuid, fax_extension, fax_caller_id_name, fax_caller_id_number, ";
 				$sql .= "accountcode, fax_send_greeting ";
@@ -81,7 +81,7 @@ if (!$included) {
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			if (count($result) == 0) {
-				if (if_group("superadmin") || if_group("admin")) {
+				if (if_group("superadmin") || if_group("admin") || permission_exists('fax_extension_all')) {
 					//allow access
 				}
 				else {
