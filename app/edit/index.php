@@ -47,15 +47,15 @@
 	$title = escape($_GET["dir"]);
 	unset($mode);
 	switch ($_GET["dir"]) {
-		case 'xml':
+/* 		case 'xml':
 			$title = 'XML';
 			$mode = 'xml';
-			break;
+			break; */
 		case 'provision':
 			$title = 'Provision';
 			$mode = 'xml';
 			break;
-		case 'php':
+/* 		case 'php':
 			$title = 'PHP';
 			$mode = 'php';
 			break;
@@ -65,7 +65,7 @@
 			break;
 		case 'grammar':
 			$title = 'Grammar';
-			$mode = 'xml';
+			$mode = 'xml'; */
 		default: $mode = 'text';
 	}
 

@@ -1,7 +1,7 @@
 <?php
 
 	$y=0;
-	$apps[$x]['menu'][$y]['title']['en-us'] = "Script Editor";
+/* 	$apps[$x]['menu'][$y]['title']['en-us'] = "Script Editor";
 	$apps[$x]['menu'][$y]['title']['ar-eg'] = "";
 	$apps[$x]['menu'][$y]['title']['de-at'] = "Skript Editor";
 	$apps[$x]['menu'][$y]['title']['de-ch'] = "";
@@ -52,7 +52,7 @@
 	$apps[$x]['menu'][$y]['icon'] = "glyphicon-new-window";
 	$apps[$x]['menu'][$y]['path'] = "/app/edit/index.php?dir=xml";
 	$apps[$x]['menu'][$y]['groups'][] = "superadmin";
-	$y++;
+	$y++; */
 	$apps[$x]['menu'][$y]['title']['en-us'] = "Provision Editor";
 	$apps[$x]['menu'][$y]['title']['ar-eg'] = "";
 	$apps[$x]['menu'][$y]['title']['de-at'] = "Bereitstellungs Editor";
@@ -78,7 +78,7 @@
 	$apps[$x]['menu'][$y]['icon'] = "glyphicon-new-window";
 	$apps[$x]['menu'][$y]['path'] = "/app/edit/index.php?dir=provision";
 	$apps[$x]['menu'][$y]['groups'][] = "superadmin";
-	$y++;
+	/* $y++;
 	$apps[$x]['menu'][$y]['title']['en-us'] = "PHP Editor";
 	$apps[$x]['menu'][$y]['title']['ar-eg'] = "";
 	$apps[$x]['menu'][$y]['title']['de-at'] = "PHP Editor";
@@ -129,6 +129,6 @@
 	$apps[$x]['menu'][$y]['category'] = "external";
 	$apps[$x]['menu'][$y]['icon'] = "glyphicon-new-window";
 	$apps[$x]['menu'][$y]['path'] = "/app/edit/index.php?dir=grammar";
-	$apps[$x]['menu'][$y]['groups'][] = "superadmin";
+	$apps[$x]['menu'][$y]['groups'][] = "superadmin"; */
 
 ?>
