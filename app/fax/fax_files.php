@@ -51,7 +51,7 @@
 		//get the fax uuid
 		$fax_uuid = $_GET["id"];
 
-		if (if_group("superadmin") || if_group("admin")) {
+		if (if_group("superadmin") || if_group("admin") || permission_exists('fax_extension_all')) {
 			//show all fax extensions
 			$sql = "select fax_name, fax_extension from v_fax ";
 			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -69,7 +69,7 @@
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		if (count($result) == 0) {
-			if (if_group("superadmin") || if_group("admin")) {
+			if (if_group("superadmin") || if_group("admin") || permission_exists('fax_extension_all')) {
 				//allow access
 			}
 			else {

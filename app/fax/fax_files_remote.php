@@ -45,7 +45,7 @@ else {
 	if (strlen($_GET['id']) > 0) {
 		$fax_uuid = check_str($_GET["id"]);
 
-		if (if_group("superadmin") || if_group("admin")) {
+		if (if_group("superadmin") || if_group("admin") || permission_exists('fax_extension_all')) {
 			//show all fax extensions
 			$sql = "select * from v_fax ";
 			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
