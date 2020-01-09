@@ -481,7 +481,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<td align='left' width='30%' valign='top' nowrap='nowrap'><b>".$text['header-fax_server_settings']."</b><br><br></td>\n";
 	echo "	<td width='70%' valign='top' align='right'>\n";
 	echo "		<input type='button' class='btn' name='' alt=\"".$text['button-back']."\" onclick=\"window.location='fax.php'\" value=\"".$text['button-back']."\">\n";
-	if ((if_group("admin") || if_group("superadmin")) && $action == "update") {
+	if ((if_group("admin") || if_group("superadmin") || permission_exists('fax_extension_all')) && $action == "update") {
 		echo "	<input type='button' class='btn' alt=\"".$text['button-copy']."\" onclick=\"if (confirm('".$text['confirm-copy-info']."')){window.location='fax_copy.php?id=".$fax_uuid."';}\" value=\"".$text['button-copy']."\">\n";
 	}
 	echo "		<input type='submit' class='btn' name='submit' value='".$text['button-save']."'>\n";
@@ -621,7 +621,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		if (if_group("admin") || if_group("superadmin")) {
+		if (if_group("admin") || if_group("superadmin") || permission_exists('fax_extension_all')) {
 			if ($action == "update") {
 				echo "	<tr>";
 				echo "		<td class='vncell' valign='top'>".$text['label-user-list']."</td>";

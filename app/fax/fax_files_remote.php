@@ -63,7 +63,7 @@ else {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		if (count($result) == 0) {
-			if (!if_group("superadmin") && !if_group("admin")) {
+			if (!if_group("superadmin") && !if_group("admin") && !permission_exists('fax_extension_all')) {
 				echo "access denied";
 				exit;
 			}
