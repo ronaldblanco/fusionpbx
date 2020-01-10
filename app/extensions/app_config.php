@@ -164,7 +164,12 @@
 		$apps[$x]['permissions'][$y]['name'] = "extension_copy";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
-		$apps[$x]['permissions'][$y]['name'] = "extension_toll_allow_show";	
+		$apps[$x]['permissions'][$y]['name'] = "extension_toll_allow_show";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$apps[$x]['permissions'][$y]['groups'][] = "admin";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "extension_cidr";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 
 	//default settings
 		$y=0;
