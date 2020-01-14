@@ -458,7 +458,12 @@ include "root.php";
 						if (is_numeric($row["follow_me_destination"])) {
 							if ($_SESSION['domain']['bridge']['text'] == "outbound" || $_SESSION['domain']['bridge']['text'] == "bridge") {
 								$bridge = outbound_route_to_bridge ($this->domain_uuid, $row["follow_me_destination"]);
-								$dial_string .= "[".implode(",", $variables)."]".$bridge[0];
+								if ($is_enterprise_followme) {
+									$dial_string .= "{".implode(",", $variables)."}";
+								} else {
+									$dial_string .= "[".implode(",", $variables)."]";
+								}
+								$dial_string .= $bridge[0];
 							}
 							elseif ($_SESSION['domain']['bridge']['text'] == "loopback") {
 								$sleep_time = ($row["follow_me_delay"] != "" && $row["follow_me_delay"] != "0") ? "sleep:".($row["follow_me_delay"] * 1000) ."\," : "";
@@ -466,7 +471,12 @@ include "root.php";
 								$dial_string .= "loopback/".$sleep_time."export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
 							}
 							elseif ($_SESSION['domain']['bridge']['text'] == "lcr") {
-								$dial_string .= "[".implode(",", $variables)."]lcr/".$_SESSION['lcr']['profile']['text']."/".$this->domain_name."/".$row["follow_me_destination"];
+								if ($is_enterprise_followme) {
+									$dial_string .= "{".implode(",", $variables)."}";
+								} else {
+									$dial_string .= "[".implode(",", $variables)."]";
+								}
+								$dial_string .= "lcr/".$_SESSION['lcr']['profile']['text']."/".$this->domain_name."/".$row["follow_me_destination"];
 							}
 							else {
 								//$dial_string .= "loopback/".$row["follow_me_destination"]."/".$this->domain_name;
@@ -481,7 +491,7 @@ include "root.php";
 					$is_first_destination = False;
 				}
 				//$dial_string = str_replace(",]", "]", $dial_string);
-				$this->dial_string = "{ignore_early_media=true}".$dial_string;
+				$this->dial_string = ($is_enterprise_followme) ? "<ignore_early_media=true>".$dial_string : "{ignore_early_media=true}".$dial_string;
 				unset($variables);
 
 			//update follow me
