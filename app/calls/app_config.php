@@ -69,5 +69,13 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_order'] = "0";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set the default Follow Me Timeout value.";
-
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d3bf8533-7d34-46da-8df2-f3bf92db1bdd";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "follow_me";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "enterprise_originate";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_order'] = "0";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use enterprise or normal originate string";
 ?>

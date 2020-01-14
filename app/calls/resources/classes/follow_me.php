@@ -308,10 +308,13 @@ include "root.php";
 				}
 				*/
 
-				$x = 0;
+				$is_first_destination = True;
+				$is_enterprise_followme = isset($_SESSION['follow_me']['enterprise_originate']['boolean']) ? filter_var($_SESSION['follow_me']['enterprise_originate']['boolean'], FILTER_VALIDATE_BOOLEAN) : False;
+				$dialstring_channel_delimiter = $is_enterprise_followme ? ":_:": ",";
+
 				if (is_array($result)) foreach ($result as &$row) {
-					if ($x > 0) {
-						$dial_string .= ":_:";
+					if (!$is_first_destination > 0) {
+						$dial_string .= $dialstring_channel_delimiter;
 					}
 
 					//determine if the destination is a local sip user
@@ -356,16 +359,20 @@ include "root.php";
 						$variables[] = "domain_name=".$this->domain_name;
 						$variables[] = "domain=".$this->domain_name;
 						$variables[] = "extension_uuid=".$this->extension_uuid;
-						$variables[] = "leg_delay_start=".$row["follow_me_delay"];
-						$variables[] = "originate_delay_start=".$row["follow_me_delay"];
+						if ($row["follow_me_delay"] > 0) {
+							if ($is_enterprise_followme) {
+								$variables[] = "originate_delay_start=" . ($row["follow_me_delay"] * 1000);
+							} else {
+								$variables[] = "leg_delay_start=".$row["follow_me_delay"];
+							}
+						}
 						$variables[] = "leg_timeout=".$row["follow_me_timeout"];
 
 						$dial_string .= "[".implode(",", $variables)."]\${sofia_contact(".$row["follow_me_destination"]."@".$this->domain_name.")}";
 						//$dial_string .= "[".implode(",", $variables)."]user/".$row["follow_me_destination"]."@".$this->domain_name;
 						//$dial_string .= "loopback/export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
 						unset($variables);
-					}
-					else {
+					} else {
 						if (is_numeric($this->extension)) {
 							$presence_id = $this->extension;
 						}
@@ -435,9 +442,17 @@ include "root.php";
 						$variables[] = "domain_name=".$this->domain_name;
 						//$variables[] = "domain=".$this->domain_name;
 						$variables[] = "extension_uuid=".$this->extension_uuid;
-						$variables[] = "leg_delay_start=".$row["follow_me_delay"];
-						$variables[] = "originate_delay_start=".$row["follow_me_delay"];
-						$variables[] = "sleep=".($row["follow_me_delay"] * 1000);
+						if ($row["follow_me_delay"] > 0) {
+
+							// $variables[] = "leg_delay_start=".$row["follow_me_delay"];
+							// $variables[] = "originate_delay_start=".$row["follow_me_delay"];
+							// $variables[] = "sleep=".($row["follow_me_delay"] * 1000);
+							if ($is_enterprise_followme) {
+								$variables[] = "originate_delay_start=" . ($row["follow_me_delay"] * 1000);
+							} else {
+								$variables[] = "leg_delay_start=".$row["follow_me_delay"];
+							}
+						}
 						$variables[] = "leg_timeout=".$row["follow_me_timeout"];
 						$variables[] = "is_follow_me_loopback=true";
 						if (is_numeric($row["follow_me_destination"])) {
@@ -463,7 +478,7 @@ include "root.php";
 							$dial_string .= $row["follow_me_destination"];
 						}
 					}
-					$x++;
+					$is_first_destination = False;
 				}
 				//$dial_string = str_replace(",]", "]", $dial_string);
 				$this->dial_string = "{ignore_early_media=true}".$dial_string;
