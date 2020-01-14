@@ -368,7 +368,13 @@ include "root.php";
 						}
 						$variables[] = "leg_timeout=".$row["follow_me_timeout"];
 
-						$dial_string .= "[".implode(",", $variables)."]\${sofia_contact(".$row["follow_me_destination"]."@".$this->domain_name.")}";
+						if ($is_enterprise_followme) {
+							$dial_string .= "{".implode(",", $variables)."}";
+						} else {
+							$dial_string .= "[".implode(",", $variables)."]";
+						}
+
+						$dial_string .= "\${sofia_contact(".$row["follow_me_destination"]."@".$this->domain_name.")}";
 						//$dial_string .= "[".implode(",", $variables)."]user/".$row["follow_me_destination"]."@".$this->domain_name;
 						//$dial_string .= "loopback/export:".implode("\,export:", $variables)."\,transfer:".$row["follow_me_destination"]."/".$this->domain_name."/inline";
 						unset($variables);
