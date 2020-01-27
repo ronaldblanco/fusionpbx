@@ -112,6 +112,7 @@ require_once "resources/paging.php";
 	echo th_order_by('school_bell_leg_a_data', $text['label-school_bell_leg_a_data'], $order_by, $order);
 	echo th_order_by('school_bell_leg_b_data', $text['label-school_bell_leg_b_data'], $order_by, $order);
 	echo "<th>".$text['label-school_bell_schedule_time']."</th>\n";
+	echo th_order_by('school_bell_enabled', $text['label-school_bell_enabled'], $order_by, $order);
 	echo th_order_by('school_bell_description', $text['label-school_bell_description'], $order_by, $order);
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('school_bell_add')) {
@@ -129,9 +130,15 @@ require_once "resources/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_leg_a_data']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_leg_b_data']."&nbsp;</td>\n";
-//TODO!!!			
-			echo "	<td valign='top' class='".$row_style[$c]."'>"."FIXME"."&nbsp;</td>\n";
-//TODO!!!			
+
+			$school_bell_schedule_time = ($row['school_bell_min'] == -1) ? '* ': $row['school_bell_min'] . " ";
+			$school_bell_schedule_time .= ($row['school_bell_hour'] == -1) ? '* ': $row['school_bell_hour'] . " ";
+			$school_bell_schedule_time .= ($row['school_bell_dom'] == -1) ? '* ': $row['school_bell_dom'] . " ";
+			$school_bell_schedule_time .= ($row['school_bell_mon'] == -1) ? '* ': $row['school_bell_mon'] . " ";
+			$school_bell_schedule_time .= ($row['school_bell_dow'] == -1) ? '* ': $row['school_bell_dow'] . " ";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$school_bell_schedule_time."&nbsp;</td>\n";
+
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_enabled']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_description']."&nbsp;</td>\n";
 
 			echo "	<td class='list_control_icons'>";

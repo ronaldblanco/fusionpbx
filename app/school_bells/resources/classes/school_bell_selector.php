@@ -73,24 +73,24 @@ class school_bell_selector {
         return $selector_text;
     }
 
-    public function draw_min($selected = '') {
-        return $this->_draw_selected('min', $this->min, $selected);
+    public function draw_min($name, $selected = '') {
+        return $this->_draw_selected($name, $this->min, $selected);
     }
 
-    public function draw_hour($selected = '') {
-        return $this->_draw_selected('hour', $this->hou, $selected);
+    public function draw_hou($name, $selected = '') {
+        return $this->_draw_selected($name, $this->hou, $selected);
     }
 
-    public function draw_day($selected = '') {
-        return $this->_draw_selected('day' ,$this->day, $selected);
+    public function draw_dom($name, $selected = '') {
+        return $this->_draw_selected($name ,$this->day, $selected);
     }
 
-    public function draw_mon($selected = '') {
-        return $this->_draw_selected('mon' ,$this->mon, $selected);
+    public function draw_mon($name, $selected = '') {
+        return $this->_draw_selected($name ,$this->mon, $selected);
     }
 
-    public function draw_dow($selected = '') {
-        return $this->_draw_selected('dow', $this->dow, $selected);
+    public function draw_dow($name, $selected = '') {
+        return $this->_draw_selected($name, $this->dow, $selected);
     }
 }
 ?>
