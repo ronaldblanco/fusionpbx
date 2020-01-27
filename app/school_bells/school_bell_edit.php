@@ -301,7 +301,7 @@
 	$file = new file;
 	$sound_files = $file->sounds();
 
-	$school_bell_selector = new school_bell_selector;
+	$school_bell_selector = new school_bell_selector($_SESSION['domain']['time_format']['text'] == '12h');
 
 	// One of defaults
 	if (strlen($school_bell_timezone) == 0) {

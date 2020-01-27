@@ -3,7 +3,7 @@ class school_bell_selector {
 
     private $min, $hou, $day;
 
-    function __construct() {
+    function __construct($time12h = False) {
 
         # Fill min
         $this->min = array();
@@ -15,8 +15,18 @@ class school_bell_selector {
         # Fill hou
         $this->hou = array();
         $this->hou[-1] = "*";
-        for ($i = 0; $i <= 23; $i++) {
-            $this->hou[$i] = sprintf("%1$02d", $i);
+        if ($time12h) {
+            $this->hou[0] = "12 AM";
+            for ($i = 1; $i <= 12; $i++) {
+                $this->hou[$i] = sprintf("%1$02d", $i) . " AM";
+            }
+            for  ($i = 13; $i <= 23; $i++) {
+                $this->hou[$i] = sprintf("%1$02d", $i - 12) . " PM";
+            }
+        } else {
+            for ($i = 0; $i <= 23; $i++) {
+                $this->hou[$i] = sprintf("%1$02d", $i);
+            }
         }
 
         $this->day = array();
@@ -26,16 +36,29 @@ class school_bell_selector {
         }
 
         # Fill dow
-        $this->dow = array(
-            -1  => '*',
-            0   => 'Sunday',
-            1   => 'Monday',
-            2   => 'Tuesday',
-            3   => 'Wednesday',
-            4   => 'Thursday',
-            5   => 'Friday',
-            6   => 'Saturday'
-        );
+        if ($time12h) {
+            $this->dow = array(
+                -1  => '*',
+                0   => 'Sunday',
+                1   => 'Monday',
+                2   => 'Tuesday',
+                3   => 'Wednesday',
+                4   => 'Thursday',
+                5   => 'Friday',
+                6   => 'Saturday'
+            );
+        } else {
+            $this->dow = array(
+                -1  => '*',
+                1   => 'Monday',
+                2   => 'Tuesday',
+                3   => 'Wednesday',
+                4   => 'Thursday',
+                5   => 'Friday',
+                6   => 'Saturday',
+                0   => 'Sunday'
+            );
+        }
 
         # Fill month
         $this->mon = array(
