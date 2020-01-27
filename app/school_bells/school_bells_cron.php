@@ -27,6 +27,7 @@
 	$current_minute = (int)date('i', $current_timestamp);
 
 	$sql = "SELECT v_domains.domain_name AS context,";
+	$sql .= " domain_uuid AS domain_uuid,";
 	$sql .= " school_bell_leg_a_data AS extension,";
 	$sql .= " school_bell_leg_b_type AS full_path,";
 	$sql .= " school_bell_ring_timeout AS ring_timeout,";
@@ -34,6 +35,7 @@
 	$sql .= " school_bell_hour as hour,";
 	$sql .= " school_bell_dom as dom,";
 	$sql .= " school_bell_mon as mon,";
+	$sql .= " school_bell_dow as dow,";
 	$sql .= " school_bell_timezone as timezone ";
 	$sql .= "FROM v_school_bells ";
 	$sql .= "JOIN v_domains ON v_domains.domain_uuid = v_school_bells.domain_uuid ";
@@ -109,9 +111,11 @@
 
 		$switch_cmd = "originate {ignore_early_media=true,";
 		$switch_cmd .= "hangup_after_bridge=true,";
+		$switch_cmd .= "domain_name=".$school_bell['context'].",";
+		$switch_cmd .= "domain_uuid=".$school_bell['domain_uuid'].",";
 		$switch_cmd .= "call_timeout=".$school_bell_ring_timeout."}";
-		$switch_cmd .= "/loopback/".$school_bell['extension'];
-		$switch_cmd .= " &playback(.".$school_bell['full_path'].")";
+		$switch_cmd .= "loopback/".$school_bell['extension']."/".$school_bell['context'];
+		$switch_cmd .= " &playback(".$school_bell['full_path'].")";
 	}
 
 ?>
