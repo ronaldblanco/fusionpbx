@@ -478,7 +478,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Custom ring tone (Busy.wav);";
 		$y++;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "7af991ec-ddb9-4942-a05d-d1acc529fef5";
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "7af991ec-ddb9-4942-a05d-d1acc529fea5";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "yealink_ringtone_url";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";

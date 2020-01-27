@@ -258,7 +258,7 @@
 
 //get total recordings from the database
 	$sql = "select count(recording_uuid) as num_rows from v_recordings \n";
-	$sql = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$prep_statement = $db->prepare($sql);
 	if ($prep_statement) {
 		$prep_statement->execute();
