@@ -73,8 +73,8 @@
 			$school_bell_leg_a_type = "loopback/";
 		}
 
-		if (strlen($school_bell_leg_b_type) == 0) {
-			$school_bell_leg_a_type = "lua streamfile.lua ";
+		if (strlen($school_bell_leg_b_data) > 0) {
+			$school_bell_leg_b_type = $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name']."/".$school_bell_leg_b_data;
 		}
 
 		// Set default ring timeout to 3 sec
@@ -290,12 +290,12 @@
 	$recordings = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 
 	//get the phrases
-	$sql = "SELECT * FROM v_phrases ";
-	$sql .= " WHERE (domain_uuid = :domain_uuid OR domain_uuid IS NULL) ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->bindValue('domain_uuid', $domain_uuid);
-	$prep_statement->execute();
-	$phrases = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	// $sql = "SELECT * FROM v_phrases ";
+	// $sql .= " WHERE (domain_uuid = :domain_uuid OR domain_uuid IS NULL) ";
+	// $prep_statement = $db->prepare(check_sql($sql));
+	// $prep_statement->bindValue('domain_uuid', $domain_uuid);
+	// $prep_statement->execute();
+	// $phrases = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 
 	//get the sound files
 	$file = new file;
@@ -380,59 +380,8 @@
 	echo "	".$text['label-school_bell_leg_b_data']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	if (if_group("superadmin")) {
-		$destination_id = "school_bell_leg_b_data";
-		$script = "<script>\n";
-		$script .= "var objs;\n";
-		$script .= "\n";
-		$script .= "function changeToInput".$destination_id."(obj){\n";
-		$script .= "	tb=document.createElement('INPUT');\n";
-		$script .= "	tb.type='text';\n";
-		$script .= "	tb.name=obj.name;\n";
-		$script .= "	tb.className='formfld';\n";
-		$script .= "	tb.setAttribute('id', '".$destination_id."');\n";
-		$script .= "	tb.setAttribute('style', '".$select_style."');\n";
-		if ($on_change != '') {
-			$script .= "	tb.setAttribute('onchange', \"".$on_change."\");\n";
-			$script .= "	tb.setAttribute('onkeyup', \"".$on_change."\");\n";
-		}
-		$script .= "	tb.value=obj.options[obj.selectedIndex].value;\n";
-		$script .= "	document.getElementById('btn_select_to_input_".$destination_id."').style.visibility = 'hidden';\n";
-		$script .= "	tbb=document.createElement('INPUT');\n";
-		$script .= "	tbb.setAttribute('class', 'btn');\n";
-		$script .= "	tbb.setAttribute('style', 'margin-left: 4px;');\n";
-		$script .= "	tbb.type='button';\n";
-		$script .= "	tbb.value=$('<div />').html('&#9665;').text();\n";
-		$script .= "	tbb.objs=[obj,tb,tbb];\n";
-		$script .= "	tbb.onclick=function(){ Replace".$destination_id."(this.objs); }\n";
-		$script .= "	obj.parentNode.insertBefore(tb,obj);\n";
-		$script .= "	obj.parentNode.insertBefore(tbb,obj);\n";
-		$script .= "	obj.parentNode.removeChild(obj);\n";
-		$script .= "	Replace".$destination_id."(this.objs);\n";
-		$script .= "}\n";
-		$script .= "\n";
-		$script .= "function Replace".$destination_id."(obj){\n";
-		$script .= "	obj[2].parentNode.insertBefore(obj[0],obj[2]);\n";
-		$script .= "	obj[0].parentNode.removeChild(obj[1]);\n";
-		$script .= "	obj[0].parentNode.removeChild(obj[2]);\n";
-		$script .= "	document.getElementById('btn_select_to_input_".$destination_id."').style.visibility = 'visible';\n";
-		if ($on_change != '') {
-			$script .= "	".$on_change.";\n";
-		}
-		$script .= "}\n";
-		$script .= "</script>\n";
-		$script .= "\n";
-		echo $script;
-	}
 	echo "<select name='school_bell_leg_b_data' id='school_bell_leg_b_data' class='formfld'>\n";
 	echo "	<option></option>\n";
-	//misc optgroup
-	if (if_group("superadmin")) {
-		echo "<optgroup label='Misc'>\n";
-		echo "	<option value='say:'>say:</option>\n";
-		echo "	<option value='tone_stream:'>tone_stream:</option>\n";
-		echo "</optgroup>\n";
-	}
 	//recordings
 	$tmp_selected = false;
 	if (is_array($recordings)) {
@@ -452,21 +401,6 @@
 				echo "	<option value='".escape($recording_filename)."'>".escape($recording_name)."</option>\n";
 			}
 		}
-		echo "</optgroup>\n";
-	}
-	//phrases
-	if (is_array($phrases)) {
-		echo "<optgroup label='Phrases'>\n";
-		foreach ($phrases as &$row) {
-			if ($school_bell_leg_b_data == "phrase:".$row["phrase_uuid"]) {
-				$tmp_selected = true;
-				echo "	<option value='phrase:".escape($row["phrase_uuid"])."' selected='selected'>".escape($row["phrase_name"])."</option>\n";
-			}
-			else {
-				echo "	<option value='phrase:".escape($row["phrase_uuid"])."'>".escape($row["phrase_name"])."</option>\n";
-			}
-		}
-		unset ($prep_statement);
 		echo "</optgroup>\n";
 	}
 

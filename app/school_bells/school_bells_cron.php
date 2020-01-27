@@ -22,12 +22,15 @@
 
 	set_time_limit(55); // Cannot run more than 55 seconds
 
-	$current_minute = (int)date('i');
+	$current_timestamp = time();
+
+	$current_minute = (int)date('i', $current_timestamp);
 
 	$sql = "SELECT v_domains.domain_name AS context,";
 	$sql .= " school_bell_leg_a_data AS extension,";
-	$sql .= " school_bell_leg_b_data AS app,";
+	$sql .= " school_bell_leg_b_type AS full_path,";
 	$sql .= " school_bell_ring_timeout AS ring_timeout,";
+	$sql .= " school_bell_min as min,";
 	$sql .= " school_bell_hour as hour,";
 	$sql .= " school_bell_dom as dom,";
 	$sql .= " school_bell_mon as mon,";
@@ -61,8 +64,52 @@
 	//$switch_result = event_socket_request($fp, 'api sofia status');
 	//print($switch_result);
 
-//	foreach ($school_bells as $school_bell) {
-//
-//	}
+	foreach ($school_bells as $school_bell) {
+
+		$school_bell_timezone = $school_bell['timezone'];
+		date_default_timezone_set($school_bell_timezone);
+
+		$school_bell_hour = (int)$school_bell['hour'];
+		$current_hour = (int)date('G', $current_timestamp);
+
+		if ($current_hour != -1 || $current_hour != $school_bell_hour) { // Hour is not matched
+			continue;
+		}
+
+		$school_bell_dom = (int)$school_bell['dom'];
+		$current_dom = (int)date('j', $current_timestamp);
+
+		if ($current_dom != -1 || $current_dom != $school_bell_dom) { // Day of the month is not matched
+			continue;
+		}
+
+		$school_bell_mon = (int)$school_bell['mon'];
+		$current_mon = (int)date('n', $current_timestamp);
+
+		if ($current_dom != -1 || $current_dom != $school_bell_dom) { // Month is not matched
+			continue;
+		}
+
+		$school_bell_dow = (int)$school_bell['dow'];
+		$current_dow = (int)date('w', $current_timestamp);
+
+		if ($current_dow != -1 || $current_dow != $school_bell_dow) { // Month is not matched
+			continue;
+		}
+
+		// We got our signal!
+		$school_bell_ring_timeout = (int)$school_bell['ring_timeout'];
+		if ($school_bell_ring_timeout > 60) {
+			$school_bell_ring_timeout = ($school_bell['min'] == "-1") ? 55: $school_bell_ring_timeout;
+		}
+
+		$school_bell_app = $school_bell['app'];
+
+		$switch_cmd = "originate {ignore_early_media=true,";
+		$switch_cmd .= "hangup_after_bridge=true,";
+		$switch_cmd .= "call_timeout=".$school_bell_ring_timeout."}";
+		$switch_cmd .= "/loopback/".$school_bell['extension'];
+		$switch_cmd .= " &playback(.".$school_bell['full_path'].")";
+	}
 
 ?>
