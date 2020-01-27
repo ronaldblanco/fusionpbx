@@ -109,13 +109,17 @@
 
 		$school_bell_app = $school_bell['app'];
 
-		$switch_cmd = "originate {ignore_early_media=true,";
+		$switch_cmd = "bgapi ";
+		$switch_cmd .= "originate {ignore_early_media=true,";
 		$switch_cmd .= "hangup_after_bridge=true,";
 		$switch_cmd .= "domain_name=".$school_bell['context'].",";
 		$switch_cmd .= "domain_uuid=".$school_bell['domain_uuid'].",";
 		$switch_cmd .= "call_timeout=".$school_bell_ring_timeout."}";
 		$switch_cmd .= "loopback/".$school_bell['extension']."/".$school_bell['context'];
 		$switch_cmd .= " &playback(".$school_bell['full_path'].")";
+		
+		event_socket_request($freeswitch_event_socket, $switch_cmd);
+
 	}
 
 ?>
