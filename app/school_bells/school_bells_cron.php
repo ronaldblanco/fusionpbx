@@ -53,13 +53,13 @@
 		return;
 	}
 
-	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-	if (!$fp) {
+	$freeswitch_event_socket = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	if (!$freeswitch_event_socket) {
 		die("Cannot connect to Event socket");
 	}
 
-	$switch_result = event_socket_request($fp, 'api sofia status');
-	print($switch_result);
+	//$switch_result = event_socket_request($fp, 'api sofia status');
+	//print($switch_result);
 
 //	foreach ($school_bells as $school_bell) {
 //
