@@ -72,28 +72,28 @@
 		$school_bell_hour = (int)$school_bell['hour'];
 		$current_hour = (int)date('G', $current_timestamp);
 
-		if ($current_hour != -1 || $current_hour != $school_bell_hour) { // Hour is not matched
+		if ($school_bell_hour != -1 || $current_hour != $school_bell_hour) { // Hour is not matched
 			continue;
 		}
 
 		$school_bell_dom = (int)$school_bell['dom'];
 		$current_dom = (int)date('j', $current_timestamp);
 
-		if ($current_dom != -1 || $current_dom != $school_bell_dom) { // Day of the month is not matched
+		if ($school_bell_dom != -1 || $current_dom != $school_bell_dom) { // Day of the month is not matched
 			continue;
 		}
 
 		$school_bell_mon = (int)$school_bell['mon'];
 		$current_mon = (int)date('n', $current_timestamp);
 
-		if ($current_dom != -1 || $current_dom != $school_bell_dom) { // Month is not matched
+		if ($school_bell_mon != -1 || $current_mon != $school_bell_mon) { // Month is not matched
 			continue;
 		}
 
 		$school_bell_dow = (int)$school_bell['dow'];
 		$current_dow = (int)date('w', $current_timestamp);
 
-		if ($current_dow != -1 || $current_dow != $school_bell_dow) { // Month is not matched
+		if ($school_bell_dow != -1 || $current_dow != $school_bell_dow) { // Month is not matched
 			continue;
 		}
 
@@ -102,6 +102,8 @@
 		if ($school_bell_ring_timeout > 60) {
 			$school_bell_ring_timeout = ($school_bell['min'] == "-1") ? 55: $school_bell_ring_timeout;
 		}
+
+		$school_bell_ring_timeout = ($school_bell_ring_timeout == 0) ? 5 : $school_bell_ring_timeout;
 
 		$school_bell_app = $school_bell['app'];
 
