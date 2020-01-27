@@ -7,76 +7,90 @@ class school_bell_selector {
 
         # Fill min
         $this->min = array();
+        $this->min[-1] = "*";
         for ($i = 0; $i <= 59; $i++) {
-            $this->min[] = sprintf("%1$02d", $i);
+            $this->min[$i] = sprintf("%1$02d", $i);
         }
         
         # Fill hou
         $this->hou = array();
+        $this->hou[-1] = "*";
         for ($i = 0; $i <= 23; $i++) {
-            $this->hou[] = sprintf("%1$02d", $i);
+            $this->hou[$i] = sprintf("%1$02d", $i);
         }
 
         $this->day = array();
+        $this->day[-1] = "*";
         for ($i = 1; $i <= 31; $i++) {
-            $this->day[] = sprintf("%1$02d", $i);
+            $this->day[$i] = sprintf("%1$02d", $i);
         }
 
         # Fill dow
-        $this->dow = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $this->dow = array(
+            -1  => '*',
+            0   => 'Sunday',
+            1   => 'Monday',
+            2   => 'Tuesday',
+            3   => 'Wednesday',
+            4   => 'Thursday',
+            5   => 'Friday',
+            6   => 'Saturday'
+        );
 
         # Fill month
-        $this->mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-        # Fill yea
-        $current_year = date("Y");
-        $this->yea = [$current_year - 1, $current_year, $current_year + 1, $current_year + 2];
-
+        $this->mon = array(
+            -1  => '*',
+            1   => 'January',
+            2   => 'February',
+            3   => 'March',
+            4   => 'April',
+            5   => 'May',
+            6   => 'June',
+            7   => 'July',
+            8   => 'August',
+            9   => 'September',
+            10  => 'October',
+            11  => 'November',
+            12  => 'December'
+        );
     }
 
-    private function _option_string($option, $selected) {
-        if ($option == $selected) {
-            return "<option selected value='" . $option . "'>" . $option . "</option>\n";
+    private function _option_string($option_item, $draw_item, $selected_item) {
+
+        if ($option_item == $selected_item) {
+            return "<option selected value='" . $option_item . "'>" . $draw_item . "</option>\n";
         }
-        return "<option value='" . $option . "'>" . $option . "</option>\n";
+        return "<option value='" . $option_item . "'>" . $draw_item . "</option>\n";
     }
 
-    private function _draw_selected($range_array, $selected, $draw_asterisk = False) {
-        $selector_text = "<select name = 'aaa' id = 'bbb' class='formfld'>\n";
+    private function _draw_selected($selector_name ,$range_array, $selected) {
+        $selector_text = "<select name = '$selector_name' id = '$selector_name' class='formfld'>\n";
 
-        if ($draw_asterisk) {
-            array_unshift($range_array, "*");
-        }
-
-        foreach ($range_array as $draw_item) {
-            $selector_text .= $this->_option_string($draw_item, $selected);
+        foreach ($range_array as $option_item => $draw_item) {
+            $selector_text .= $this->_option_string($option_item, $draw_item, $selected);
         }
         $selector_text .= "</select>";
         return $selector_text;
     }
 
-    public function draw_min($selected = '', $draw_asterisk = False) {
-        return $this->_draw_selected($this->min, $selected, $draw_asterisk);
+    public function draw_min($selected = '') {
+        return $this->_draw_selected('min', $this->min, $selected);
     }
 
-    public function draw_hou($selected = '', $draw_asterisk = False) {
-        return $this->_draw_selected($this->hou, $selected, $draw_asterisk);
+    public function draw_hour($selected = '') {
+        return $this->_draw_selected('hour', $this->hou, $selected);
     }
 
-    public function draw_day($selected = '', $draw_asterisk = False) {
-        return $this->_draw_selected($this->day, $selected, $draw_asterisk);
+    public function draw_day($selected = '') {
+        return $this->_draw_selected('day' ,$this->day, $selected);
     }
 
-    public function draw_mon($selected = '', $draw_asterisk = False) {
-        return $this->_draw_selected($this->mon, $selected, $draw_asterisk);
+    public function draw_mon($selected = '') {
+        return $this->_draw_selected('mon' ,$this->mon, $selected);
     }
 
-    public function draw_dow($selected = '', $draw_asterisk = False) {
-        return $this->_draw_selected($this->dow, $selected, $draw_asterisk);
-    }
-
-    public function draw_yea($selected = '', $draw_asterisk = False) {
-        return $this->_draw_selected($this->yea, $selected, $draw_asterisk);
+    public function draw_dow($selected = '') {
+        return $this->_draw_selected('dow', $this->dow, $selected);
     }
 }
 ?>

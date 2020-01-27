@@ -49,23 +49,11 @@ require_once "resources/paging.php";
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
-//show the content
-	echo "<table width='100%' cellpadding='0' cellspacing='0 border='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['header-school_bells']."</b></td>\n";
-	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
-	echo "	</tr>\n";
-	echo "	<tr>\n";
-	echo "		<td align='left' colspan='2'>\n";
-	echo "			".$text['description-school_bells']."<br /><br />\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
-	echo "</table>\n";
-
 	//prepare to page the results
-	$sql = "select count(*) as num_rows from v_school_bells ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql = "SELECT count(school_bell_uuid) AS num_rows FROM v_school_bells";
+	$sql .= " WHERE domain_uuid = :domain_uuid";
 	$prep_statement = $db->prepare($sql);
+	$prep_statement->bindValue('domain_uuid', $domain_uuid);
 	if ($prep_statement) {
 		$prep_statement->execute();
 		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
@@ -84,17 +72,35 @@ require_once "resources/paging.php";
 	$offset = $rows_per_page * $page;
 
 	//get the list
-	$sql = "select * from v_school_bells ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($order_by)> 0) { 
-		$sql .= "order by $order_by $order "; 
+	if ($num_rows > 0) {
+		$sql = "SELECT * FROM v_school_bells";
+		$sql .= " WHERE domain_uuid = :domain_uuid";
+		if (strlen($order_by)> 0) { 
+			$sql .= " ORDER BY $order_by $order"; 
+		}
+		$sql .= " LIMIT $rows_per_page OFFSET $offset";
+
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->bindValue('domain_uuid', $domain_uuid);
+
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
+		unset ($prep_statement, $sql);
 	}
-	$sql .= "limit $rows_per_page offset $offset ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
+
+	//show the content
+	echo "<table width='100%' cellpadding='0' cellspacing='0 border='0'>\n";
+	echo "	<tr>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['header-school_bells']." (".$num_rows.")</b></td>\n";
+	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "		<td align='left' colspan='2'>\n";
+	echo "			".$text['description-school_bells']."<br /><br />\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "</table>\n";
 
 	$c = 0;
 	$row_style["0"] = "row_style0";
@@ -104,10 +110,8 @@ require_once "resources/paging.php";
 	echo "<tr>\n";
 	echo th_order_by('school_bell_name', $text['label-school_bell_name'], $order_by, $order);
 	echo th_order_by('school_bell_leg_a_data', $text['label-school_bell_leg_a_data'], $order_by, $order);
-
-
-
-	echo th_order_by('school_bell_timezone', $text['label-school_bell_timezone'], $order_by, $order);
+	echo th_order_by('school_bell_leg_b_data', $text['label-school_bell_leg_b_data'], $order_by, $order);
+	echo "<th>".$text['label-school_bell_schedule_time']."</th>\n";
 	echo th_order_by('school_bell_description', $text['label-school_bell_description'], $order_by, $order);
 	echo "<td class='list_control_icons'>";
 	if (permission_exists('school_bell_add')) {
@@ -124,10 +128,12 @@ require_once "resources/paging.php";
 			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_leg_a_data']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_timezone']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_leg_b_data']."&nbsp;</td>\n";
+//TODO!!!			
+			echo "	<td valign='top' class='".$row_style[$c]."'>"."FIXME"."&nbsp;</td>\n";
+//TODO!!!			
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['school_bell_description']."&nbsp;</td>\n";
 
-			//echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['call_flow_description']."&nbsp;</td>\n";
 			echo "	<td class='list_control_icons'>";
 			if (permission_exists('school_bell_edit')) {
 				echo "<a href='school_bell_edit.php?id=".$row['school_bell_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
@@ -137,7 +143,7 @@ require_once "resources/paging.php";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
-			$c = 1 - $c;
+			$c = 1 - $c; // Switch 1/0/1/0...
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
