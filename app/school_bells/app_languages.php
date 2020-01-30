@@ -58,7 +58,7 @@ $text['description-school_bell_min']['en-us'] = "Specify minutes of hour. * mean
 
 $text['description-school_bell_hour']['en-us'] = "Specify hour of the day. * means every hour";
 
-$text['description-school_bell_dom']['en-us'] = "Specify yay of the month. * means every day";
+$text['description-school_bell_dom']['en-us'] = "Specify day of the month. * means every day";
 
 $text['description-school_bell_dow']['en-us'] = "Specify day of the week. * means every day of the week";
 

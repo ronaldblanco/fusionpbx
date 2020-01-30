@@ -432,17 +432,8 @@
 	echo "</tr>\n";
 
 	// End school_bell_leg_b_data
-
-	// Show spaces
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-school_bell_schedule']."\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "<br />\n";
-	echo $text['description-school_bell_schedule']."\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	// Show divider
+	echo "<tr><td colspan='2'><br /></td></tr>\n";
 
 	// Show Min
 	echo "<tr>\n";
@@ -525,6 +516,9 @@
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	// Show divider
+	echo "<tr><td colspan='2'><br /></td></tr>\n";
 
 	// Show enabled
 	echo "<tr>\n";
