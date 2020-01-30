@@ -70,6 +70,6 @@ $text['description-school_bell_timezone']['en-us'] = "Timezone of this schedule"
 
 $text['description-school_bell_description']['en-us'] = "Description of this schedule";
 
-$text['description-school_bells_schedule_templates']['en-us'] = "System uses cron-type of scheduling";
+$text['description-school_bells_schedule_templates']['en-us'] = "System uses cron-type of scheduling. For more information, refer to CRON documentation";
 
 ?>
