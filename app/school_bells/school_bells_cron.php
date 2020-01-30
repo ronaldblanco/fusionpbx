@@ -107,8 +107,6 @@
 
 		$school_bell_ring_timeout = ($school_bell_ring_timeout == 0) ? 5 : $school_bell_ring_timeout;
 
-		$school_bell_app = $school_bell['app'];
-
 		$switch_cmd = "bgapi ";
 		$switch_cmd .= "originate {ignore_early_media=true,";
 		$switch_cmd .= "hangup_after_bridge=true,";
