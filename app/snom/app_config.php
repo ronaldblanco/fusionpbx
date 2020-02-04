@@ -66,7 +66,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Tonescheme to use";
 		$y++;
 
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "479387da-2829-4247-804f-73a11240980f";
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "479387da-2829-4247-804f-73a11240980a";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "snom_time_format";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
@@ -84,7 +84,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "auto_update, ask_for_update, settings_only, never_update";
 		$y++;
 
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "8700ef07-ea3a-444f-a473-b37ba7ccedb9";
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "8700ef07-ea3a-444f-a473-b37ba7ccedb8";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "snom_firmware_path";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
