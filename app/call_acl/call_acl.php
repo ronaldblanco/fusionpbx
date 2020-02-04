@@ -50,19 +50,6 @@ require_once "resources/require.php";
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
-//show the content
-	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-call_acl']."</b></td>\n";
-	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
-	echo "	</tr>\n";
-	echo "	<tr>\n";
-	echo "		<td align='left' colspan='2'>\n";
-	echo "			".$text['description-call_acl']."<br /><br />\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
-	echo "</table>\n";
-
 //prepare to page the results
 	$sql = "SELECT count(*) AS num_rows FROM v_call_acl";
 	$sql .= " WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -89,9 +76,9 @@ require_once "resources/require.php";
 	$sql = "SELECT * FROM v_call_acl";
 	$sql .= " WHERE domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	if (strlen($order_by)> 0) { 
-		$sql .= "ORDER BY $order_by $order ";
+		$sql .= "ORDER BY $order_by $order, call_acl_uuid";
 	} else {
-		$sql .= "ORDER BY call_acl_order ASC "; 
+		$sql .= "ORDER BY call_acl_order ASC, call_acl_uuid"; 
 	}
 	$sql .= " LIMIT $rows_per_page OFFSET $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -99,6 +86,20 @@ require_once "resources/require.php";
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
+
+//show the content
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
+	echo "	<tr>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-call_acl']." (".$num_rows.")</b></td>\n";
+	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "		<td align='left' colspan='2'>\n";
+	echo "			".$text['description-call_acl']."<br /><br />\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "</table>\n";
+
 
 //table headers
 	$c = 0;
