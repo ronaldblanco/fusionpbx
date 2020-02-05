@@ -38,9 +38,10 @@
 	$sql .= " school_bell_dow as dow,";
 	$sql .= " school_bell_timezone as timezone ";
 	$sql .= "FROM v_school_bells ";
-	$sql .= "JOIN v_domains ON v_domains.domain_uuid = v_school_bells.domain_uuid ";
-	$sql .= " WHERE school_bell_min = :current_minute";
-	$sql .= " OR school_bell_min = -1";
+	$sql .= "JOIN v_domains ON v_domains.domain_uuid = v_school_bells.domain_uuid";
+	$sql .= " WHERE school_bell_enabled = 'true'";
+	$sql .= " AND (school_bell_min = :current_minute";
+	$sql .= " OR school_bell_min = -1)";
 	
 	$prep_statement = $db->prepare(check_sql($sql));
 	if (!$prep_statement) {
