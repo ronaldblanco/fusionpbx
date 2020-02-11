@@ -181,8 +181,8 @@
 				if (($row['forward_all_enabled'] == 'true') || ($row['forward_no_answer_enabled'] == 'true') || ($row['forward_user_not_registered_enabled'] == 'true')) {
 					$call_forward_text = "(";
 					$call_forward_text .= ($row['forward_all_enabled'] == 'true') ? "All: ".escape(format_phone($row['forward_all_destination'])) : "";
-					$call_forward_text .= ($row['forward_no_answer_enabled'] == 'true') ? "NA: ".escape(format_phone($row['forward_no_answer_destination'])) : "";
-					$call_forward_text .= ($row['forward_user_not_registered_enabled'] == 'true') ? "NR: ".escape(format_phone($row['forward_user_not_registered_destination'])) : "";
+					$call_forward_text .= ($row['forward_no_answer_enabled'] == 'true') ? " NA: ".escape(format_phone($row['forward_no_answer_destination'])) : "";
+					$call_forward_text .= ($row['forward_user_not_registered_enabled'] == 'true') ? " NR: ".escape(format_phone($row['forward_user_not_registered_destination'])) : "";
 					$call_forward_text .= ")";
 				} else {
 					$call_forward_text = '&nbsp;';
