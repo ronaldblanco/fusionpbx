@@ -178,11 +178,13 @@
 			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'><a ".$tr_link.">".escape($row['extension'])."</a></td>\n";
 			if (permission_exists('call_forward')) {
-				if (($row['forward_all_enabled'] == 'true') || ($row['forward_no_answer_enabled'] == 'true') || ($row['forward_user_not_registered_enabled'] == 'true')) {
+				if (($row['forward_all_enabled'] == 'true') || ($row['forward_no_answer_enabled'] == 'true') || ($row['forward_user_not_registered_enabled'] == 'true') || ($row['forward_busy_enabled'] == 'true')) {
 					$call_forward_text = "(";
-					$call_forward_text .= ($row['forward_all_enabled'] == 'true') ? "All: ".escape(format_phone($row['forward_all_destination'])) : "";
-					$call_forward_text .= ($row['forward_no_answer_enabled'] == 'true') ? " NA: ".escape(format_phone($row['forward_no_answer_destination'])) : "";
-					$call_forward_text .= ($row['forward_user_not_registered_enabled'] == 'true') ? " NR: ".escape(format_phone($row['forward_user_not_registered_destination'])) : "";
+					$call_forward_text .= ($row['forward_all_enabled'] == 'true') ? "A: ".escape(format_phone($row['forward_all_destination']))." " : "";
+					$call_forward_text .= ($row['forward_busy_enabled'] == 'true') ? "B: ".escape(format_phone($row['forward_busy_destination']))." " : "";
+					$call_forward_text .= ($row['forward_no_answer_enabled'] == 'true') ? "NA: ".escape(format_phone($row['forward_no_answer_destination']))." " : "";
+					$call_forward_text .= ($row['forward_user_not_registered_enabled'] == 'true') ? "NR: ".escape(format_phone($row['forward_user_not_registered_destination'])) : "";
+					$call_forward_text = trim($call_forward_text);
 					$call_forward_text .= ")";
 				} else {
 					$call_forward_text = '&nbsp;';
