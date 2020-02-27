@@ -113,15 +113,15 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 						if (strlen($domain_parent_uuid)) {
 							$sql .= "domain_parent_uuid, ";
 						}
-						$sql .= "domain_description ";
-						$sql .= ")";
+						$sql .= "domain_description";
+						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
 						$sql .= "'".uuid()."', ";
 						$sql .= "'".strtolower($domain_name)."', ";
 						$sql .= "'".$domain_enabled."', ";
 						if (strlen($domain_parent_uuid)) {
-							$sql .= ", '".$domain_parent_uuid."' ";
+							$sql .= "'".$domain_parent_uuid."', ";
 						}
 						$sql .= "'".$domain_description."' ";
 						$sql .= ")";
@@ -133,8 +133,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('domain_edit')) {
 				// get original domain name
-				$sql = "select domain_name from v_domains ";
-				$sql .= "where domain_uuid = '".$domain_uuid."' ";
+				$sql = "SELECT domain_name FROM v_domains";
+				$sql .= " WHERE domain_uuid = '".$domain_uuid."' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -147,14 +147,14 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				$domain_name = strtolower($domain_name);
 
 				// update domain name, description
-				$sql = "update v_domains set ";
-				$sql .= "domain_name = '".$domain_name."', ";
-				$sql .= "domain_enabled = '".$domain_enabled."', ";
+				$sql = "UPDATE v_domains SET";
+				$sql .= " domain_name = '".$domain_name."',";
+				$sql .= " domain_enabled = '".$domain_enabled."',";
 				if (strlen($domain_parent_uuid)) {
-					$sql .= ", domain_parent_uuid = '".$domain_parent_uuid."' ";
+					$sql .= " domain_parent_uuid = '".$domain_parent_uuid."',";
 				}
-				$sql .= "domain_description = '".$domain_description."' ";
-				$sql .= "where domain_uuid = '".$domain_uuid."' ";
+				$sql .= " domain_description = '".$domain_description."' ";
+				$sql .= "WHERE domain_uuid = '".$domain_uuid."' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -732,7 +732,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	if (permission_exists('domain_child')) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "	".$text['label-child-of']."\n";
+		echo "	".$text['label-parent_domain']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "  <select class='formfld' name='domain_parent_uuid'>";
@@ -745,7 +745,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		echo "  </select>";
 		echo "<br />\n";
-		echo $text['description-child-of']."\n";
+		echo $text['description-parent_domain']."\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
