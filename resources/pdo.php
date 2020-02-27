@@ -261,12 +261,19 @@ if ($db_type == "pgsql") {
 			$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 
 		//get the domains from the database
-			$sql = "select * from v_domains";
+			$sql = 	"WITH RECURSIVE children AS ( ";
+			$sql .= "SELECT d.domain_uuid, d.domain_parent_uuid, d.domain_name, d.domain_enabled, d.domain_description, '' AS parent_domain_name, 1 AS depth, domain_name AS path ";
+			$sql .=	"FROM v_domains d";
+			$sql .= " WHERE d.domain_parent_uuid IS NULL ";
+			$sql .= "UNION ";
+			$sql .=	"SELECT tp.domain_uuid, tp.domain_parent_uuid, tp.domain_name, tp.domain_enabled, tp.domain_description, c.domain_name AS parent_domain_name, depth + 1, CONCAT(path,'.',tp.domain_name)  FROM v_domains tp ";
+			$sql .=	"JOIN children c ON tp.domain_parent_uuid = c.domain_uuid ) SELECT * FROM children ORDER BY path asc, domain_name ASC";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
 				$domain_names[] = $row['domain_name'];
+				$_SESSION['domains'][$row['domain_uuid']] = $row;
 			}
 			unset($prep_statement);
 
@@ -299,7 +306,6 @@ if ($db_type == "pgsql") {
 							$_SESSION["domain_name"] = $row["domain_name"];
 						}
 					}
-					$_SESSION['domains'][$row['domain_uuid']] = $row;
 				}
 				unset($domains, $prep_statement);
 			}

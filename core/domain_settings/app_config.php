@@ -60,6 +60,9 @@
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "domain_setting_category_edit";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "domain_child";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 
 	//schema details
 		$y=0;

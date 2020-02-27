@@ -64,6 +64,11 @@
 		$domain_name = check_str($_POST["domain_name"]);
 		$domain_enabled = check_str($_POST["domain_enabled"]);
 		$domain_description = check_str($_POST["domain_description"]);
+		$domain_parent_uuid = check_str($_POST["domain_parent_uuid"]);
+	}
+
+	if (!permission_exists('domain_child')) {
+		unset($domain_parent_uuid);
 	}
 
 if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -105,6 +110,9 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql .= "domain_uuid, ";
 						$sql .= "domain_name, ";
 						$sql .= "domain_enabled, ";
+						if (strlen($domain_parent_uuid)) {
+							$sql .= "domain_parent_uuid, ";
+						}
 						$sql .= "domain_description ";
 						$sql .= ")";
 						$sql .= "values ";
@@ -112,6 +120,9 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql .= "'".uuid()."', ";
 						$sql .= "'".strtolower($domain_name)."', ";
 						$sql .= "'".$domain_enabled."', ";
+						if (strlen($domain_parent_uuid)) {
+							$sql .= ", '".$domain_parent_uuid."' ";
+						}
 						$sql .= "'".$domain_description."' ";
 						$sql .= ")";
 						$db->exec(check_sql($sql));
@@ -139,6 +150,9 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_domains set ";
 				$sql .= "domain_name = '".$domain_name."', ";
 				$sql .= "domain_enabled = '".$domain_enabled."', ";
+				if (strlen($domain_parent_uuid)) {
+					$sql .= ", domain_parent_uuid = '".$domain_parent_uuid."' ";
+				}
 				$sql .= "domain_description = '".$domain_description."' ";
 				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$db->exec(check_sql($sql));
@@ -623,17 +637,28 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form (admin won't have domain_add permissions, but domain_uuid will already be set above)
 	if ((count($_GET) > 0 || (!permission_exists('domain_add') && $domain_uuid != '')) && $_POST["persistformvar"] != "true") {
-		$sql = "select * from v_domains ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql = "SELECT * FROM v_domains";
+		$sql .= " WHERE domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_name = strtolower($row["domain_name"]);
 			$domain_enabled = $row["domain_enabled"];
+			$domain_parent_uuid = $row["domain_parent_uuid"];
 			$domain_description = $row["domain_description"];
 		}
 		unset ($prep_statement);
+	}
+
+	// Get all other domains to show
+	if (permission_exists('domain_child')) {
+		$sql = "SELECT domain_uuid, domain_name FROM v_domains";
+		$sql .= " WHERE domain_enabled='true' AND domain_uuid <> '".$domain_uuid."';";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$domain_list = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		unset($sql, $prep_statement);
 	}
 
 //show the header
@@ -703,6 +728,27 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo $text['description-domain_enabled']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	if (permission_exists('domain_child')) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-child-of']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "  <select class='formfld' name='domain_parent_uuid'>";
+		echo "  <option value=''></option>";
+		foreach ($domain_list as &$row) {
+			$list_domain_name = $row["domain_name"];
+			$list_domain_uuid = $row["domain_uuid"];
+			$list_selected = ($domain_parent_uuid == $list_domain_uuid) ? " selected='selected' " : "";
+			echo "  <option value='" . escape($list_domain_uuid) . "' $list_selected>" . escape($list_domain_name) . "</option>";
+		}
+		echo "  </select>";
+		echo "<br />\n";
+		echo $text['description-child-of']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
