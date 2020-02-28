@@ -67,7 +67,7 @@
 		$domain_parent_uuid = check_str($_POST["domain_parent_uuid"]);
 	}
 
-	if (!permission_exists('domain_child')) {
+	if (!permission_exists('domain_child_select')) {
 		unset($domain_parent_uuid);
 	}
 
@@ -652,7 +652,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	// Get all other domains to show
-	if (permission_exists('domain_child')) {
+	if (permission_exists('domain_child_select')) {
 		$sql = "SELECT domain_uuid, domain_name FROM v_domains";
 		$sql .= " WHERE domain_enabled='true' AND domain_uuid <> '".$domain_uuid."';";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -729,7 +729,7 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (permission_exists('domain_child')) {
+	if (permission_exists('domain_child_select')) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	".$text['label-parent_domain']."\n";

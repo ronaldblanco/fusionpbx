@@ -96,6 +96,10 @@ if (!class_exists('groups')) {
 						$groups[$x]['group_description'] = 'Super Administrator Group';
 						$groups[$x]['group_protected'] = 'false';
 						$x++;
+						$groups[$x]['group_name'] = 'nestedadmin';
+						$groups[$x]['group_description'] = 'Not a group, but addon to admin group to have nested domains capabilities';
+						$groups[$x]['group_protected'] = 'false';
+						$x++;
 						//$groups[$x]['group_uuid'] = '';
 						$groups[$x]['group_name'] = 'admin';
 						$groups[$x]['group_description'] = 'Administrator Group';
