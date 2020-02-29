@@ -168,37 +168,38 @@
 			if (originate_disposition == 'USER_BUSY') then
 
 				--handle USER_BUSY
-					dialed_extension = session:getVariable("dialed_extension");
-					last_busy_dialed_extension = session:getVariable("last_busy_dialed_extension");
-					if (debug["info"] ) then
-						freeswitch.consoleLog("INFO", "[failure_handler] last_busy_dialed_extension: " .. tostring(last_busy_dialed_extension) .. "\n");
-					end
+				dialed_extension = session:getVariable("dialed_extension");
+				last_busy_dialed_extension = session:getVariable("last_busy_dialed_extension");
+				if (debug["info"] ) then
+					freeswitch.consoleLog("INFO", "[failure_handler] last_busy_dialed_extension: " .. tostring(last_busy_dialed_extension) .. "\n");
+				end
 
 				--transfer to the forward busy destination
-					if (dialed_extension ~= nil and dialed_extension ~= last_busy_dialed_extension) then
-						forward_busy_enabled = session:getVariable("forward_busy_enabled");
-						if (forward_busy_enabled == "true") then
-							forward_busy_destination = session:getVariable("forward_busy_destination");
-							if (forward_busy_destination ~= nil and string.len(forward_busy_destination) > 0) then
-								--handle USER_BUSY - forwarding to number
-								session:setVariable("last_busy_dialed_extension", dialed_extension);
-								if (forward_busy_destination == nil) then
-									freeswitch.consoleLog("NOTICE", "[failure_handler] forwarding on busy to hangup\n");
-									session:hangup("USER_BUSY");
-								else
-									freeswitch.consoleLog("NOTICE", "[failure_handler] forwarding on busy to: " .. forward_busy_destination .. "\n");
-									session:transfer(forward_busy_destination, "XML", context);
-								end
+				if (dialed_extension ~= nil and dialed_extension ~= last_busy_dialed_extension) then
+					forward_busy_enabled = session:getVariable("forward_busy_enabled");
+					if (forward_busy_enabled == "true") then
+						forward_busy_destination = session:getVariable("forward_busy_destination");
+						if (forward_busy_destination ~= nil and string.len(forward_busy_destination) > 0) then
+							--handle USER_BUSY - forwarding to number
+							session:setVariable("last_busy_dialed_extension", dialed_extension);
+							if (forward_busy_destination == nil) then
+								freeswitch.consoleLog("NOTICE", "[failure_handler] forwarding on busy to hangup\n");
 							else
-								--send missed call notification
-								missed()
-
-								--handle USER_BUSY - hangup
-								freeswitch.consoleLog("NOTICE", "[failure_handler] forward on busy with empty destination: hangup(USER_BUSY)\n");
-								session:hangup("USER_BUSY");
+								freeswitch.consoleLog("NOTICE", "[failure_handler] forwarding on busy to: " .. forward_busy_destination .. "\n");
+								session:transfer(forward_busy_destination, "XML", context);
 							end
+						else
+							--send missed call notification
+							missed()
+
+							--handle USER_BUSY - hangup
+							freeswitch.consoleLog("NOTICE", "[failure_handler] forward on busy with empty destination: hangup(USER_BUSY)\n");
+							
 						end
 					end
+				end
+
+				session:hangup("USER_BUSY");
 
 			elseif (originate_disposition == "NO_ANSWER") or (sip_code == "sip:480") then
 
