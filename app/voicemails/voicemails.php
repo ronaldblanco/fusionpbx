@@ -151,7 +151,7 @@
 	$voicemails_count_max_length = 1;
 	foreach ($voicemails_count_tmp as &$row) {
 		$voicemails_count[$row['voicemail_uuid']] = $row['voicemail_count'];
-		if ($voicemails_count_max_length < strlen($row['voicemail_count'])) {
+		if (strlen($row['voicemail_count']) > $voicemails_count_max_length) {
 			$voicemails_count_max_length = strlen($row['voicemail_count']);
 		}
 	}
@@ -230,7 +230,7 @@
 				$current_voicemail_count = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? $voicemails_count[$row['voicemail_uuid']] : "0";
 				$current_voicemail_spaces_add = $voicemails_count_max_length - strlen($current_voicemail_count);
 				$tmp_voicemail_string = "(" . $current_voicemail_count . ")";
-				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>&nbsp;&nbsp;".str_repeat($current_voicemail_spaces_add, "&nbsp;")."\n";
+				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>&nbsp;&nbsp;".str_repeat("&nbsp;", $current_voicemail_spaces_add)."\n";
 			}
 			if (permission_exists('voicemail_greeting_view')) {
 				$custom_greeting_id = "";
