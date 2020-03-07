@@ -230,7 +230,7 @@
 				$tmp_voicemail_string = $text['label-messages'];
 				$tmp_voicemail_string_length = strlen($tmp_voicemail_string);
 				$tmp_voicemail_string .= (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? "(" . $voicemails_count[$row['voicemail_uuid']] . ")" : "(0)";
-				$tmp_voicemail_string = str_pad($tmp_voicemail_string, $tmp_voicemail_string_length + $voicemails_count_max_length + 2);
+				$tmp_voicemail_string = str_pad($tmp_voicemail_string, $tmp_voicemail_string_length + $voicemails_count_max_length + 2, " ");
 				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$tmp_voicemail_string."</a>&nbsp;&nbsp;\n";
 			}
 			if (permission_exists('voicemail_greeting_view')) {
