@@ -227,12 +227,10 @@
 			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords(escape($row['voicemail_local_after_email']))."&nbsp;</td>\n";
 			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_message_view')) {
-				$tmp_voicemail_string = $text['label-messages'];
-				$tmp_voicemail_string_length = strlen($tmp_voicemail_string);
-				$tmp_voicemail_string .= (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? "(" . $voicemails_count[$row['voicemail_uuid']] . ")" : "(0)";
-				$tmp_voicemail_string .= "</a>&nbsp;&nbsp;";
-				$tmp_voicemail_string = str_pad($tmp_voicemail_string, $tmp_voicemail_string_length + $voicemails_count_max_length + 18, "&nbsp;"); // 18 - length of "(</a>&nbsp;&nbsp;)"
-				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$tmp_voicemail_string."\n";
+				$current_voicemail_count = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? $voicemails_count[$row['voicemail_uuid']] : "0";
+				$current_voicemail_spaces_add = $voicemails_count_max_length - strlen($current_voicemail_count);
+				$tmp_voicemail_string = "(" . $current_voicemail_count . ")";
+				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>&nbsp;&nbsp;".str_repeat($current_voicemail_spaces_add, "&nbsp;")."\n";
 			}
 			if (permission_exists('voicemail_greeting_view')) {
 				$custom_greeting_id = "";
