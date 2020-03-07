@@ -137,6 +137,22 @@
 	$voicemails = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	unset ($prep_statement, $sql);
 
+// get number of messages for each box
+	$sql = "SELECT voicemail_uuid, count(*) AS voicemail_count ";
+	$sql .= "FROM v_voicemail_messages WHERE domain_uuid = :domain_uuid";
+	$sql .= " GROUP BY voicemail_uuid";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->bindValue('domain_uuid', $domain_uuid);
+	$prep_statement->execute();
+	$voicemails_count_tmp = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	unset($prep_statement, $sql);
+
+	$voicemails_count = array();
+	foreach ($voicemails_count_tmp as &$row) {
+		$voicemails_count[$row['voicemail_uuid']] = $row['voicemail_count'];
+	}
+	
+
 //show the content
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "	<tr>\n";
@@ -207,7 +223,8 @@
 			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords(escape($row['voicemail_local_after_email']))."&nbsp;</td>\n";
 			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_message_view')) {
-				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages']."</a>&nbsp;&nbsp;\n";
+				$voicemails_count_string = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? "(" . $voicemails_count[$row['voicemail_uuid']] . ")" : "(0)";
+				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$voicemails_count_string."</a>&nbsp;&nbsp;\n";
 			}
 			if (permission_exists('voicemail_greeting_view')) {
 				$custom_greeting_id = "";
