@@ -148,12 +148,8 @@
 	unset($prep_statement, $sql);
 
 	$voicemails_count = array();
-	$voicemails_count_max_length = 1;
 	foreach ($voicemails_count_tmp as &$row) {
 		$voicemails_count[$row['voicemail_uuid']] = $row['voicemail_count'];
-		if (strlen($row['voicemail_count']) > $voicemails_count_max_length) {
-			$voicemails_count_max_length = strlen($row['voicemail_count']);
-		}
 	}
 	
 
@@ -187,6 +183,7 @@
 	echo th_order_by('voicemail_file', $text['label-voicemail_file_attached'], $order_by, $order);
 	echo th_order_by('voicemail_local_after_email', $text['label-voicemail_local_after_email'], $order_by, $order);
 	echo "<th>".$text['label-tools']."</th>\n";
+	echo "<th></th>\n";
 	echo th_order_by('voicemail_enabled', $text['label-voicemail_enabled'], $order_by, $order);
 	echo th_order_by('voicemail_description', $text['label-voicemail_description'], $order_by, $order);
 	echo "<td class='list_control_icon'>";
@@ -227,11 +224,11 @@
 			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords(escape($row['voicemail_local_after_email']))."&nbsp;</td>\n";
 			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_message_view')) {
-				$current_voicemail_count = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? $voicemails_count[$row['voicemail_uuid']] : "0";
-				$current_voicemail_spaces_add = $voicemails_count_max_length - strlen($current_voicemail_count);
-				$tmp_voicemail_string = "(" . $current_voicemail_count . ")";
-				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>&nbsp;&nbsp;".str_repeat("&nbsp;", $current_voicemail_spaces_add)."\n";
+				$tmp_voicemail_string = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? "(" . $voicemails_count[$row['voicemail_uuid']] . ")" : "(0)";
+				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>\n";
 			}
+			echo "	</td>\n";
+			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_greeting_view')) {
 				$custom_greeting_id = "";
 				if (strlen($row['greeting_id']) > 0) {
