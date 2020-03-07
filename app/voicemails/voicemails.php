@@ -229,7 +229,7 @@
 			if (permission_exists('voicemail_greeting_view')) {
 				$custom_greeting_id = "";
 				if (strlen($row['greeting_id']) > 0) {
-					$custom_greeting_id = "(" . ucwords(escape($row['greeting_id'])) . ")";
+					$custom_greeting_id = "(ID " . ucwords(escape($row['greeting_id'])) . ")";
 				}
 				echo "		<a href='".PROJECT_PATH."/app/voicemail_greetings/voicemail_greetings.php?id=".$row['voicemail_id']."&back=".urlencode($_SERVER["REQUEST_URI"])."'>".$text['label-greetings'].$custom_greeting_id."</a>\n";
 			}
