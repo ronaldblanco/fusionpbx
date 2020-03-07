@@ -224,7 +224,7 @@
 			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords(escape($row['voicemail_local_after_email']))."&nbsp;</td>\n";
 			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_message_view')) {
-				$tmp_voicemail_string = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? "(" . $voicemails_count[$row['voicemail_uuid']] . ")" : "(0)";
+				$tmp_voicemail_string = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? " (" . $voicemails_count[$row['voicemail_uuid']] . ")" : " (0)";
 				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>\n";
 			}
 			echo "	</td>\n";
@@ -232,7 +232,7 @@
 			if (permission_exists('voicemail_greeting_view')) {
 				$custom_greeting_id = "";
 				if (strlen($row['greeting_id']) > 0) {
-					$custom_greeting_id = "(ID " . ucwords(escape($row['greeting_id'])) . ")";
+					$custom_greeting_id = " (ID " . ucwords(escape($row['greeting_id'])) . ")";
 				}
 				echo "		<a href='".PROJECT_PATH."/app/voicemail_greetings/voicemail_greetings.php?id=".$row['voicemail_id']."&back=".urlencode($_SERVER["REQUEST_URI"])."'>".$text['label-greetings'].$custom_greeting_id."</a>\n";
 			}
