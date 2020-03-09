@@ -64,6 +64,10 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "domain_child_select";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "domain_select_all";
+		$y++;
+
 
 	//schema details
 		$y=0;

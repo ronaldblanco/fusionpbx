@@ -321,7 +321,7 @@
 					<?php
 						$bgcolor1 = "#eaedf2";
 						$bgcolor2 = "#fff";
-						if (if_group("superadmin")) {
+						if (if_group("superadmin") || permission_exists("domain_select_all")) {
 
 							foreach($_SESSION['domains'] as $domain) {
 
