@@ -182,8 +182,12 @@
 	echo th_order_by('voicemail_mail_to', $text['label-voicemail_mail_to'], $order_by, $order);
 	echo th_order_by('voicemail_file', $text['label-voicemail_file_attached'], $order_by, $order);
 	echo th_order_by('voicemail_local_after_email', $text['label-voicemail_local_after_email'], $order_by, $order);
-	echo "<th>".$text['label-tools']."</th>\n";
-	echo "<th></th>\n";
+	if (permission_exists('voicemail_message_view') || permission_exists('voicemail_greeting_view')) {
+		echo "<th>".$text['label-tools']."</th>\n";
+	}
+	if (permission_exists('voicemail_message_view') && permission_exists('voicemail_greeting_view')) {
+		echo "<th></th>\n";
+	}
 	echo th_order_by('voicemail_enabled', $text['label-voicemail_enabled'], $order_by, $order);
 	echo th_order_by('voicemail_description', $text['label-voicemail_description'], $order_by, $order);
 	echo "<td class='list_control_icon'>";
@@ -222,21 +226,21 @@
 			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row['voicemail_mail_to'])."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".(($row['voicemail_file'] == 'attach') ? $text['label-true'] : $text['label-false'])."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords(escape($row['voicemail_local_after_email']))."&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_message_view')) {
+				echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 				$tmp_voicemail_string = (array_key_exists($row['voicemail_uuid'], $voicemails_count)) ? " (" . $voicemails_count[$row['voicemail_uuid']] . ")" : " (0)";
 				echo "		<a href='voicemail_messages.php?id=".escape($row['voicemail_uuid'])."'>".$text['label-messages'].$tmp_voicemail_string."</a>\n";
+				echo "	</td>\n";
 			}
-			echo "	</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			if (permission_exists('voicemail_greeting_view')) {
+				echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 				$custom_greeting_id = "";
 				if (strlen($row['greeting_id']) > 0) {
 					$custom_greeting_id = " (ID " . ucwords(escape($row['greeting_id'])) . ")";
 				}
 				echo "		<a href='".PROJECT_PATH."/app/voicemail_greetings/voicemail_greetings.php?id=".$row['voicemail_id']."&back=".urlencode($_SERVER["REQUEST_URI"])."'>".$text['label-greetings'].$custom_greeting_id."</a>\n";
+				echo "	</td>\n";
 			}
-			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$text['label-'.$row['voicemail_enabled']]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='row_stylebg' width='30%'>".escape($row['voicemail_description'])."&nbsp;</td>\n";
 			if (permission_exists('voicemail_edit') || permission_exists('voicemail_delete')) {
