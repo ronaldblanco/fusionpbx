@@ -68,7 +68,6 @@
 		$apps[$x]['permissions'][$y]['name'] = "domain_select_all";
 		$y++;
 
-
 	//schema details
 		$y=0;
 		$apps[$x]['db'][$y]['table']['name'] = "v_domains";

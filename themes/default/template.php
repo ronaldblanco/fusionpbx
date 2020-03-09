@@ -343,14 +343,32 @@
 							}
 						} else {
 
-							$sql = "WITH RECURSIVE children AS (
-								SELECT d.domain_uuid, d.domain_parent_uuid, d.domain_name, d.domain_enabled, d.domain_description, '' as parent_domain_name, 1 as depth, domain_name as path
-								FROM v_domains d
-								INNER JOIN v_users u ON u.domain_uuid = d.domain_uuid
-								WHERE  u.user_uuid = '".$_SESSION['user_uuid']."' ";
-							$sql .= "UNION
-									SELECT tp.domain_uuid, tp.domain_parent_uuid, tp.domain_name, tp.domain_enabled, tp.domain_description, c.domain_name as parent_domain_name, depth + 1, CONCAT(path,'.',tp.domain_name)  FROM v_domains tp
-									JOIN children c ON tp.domain_parent_uuid = c.domain_uuid ) SELECT * FROM children ORDER BY path asc, domain_name asc ";
+							$sql = "WITH RECURSIVE children AS ( ";
+								$sql .= "SELECT d.domain_uuid,";
+								$sql .= " d.domain_parent_uuid,";
+								$sql .= " d.domain_name,";
+								$sql .= " d.domain_enabled,";
+								$sql .= " d.domain_description,";
+								$sql .= " '' as parent_domain_name,";
+								$sql .= " 1 as depth,";
+								$sql .= " domain_name as path ";
+								$sql .=	"FROM v_domains d ";
+								$sql .=	"INNER JOIN v_users u ON u.domain_uuid = d.domain_uuid ";
+								$sql .=	"WHERE u.user_uuid = '".$_SESSION['user_uuid']."' ";
+								$sql .= "UNION SELECT";
+								$sql .= " tp.domain_uuid,";
+								$sql .= " tp.domain_parent_uuid,"; 
+								$sql .= " tp.domain_name,";
+								$sql .= " tp.domain_enabled,";
+								$sql .= " tp.domain_description,";
+								$sql .= " c.domain_name as parent_domain_name,";
+								$sql .= " depth + 1,";
+								$sql .= " CONCAT(path,'.',tp.domain_name) ";
+								$sql .= "FROM v_domains tp ";
+								$sql .= "JOIN children c ON tp.domain_parent_uuid = c.domain_uuid) ";
+							$sql .= "SELECT * FROM children ";
+							$sql .= "ORDER BY path ASC,";
+							$sql .= " domain_name ASC";
 
 							$prep_statement = $db->prepare(check_sql($sql));
 							$prep_statement->execute();
