@@ -167,7 +167,30 @@ if (!class_exists('csv_file_process')) {
                 $result['device_template'] = isset($result['device_template']) ? strtolower($result['device_template']) : '';
 
                 $result['device_enabled'] = 'true';
-                $result['device_vendor'] = explode('/', $result['device_template'])[0];
+
+                $result['device_vendor'] = isset($result['device_vendor']) ? strtolower($result['device_vendor']) : '';
+                $result['device_model'] = isset($result['device_model']) ? strtolower($result['device_model']) : '';
+                
+                $tmp_device_template = explode('/', $result['device_template']);
+
+                if (count($tmp_device_template) == 2) {
+                    // We have full template
+                    $result['device_vendor'] = ($result['device_vendor'] == '') ? $tmp_device_template[0] : $result['device_vendor'];
+                    $result['device_model'] = ($result['device_model'] == '') ? $tmp_device_template[1] : $result['device_model'];
+                } elseif (count($tmp_device_template) == 1) {
+                    // We have partial template
+                    if ($result['device_template'] == '' && $result['device_vendor'] != '' && $result['device_model'] != '') {
+                        $result['device_template'] = $result['device_vendor'] . "/" . $result['device_model'];
+                    } elseif ($result['device_template'] != '' && $result['device_vendor'] != '') {
+                        $result['device_model'] = ($result['device_model'] == '') ? $result['device_template'] : $result['device_model'];
+                        $result['device_template'] = $result['device_vendor'] . "/" . $result['device_template'];
+                    } elseif ($result['device_template'] != '' && $result['device_model'] != '') {
+                        $result['device_vendor'] = ($result['device_vendor'] == '') ? $result['device_template'] : $result['device_vendor'];
+                        $result['device_template'] = $result['device_template'] . "/" . $result['device_model'];
+                    }
+                }
+
+                unset($tmp_device_template);
             }
 
             return $result;
