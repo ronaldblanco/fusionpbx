@@ -114,7 +114,6 @@
 	if (isset($sql_search)) {
 			$sql .= "and ".$sql_search;
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare($sql);
 	if ($prep_statement) {
 		$prep_statement->execute();
@@ -150,7 +149,11 @@
 		$sql .= "and ".$sql_search;
 	}
 	$sql .= "and destination_type = '".$destination_type."' ";
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	if (strlen($order_by)> 0) { 
+		$sql .= "order by $order_by $order, destination_uuid asc "; 
+	} else {
+		$sql .= "order by destination_uuid asc "; 
+	}
 	$sql .= "limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();

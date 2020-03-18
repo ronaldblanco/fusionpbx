@@ -88,7 +88,9 @@ require_once "resources/paging.php";
 		$sql .= ") ";
 	}
 	if (strlen($order_by)> 0) { 
-		$sql .= "ORDER BY $order_by $order "; 
+		$sql .= "ORDER BY $order_by $order, destination_ext_uuid ASC "; 
+	} else {
+		$sql .= "ORDER BY destination_ext_uuid ASC "; 
 	}
 	$sql .= "LIMIT $rows_per_page OFFSET $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
