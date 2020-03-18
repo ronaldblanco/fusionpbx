@@ -241,11 +241,17 @@ if ($db_type == "pgsql") {
 	//database connection
 	try {
 		if (strlen($db_host) > 0) {
-			if (strlen($db_port) == 0) { $db_port = "5432"; }
-			$db = new PDO("pgsql:host=$db_host port=$db_port dbname=$db_name user=$db_username password=$db_password");
+			if (strlen($db_port) == 0) { 
+				$db_port = "5432"; 
+			}
+			$dsn_string = "pgsql:host=$db_host port=$db_port dbname=$db_name user=$db_username password=$db_password";
+		} else {
+			$dsn_string = "pgsql:dbname=$db_name user=$db_username password=$db_password";
 		}
-		else {
-			$db = new PDO("pgsql:dbname=$db_name user=$db_username password=$db_password");
+		if (isset($_SESSION['database']['timeout']['numeric'])) {
+			$db = new PDO($dsn_string,null, null, array(PDO::ATTR_TIMEOUT => $_SESSION['database']['timeout']['numeric']));
+		} else {
+			$db = new PDO($dsn_string);
 		}
 	}
 	catch (PDOException $error) {

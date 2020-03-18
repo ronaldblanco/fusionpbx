@@ -492,6 +492,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "/var/cache/fusionpbx";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Location for the file cache.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "7b644bfb-124f-4212-9541-1ca564be9d73";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "database";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "timeout";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "30";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Timeout for long database connection. PGSQL";
 
 	//schema details
 		$y=0;
