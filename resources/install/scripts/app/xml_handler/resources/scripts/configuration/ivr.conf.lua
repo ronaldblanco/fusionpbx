@@ -97,10 +97,10 @@
 			local storage_type = settings:get('recordings', 'storage_type', 'text')
 
 		--get the recordings from the database
-			ivr_menu_greet_long_is_base64 = false;
-			ivr_menu_greet_short_is_base64 = false;
-			ivr_menu_invalid_sound_is_base64 = false;
-			ivr_menu_exit_sound_is_base64 = false;
+			ivr_menu_greet_long_is_base64 = false
+			ivr_menu_greet_short_is_base64 = false
+			ivr_menu_invalid_sound_is_base64 = false
+			ivr_menu_exit_sound_is_base64 = false
 			if (storage_type == "base64") then
 				--include the file io
 					local file = require "resources.functions.file"
