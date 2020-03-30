@@ -710,9 +710,9 @@
 							end
 
 							if (ring_group_caller_id_number ~= nil and #ring_group_caller_id_number > 0) then
-								caller_id = caller_id .. ",origination_caller_id_number="..ring_group_caller_id_number..","
+								caller_id = caller_id .. "origination_caller_id_number="..ring_group_caller_id_number..","
 							elseif (caller_id_number ~= nil and #caller_id_number > 0)
-								caller_id = caller_id .. ",origination_caller_id_number=" .. caller_id_number .. ","
+								caller_id = caller_id .. "origination_caller_id_number=" .. caller_id_number .. ","
 							end
 
 						--set the destination dial string
