@@ -316,7 +316,8 @@
 						'USER_NOT_REGISTERED',
 						'SYSTEM_SHUTDOWN',
 						'MANDATORY_IE_MISSING',
-						'BEARERCAPABILITY_NOTAUTH'
+						'BEARERCAPABILITY_NOTAUTH',
+						'REQUESTED_CHAN_UNAVAIL'
 						);
 					sort($cdr_status_options);
 					foreach ($cdr_status_options as $cdr_status) {
