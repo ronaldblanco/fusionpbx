@@ -702,12 +702,17 @@
 							end
 
 						--set the caller id
-							caller_id = '';
-							if (ring_group_caller_id_name ~= nil) then
+							caller_id = ''
+							if (ring_group_caller_id_name ~= nil and #ring_group_caller_id_name > 0) then
 								caller_id = "origination_caller_id_name='"..ring_group_caller_id_name.."'"
+							elseif (caller_id_name ~= nil and #caller_id_name > 0)
+								caller_id = "origination_caller_id_name='" .. caller_id_name .. "'"
 							end
-							if (ring_group_caller_id_number ~= nil) then
-								caller_id = caller_id .. ",origination_caller_id_number="..ring_group_caller_id_number..",";
+
+							if (ring_group_caller_id_number ~= nil and #ring_group_caller_id_number > 0) then
+								caller_id = caller_id .. ",origination_caller_id_number="..ring_group_caller_id_number..","
+							elseif (caller_id_number ~= nil and #caller_id_number > 0)
+								caller_id = caller_id .. ",origination_caller_id_number=" .. caller_id_number .. ","
 							end
 
 						--set the destination dial string
