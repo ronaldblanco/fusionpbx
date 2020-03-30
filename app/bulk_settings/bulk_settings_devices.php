@@ -27,12 +27,11 @@
 //includes
 	include "root.php";
 	require_once "resources/require.php";
-	require_once "resources/check_auth.php";
 	require_once "resources/paging.php";
 
 //check permissions
 	require_once "resources/check_auth.php";
-	if (permission_exists('bulk_account_settings_devices')) {
+	if (permission_exists('bulk_settings_devices')) {
 		//access granted
 	}
 	else {
@@ -56,25 +55,23 @@
 //handle search term
 	$search = check_str($_GET["search"]);
 	if (strlen($search) > 0) {
-		$sql_mod = "and ( ";
+		$sql_mod = " AND (";
 		$sql_mod .= "device_mac_address ILIKE '%".$search."%' ";
-		$sql_mod .= "or device_label ILIKE '%".$search."%' ";		
-		$sql_mod .= "or device_vendor ILIKE '%".$search."%' ";
-		$sql_mod .= "or device_model ILIKE '%".$search."%' ";
-		$sql_mod .= "or device_description ILIKE '%".$search."%' ";
-		$sql_mod .= "or device_template ILIKE '%".$search."%' ";		
+		$sql_mod .= "OR device_label ILIKE '%".$search."%' ";		
+		$sql_mod .= "OR device_vendor ILIKE '%".$search."%' ";
+		$sql_mod .= "OR device_model ILIKE '%".$search."%' ";
+		$sql_mod .= "OR device_description ILIKE '%".$search."%' ";
+		$sql_mod .= "OR device_template ILIKE '%".$search."%' ";		
 		$sql_mod .= ") ";
 	}
-	if (strlen($order_by) < 1) {
+	if (strlen($order_by) == 0) {
 		$order_by = "device_label";
 		$order = "ASC";
 	}
 
-	$domain_uuid = $_SESSION['domain_uuid'];
-
 //get total device count from the database
-	$sql = "select count(*) as num_rows from v_devices where domain_uuid = '".$_SESSION['domain_uuid']."' ".$sql_mod." ";
-	$prep_statement = $db->prepare($sql);
+	$sql = "SELECT COUNT(*) AS num_rows FROM v_devices WHERE domain_uuid = '".$domain."' ".$sql_mod." ";
+	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
 		$prep_statement->execute();
 		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
@@ -95,38 +92,39 @@
 	$offset = $rows_per_page * $_GET['page'];
 
 //get all the devices from the database
-	$sql = "SELECT \n";
-	$sql .= "d.device_uuid, \n";
-	$sql .= "d.device_label, \n";
-	$sql .= "d.device_mac_address, \n";
-	$sql .= "d.device_vendor, \n";
-	$sql .= "d.device_template, \n";
-	$sql .= "d.device_enabled, \n";
-	$sql .= "d.device_description, \n";
-	$sql .= "(\n";
-	$sql .= "select dp.device_profile_name from v_device_profiles as dp \n";
-	$sql .= "where d.device_profile_uuid = dp.device_profile_uuid \n";
-	$sql .= ") as device_profile_name \n";
-	$sql .= "FROM v_devices as d \n";
-	$sql .= "WHERE domain_uuid = '".$_SESSION['domain_uuid']."' \n";
+	$sql = "SELECT d.device_uuid,";
+	$sql .= " d.device_label,";
+	$sql .= " d.device_mac_address,";
+	$sql .= " d.device_vendor,";
+	$sql .= " d.device_template,";
+	$sql .= " d.device_enabled,";
+	$sql .= " d.device_description, ";
+	$sql .= "(";
+	$sql .= " SELECT dp.device_profile_name FROM v_device_profiles AS dp";
+	$sql .= " WHERE d.device_profile_uuid = dp.device_profile_uuid";
+	$sql .= ") AS device_profile_name ";
+	$sql .= "FROM v_devices as d ";
+	$sql .= "WHERE domain_uuid = '".$domain_uuid."'";
 	$sql .= $sql_mod; //add search mod from above
-	$sql .= "ORDER BY ".$order_by." ".$order." \n";
-	$sql .= "limit $rows_per_page offset $offset ";
-	$database = new database;
-	$directory = $database->select($sql, 'all');
-	unset($database);
+	$sql .= "ORDER BY ".$order_by." ".$order." ";
+	$sql .= "LIMIT $rows_per_page OFFSET $offset ";
+
+	$prep_statement = $db->prepare(check_sql($sql));
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$directory = $prep_statement->fetchAll();
+	}
 
 //lookup the lines
-	$x = 0;
 	foreach ($directory as $key => $row) {
-		$sql = "SELECT * \n";
-		$sql .= "FROM v_device_lines \n";
-		$sql .= "WHERE domain_uuid = '$domain_uuid' \n";
-		$sql .= "and device_uuid = '".$row['device_uuid']."' ";
-		$sql .= "and line_number = '1' ";
-		$database = new database;
-		$sqlview1 = $sql;
-		$result = $database->select($sql, 'all');
+		$sql = "SELECT * ";
+		$sql .= "FROM v_device_lines ";
+		$sql .= "WHERE domain_uuid = '$domain_uuid'";
+		$sql .= " AND device_uuid = '".$row['device_uuid']."'";
+		$sql .= " AND line_number = '1' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		$directory[$key]['line_1_server_address'] = $result[0]['server_address'];
 		$directory[$key]['line_1_server_address_primary'] = $result[0]['server_address_primary'];
 		$directory[$key]['line_1_server_address_secondary'] = $result[0]['server_address_secondary'];
@@ -136,8 +134,7 @@
 		$directory[$key]['line_1_sip_transport'] = $result[0]['sip_transport'];
 		$directory[$key]['line_1_register_expires'] = $result[0]['register_expires'];
 
-		unset($result, $database);
-		$x++;
+		unset($result);
 	}
 
 //additional includes
@@ -248,7 +245,7 @@
 	echo "		<td align='right' width='100%' style='vertical-align: top;'>";
 	echo "		<form method='get' action=''>\n";
 	echo "			<td style='vertical-align: top; text-align: right; white-space: nowrap;'>\n";
-	echo "				<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='bulk_account_settings.php'\" value='".$text['button-back']."'>\n";	
+	echo "				<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='bulk_settings.php'\" value='".$text['button-back']."'>\n";	
 	echo "				<input type='text' class='txt' style='width: 150px' name='search' id='search' value='".$search."'>";
 	echo "				<input type='hidden' class='txt' style='width: 150px' name='option_selected' id='option_selected' value='".$option_selected."'>";
 	echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
@@ -268,7 +265,7 @@
 	echo "<br />";
 
 	if (strlen($option_selected) > 0) {
-		echo "<form name='devices' method='post' action='bulk_account_settings_devices_update.php'>\n";
+		echo "<form name='devices' method='post' action='bulk_settings_devices_update.php'>\n";
 		echo "<input class='formfld' type='hidden' name='option_selected' maxlength='255' value=\"".escape($option_selected)."\">\n";
 		echo "<table width='auto' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";

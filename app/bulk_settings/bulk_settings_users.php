@@ -32,7 +32,7 @@
 
 //check permissions
 	require_once "resources/check_auth.php";
-	if (permission_exists('bulk_account_settings_users')) {
+	if (permission_exists('bulk_settings_users')) {
 		//access granted
 	}
 	else {
@@ -278,7 +278,7 @@
 	echo "		<td align='right' width='100%' style='vertical-align: top;'>";
 	echo "		<form method='get' action=''>\n";
 	echo "			<td style='vertical-align: top; text-align: right; white-space: nowrap;'>\n";
-	echo "				<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='bulk_account_settings.php'\" value='".$text['button-back']."'>\n";	
+	echo "				<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='bulk_settings.php'\" value='".$text['button-back']."'>\n";	
 	echo "				<input type='text' class='txt' style='width: 150px' name='search' id='search' value='".escape($search)."'>";
 	echo "				<input type='hidden' class='txt' style='width: 150px' name='option_selected' id='option_selected' value='".escape($option_selected)."'>";
 	echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
@@ -299,7 +299,7 @@
 	echo "<br />";
 
 	if (strlen($option_selected) > 0) {
-		echo "<form name='users' method='post' action='bulk_account_settings_users_update.php'>\n";
+		echo "<form name='users' method='post' action='bulk_settings_users_update.php'>\n";
 		echo "<input class='formfld' type='hidden' name='option_selected' maxlength='255' value=\"".escape($option_selected)."\">\n";
 		echo "<table width='auto' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";

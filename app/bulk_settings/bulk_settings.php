@@ -31,7 +31,7 @@
 
 //check permissions
 	require_once "resources/check_auth.php";
-	if (permission_exists('bulk_account_settings_view')) {
+	if (permission_exists('bulk_settings_view')) {
 		//access granted
 	}
 	else {
@@ -50,15 +50,23 @@
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "  <tr>\n";
 	echo "	<td align='left' width='100%'>\n";
-	echo "		<b>".$text['header-bulk_account_settings']." </b><br>\n";
+	echo "		<b>".$text['header-bulk_settings']." </b><br>\n";
 	echo "	</td>\n";
 	echo "		<td align='right' width='100%' style='vertical-align: top;'>";
 	echo "		<form method='get' action=''>\n";
 	echo "			<td style='vertical-align: top; text-align: right; white-space: nowrap;'>\n";
-	echo 				"<input type='button' class='btn' alt='".$text['button-devices']."' onclick=\"window.location='bulk_account_settings_devices.php'\" value='".$text['button-devices']."'>\n";
-	echo 				"<input type='button' class='btn' alt='".$text['button-extensions']."' onclick=\"window.location='bulk_account_settings_extensions.php'\" value='".$text['button-extensions']."'>\n";
-	echo 				"<input type='button' class='btn' alt='".$text['button-users']."' onclick=\"window.location='bulk_account_settings_users.php'\" value='".$text['button-users']."'>\n";
-	echo 				"<input type='button' class='btn' alt='".$text['button-voicemails']."' onclick=\"window.location='bulk_account_settings_voicemails.php'\" value='".$text['button-voicemails']."'>\n";
+	if (permission_exists('bulk_settings_devices')) {
+		echo 				"<input type='button' class='btn' alt='".$text['button-devices']."' onclick=\"window.location='bulk_settings_devices.php'\" value='".$text['button-devices']."'>\n";
+	}
+	if (permission_exists('bulk_settings_extensions')) {
+		echo 				"<input type='button' class='btn' alt='".$text['button-extensions']."' onclick=\"window.location='bulk_settings_extensions.php'\" value='".$text['button-extensions']."'>\n";
+	}
+	if (permission_exists('bulk_settings_users')) {
+		echo 				"<input type='button' class='btn' alt='".$text['button-users']."' onclick=\"window.location='bulk_settings_users.php'\" value='".$text['button-users']."'>\n";
+	}
+	if (permission_exists('bulk_settings_voicemails')) {
+		echo 				"<input type='button' class='btn' alt='".$text['button-voicemails']."' onclick=\"window.location='bulk_settings_voicemails.php'\" value='".$text['button-voicemails']."'>\n";
+	}
 	echo "			</td>\n";
 	echo "		</form>\n";	
 	echo "  </tr>\n";

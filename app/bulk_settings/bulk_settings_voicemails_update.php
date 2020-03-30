@@ -30,7 +30,7 @@
 	require_once "resources/check_auth.php";
 
 //check permissions
-	if (permission_exists('bulk_account_settings_voicemails')) {
+	if (permission_exists('bulk_settings_voicemails')) {
 		//access granted
 	}
 	else {
@@ -97,7 +97,7 @@
 						$array["voicemail_options"][$i]["voicemail_option_param"] = trim($voicemail_option_param);
 						
 						$database = new database;
-						$database->app_name = 'bulk_account_settings';
+						$database->app_name = 'bulk_settings';
 						$database->app_uuid = null;
 						$database->save($array);
 						$message = $database->message;
@@ -135,7 +135,7 @@
 						$array["voicemails"][$i][$option_selected] = $new_setting;
 	
 						$database = new database;
-						$database->app_name = 'bulk_account_settings';
+						$database->app_name = 'bulk_settings';
 						$database->app_uuid = null;
 						$database->save($array);
 						$message = $database->message;
@@ -148,7 +148,7 @@
 
 //redirect the browser
 	$_SESSION["message"] = $text['message-update'];
-	header("Location: bulk_account_settings_voicemails.php?option_selected=".$option_selected."");
+	header("Location: bulk_settings_voicemails.php?option_selected=".$option_selected."");
 	return;
 
 ?>

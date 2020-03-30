@@ -28,10 +28,11 @@
 //includes
 	include "root.php";
 	require_once "resources/require.php";
+	require_once "resources/paging.php";
 	
 // Check permissions
 	require_once "resources/check_auth.php";
-	if (permission_exists('bulk_account_settings_extensions')) {
+	if (permission_exists('bulk_settings_extensions')) {
 		//access granted
 	} else {
 		echo "access denied";
@@ -51,15 +52,20 @@
 	$search = check_str($_GET["search"]);
 	if (strlen($search) > 0) {
 		$search = strtolower($search);
-		$sql_mod = "and ( ";
-		$sql_mod .= "lower(extension) like '%".$search."%' ";
-		$sql_mod .= "or lower(accountcode) like '%".$search."%' ";		
-		$sql_mod .= "or lower(call_group) like '%".$search."%' ";
-		$sql_mod .= "or lower(description) like '%".$search."%' ";
-		if (($option_selected == "") or ($option_selected == 'call_group') or ($option_selected == 'accountcode')) {
-			
-		} elseif (($option_selected == 'call_timeout') or ($option_selected == 'sip_force_expires')){
-			$sql_mod .= "or lower(cast (".$option_selected." as text)) like '%".$search."%' ";
+		$sql_mod = " AND ( ";
+		$sql_mod .= " extension ILIKE '%".$search."%'";
+		$sql_mod .= " OR accountcode ILIKE '%".$search."%'";
+		$sql_mod .= " OR call_group ILIKE '%".$search."%'";
+		$sql_mod .= " OR description ILIKE '%".$search."%'";
+		if (	($option_selected == "") or
+				($option_selected == 'call_group') or 
+				($option_selected == 'accountcode')) 
+		{
+			// pass
+		} elseif (	($option_selected == 'call_timeout') or 
+					($option_selected == 'sip_force_expires'))
+		{
+			$sql_mod .= "OR lower(cast (".$option_selected." as text)) ILIKE '%".$search."%' ";
 		} else {
 			$sql_mod .= "or lower(".$option_selected.") like '%".$search."%' ";
 		}
@@ -72,7 +78,7 @@
 	
 
 //get total extension count from the database
-	$sql = "select count(*) as num_rows from v_extensions where domain_uuid = '".$_SESSION['domain_uuid']."' ".$sql_mod." ";
+	$sql = "SELECT count(*) AS num_rows FROM v_extensions WHERE domain_uuid = '".$domain_uuid."' ".$sql_mod." ";
 	$prep_statement = $db->prepare($sql);
 	if ($prep_statement) {
 		$prep_statement->execute();
@@ -94,23 +100,22 @@
 	$offset = $rows_per_page * $_GET['page'];
 
 //get all the extensions from the database
-	$sql = "SELECT \n";
-	$sql .= "description, \n";
-	$sql .= "extension, \n";
-	$sql .= "extension_uuid, \n";
+	$sql = "SELECT description,";
+	$sql .= " extension, \n";
+	$sql .= " extension_uuid, \n";
 	if (($option_selected == "") or ($option_selected == 'call_group') or ($option_selected == 'accountcode')) {} else {
-		$sql .= "".$option_selected.", \n";
+		$sql .= " ".$option_selected.",";
 	}
-	$sql .= "accountcode, \n";
-	$sql .= "call_group \n";
-	$sql .= "FROM v_extensions \n";
-	$sql .= "WHERE domain_uuid = '$domain_uuid' \n";
+	$sql .= " accountcode,";
+	$sql .= " call_group ";
+	$sql .= "FROM v_extensions ";
+	$sql .= "WHERE domain_uuid = '$domain_uuid' ";
 	$sql .= $sql_mod; //add search mod from above
-	$sql .= "ORDER BY ".$order_by." ".$order." \n";
-	$sql .= "limit $rows_per_page offset $offset ";
-	$database = new database;
-	$directory = $database->select($sql, 'all');
-	unset($database);
+	$sql .= "ORDER BY ".$order_by." ".$order." ";
+	$sql .= "LIMIT $rows_per_page OFFSET $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$directory = $prep_statement->fetchAll();
 
 //additional includes
 	require_once "resources/header.php";
@@ -131,6 +136,7 @@
 		echo "<form name='frm' method='get' id=option_selected>\n";
 		echo "    <select class='formfld' name='option_selected'  onchange=\"this.form.submit();\">\n";
 		echo "    <option value=''>".$text['label-extension_null']."</option>\n";
+		
 		if ($option_selected == "accountcode") {
 			echo "    <option value='accountcode' selected='selected'>".$text['label-accountcode']."</option>\n";
 		}
@@ -235,7 +241,7 @@
 	echo "		<td align='right' width='100%' style='vertical-align: top;'>";
 	echo "		<form method='get' action=''>\n";
 	echo "			<td style='vertical-align: top; text-align: right; white-space: nowrap;'>\n";
-	echo "				<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='bulk_account_settings.php'\" value='".$text['button-back']."'>\n";	
+	echo "				<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='bulk_settings.php'\" value='".$text['button-back']."'>\n";	
 	echo "				<input type='text' class='txt' style='width: 150px' name='search' id='search' value='".escape($search)."'>";
 	echo "				<input type='hidden' class='txt' style='width: 150px' name='option_selected' id='option_selected' value='".escape($option_selected)."'>";
 	echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
@@ -256,7 +262,7 @@
 	echo "<br />";
 
 	if (strlen($option_selected) > 0) {
-		echo "<form name='extensions' method='post' action='bulk_account_settings_extensions_update.php'>\n";
+		echo "<form name='extensions' method='post' action='bulk_settings_extensions_update.php'>\n";
 		echo "<input class='formfld' type='hidden' name='option_selected' maxlength='255' value=\"".escape($option_selected)."\">\n";
 		echo "<table width='auto' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
@@ -356,10 +362,10 @@
 
 
 
-if (is_array($directory)) {
+	if (is_array($directory)) {
 
 		foreach($directory as $key => $row) {
-			$tr_link = (permission_exists('extension_edit')) ? " href='/app/extensions/extension_edit.php?id=".$row['extension_uuid']."'" : null;
+			$tr_link = (permission_exists('extension_edit')) ? " href='/app/extensions/extension_edit.php?id=".$row['extension_uuid']."'" : "";
 			echo "<tr ".$tr_link.">\n";
 
 			echo "	<td valign='top' class='".$row_style[$c]." tr_link_void' style='text-align: center; vertical-align: middle; padding: 0px;'>";

@@ -30,7 +30,7 @@
 	require_once "resources/check_auth.php";
 
 //check permissions
-	if (permission_exists('bulk_account_settings_devices')) {
+	if (permission_exists('bulk_settings_devices')) {
 		//access granted
 	}
 	else {
@@ -80,7 +80,7 @@
 					$array["device_lines"][$i]["device_uuid"] = $device_uuid;					
 
 					$database = new database;
-					$database->app_name = 'bulk_account_settings';
+					$database->app_name = 'bulk_settings';
 					$database->app_uuid = null;
 					$database->save($array);
 					$message = $database->message;
@@ -94,7 +94,7 @@
 					$array["devices"][$i][$option_selected] = $new_setting;
 
 					$database = new database;
-					$database->app_name = 'bulk_account_settings';
+					$database->app_name = 'bulk_settings';
 					$database->app_uuid = null;
 					$database->save($array);
 					$message = $database->message;
@@ -110,7 +110,7 @@
 
 //redirect the browser
 	$_SESSION["message"] = $text['message-update'];
-	header("Location: bulk_account_settings_devices.php?option_selected=".$option_selected."");
+	header("Location: bulk_settings_devices.php?option_selected=".$option_selected."");
 	return;
 
 ?>
