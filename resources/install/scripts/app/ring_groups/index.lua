@@ -704,9 +704,9 @@
 						--set the caller id
 							caller_id = ''
 							if (ring_group_caller_id_name ~= nil and #ring_group_caller_id_name > 0) then
-								caller_id = "origination_caller_id_name='"..ring_group_caller_id_name.."'"
+								caller_id = "origination_caller_id_name='"..ring_group_caller_id_name.."',"
 							elseif (caller_id_name ~= nil and #caller_id_name > 0)
-								caller_id = "origination_caller_id_name='" .. caller_id_name .. "'"
+								caller_id = "origination_caller_id_name='" .. caller_id_name .. "',"
 							end
 
 							if (ring_group_caller_id_number ~= nil and #ring_group_caller_id_number > 0) then
