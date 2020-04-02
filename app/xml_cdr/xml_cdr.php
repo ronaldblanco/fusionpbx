@@ -499,8 +499,8 @@
 			//if call cancelled, show the ring time, not the bill time.
 				$seconds = ($row['hangup_cause']=="ORIGINATOR_CANCEL") ? $row['duration'] : round(($row['billmsec'] / 1000), 0, PHP_ROUND_HALF_UP);
 
-			//determine recording properties
-				if (permission_exists('recording_play') || permission_exists('recording_download')) {
+			//determine recording properties. If duration == 0, not show it
+				if ($seconds > 0 && (permission_exists('recording_play') || permission_exists('recording_download'))) {
 					$record_path = $row['record_path'];
 					$record_name = $row['record_name'];
 					//$record_name = strtolower(pathinfo($tmp_name, PATHINFO_BASENAME));
