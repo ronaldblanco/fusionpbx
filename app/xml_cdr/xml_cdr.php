@@ -499,8 +499,8 @@
 			//if call cancelled, show the ring time, not the bill time.
 				$seconds = ($row['hangup_cause']=="ORIGINATOR_CANCEL") ? $row['duration'] : round(($row['billmsec'] / 1000), 0, PHP_ROUND_HALF_UP);
 
-			//determine recording properties. If duration == 0, not show it
-				if ($seconds > 0 && (permission_exists('recording_play') || permission_exists('recording_download'))) {
+			//determine recording properties.
+				if (permission_exists('recording_play') || permission_exists('recording_download')) {
 					$record_path = $row['record_path'];
 					$record_name = $row['record_name'];
 					//$record_name = strtolower(pathinfo($tmp_name, PATHINFO_BASENAME));
@@ -513,7 +513,7 @@
 				}
 
 			//recording playback
-				if (permission_exists('recording_play') && isset($record_path) && $record_path != '') {
+				if ($seconds > 0 && permission_exists('recording_play') && $record_path != '') {
 					echo "<tr id='recording_progress_bar_".$row['xml_cdr_uuid']."' style='display: none;'><td class='".$row_style[$c]." playback_progress_bar_background' style='padding: 0; border: none;' colspan='".$col_count."'><span class='playback_progress_bar' id='recording_progress_".$row['xml_cdr_uuid']."'></span></td></tr>\n";
 				}
 
@@ -611,8 +611,8 @@
 				echo "		</a>\n";
 				echo "	</td>\n";
 			//recording
-				if (isset($record_path) && (permission_exists('recording_play') || permission_exists('recording_download'))) {
-					if ($record_path != '' && file_exists($record_path.'/'.$record_name)) {
+				if (permission_exists('recording_play') || permission_exists('recording_download')) {
+					if ($seconds > 0 && $record_path != '' && file_exists($record_path.'/'.$record_name)) {
 						echo "	<td valign='top' align='center' class='".$row_style[$c]." row_style_slim tr_link_void' nowrap='nowrap'>";
 						if (permission_exists('recording_play')) {
 							echo 	"<audio id='recording_audio_".escape($row['xml_cdr_uuid'])."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".escape($row['xml_cdr_uuid'])."')\" onended=\"recording_reset('".escape($row['xml_cdr_uuid'])."');\" src=\"download.php?id=".escape($row['xml_cdr_uuid'])."&t=record\" type='".escape($record_type)."'></audio>";
