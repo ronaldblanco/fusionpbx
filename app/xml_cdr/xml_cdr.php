@@ -513,7 +513,7 @@
 				}
 
 			//recording playback
-				if (permission_exists('recording_play') && $record_path != '') {
+				if (permission_exists('recording_play') && isset($record_path) && $record_path != '') {
 					echo "<tr id='recording_progress_bar_".$row['xml_cdr_uuid']."' style='display: none;'><td class='".$row_style[$c]." playback_progress_bar_background' style='padding: 0; border: none;' colspan='".$col_count."'><span class='playback_progress_bar' id='recording_progress_".$row['xml_cdr_uuid']."'></span></td></tr>\n";
 				}
 
@@ -611,7 +611,7 @@
 				echo "		</a>\n";
 				echo "	</td>\n";
 			//recording
-				if (permission_exists('recording_play') || permission_exists('recording_download')) {
+				if (isset($record_path) && (permission_exists('recording_play') || permission_exists('recording_download'))) {
 					if ($record_path != '' && file_exists($record_path.'/'.$record_name)) {
 						echo "	<td valign='top' align='center' class='".$row_style[$c]." row_style_slim tr_link_void' nowrap='nowrap'>";
 						if (permission_exists('recording_play')) {
