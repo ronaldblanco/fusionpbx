@@ -410,9 +410,11 @@
 
                     if (strlen($destination_ext_callerid_name_prepend) > 0) {
                         $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"effective_caller_id_name=" . $destination_ext_callerid_name_prepend . "\${caller_id_name}\"/>\n";
+                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"origination_caller_id_name=" . $destination_ext_callerid_name_prepend . "\${caller_id_name}\"/>\n";
                     }
                     if (strlen($destination_ext_callerid_number_prepend) > 0) {
                         $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"effective_caller_id_number=" . $destination_ext_callerid_number_prepend . "\${caller_id_number}\"/>\n";
+                        $dialplan["dialplan_xml"] .= "		<action application=\"set\" data=\"origination_caller_id_number=" . $destination_ext_callerid_number_prepend . "\${caller_id_number}\"/>\n";
                     }
 
                     if (strlen($destination_ext_variable) > 0 and (isset($invalid_ext_transfer) or $destination_ext_variable_no_extension)) {
@@ -519,6 +521,14 @@
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $dialplan_detail_order += 10;
                         $y += 1;
+
+                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "origination_caller_id_name=" . $destination_ext_callerid_name_prepend . "\${caller_id_name}";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                        $dialplan_detail_order += 10;
+                        $y += 1;
                     }
 
                     if (strlen($destination_ext_callerid_number_prepend) > 0) { 
@@ -526,6 +536,14 @@
                         $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "effective_caller_id_number=" . $destination_ext_callerid_number_prepend . "\${caller_id_number}";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
+                        $dialplan_detail_order += 10;
+                        $y += 1;
+
+                        $dialplan["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_tag"] = "action";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_type"] = "set";
+                        $dialplan["dialplan_details"][$y]["dialplan_detail_data"] = "origination_caller_id_number=" . $destination_ext_callerid_number_prepend . "\${caller_id_number}";
                         $dialplan["dialplan_details"][$y]["dialplan_detail_order"] = $dialplan_detail_order;
                         $dialplan_detail_order += 10;
                         $y += 1;
