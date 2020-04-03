@@ -683,15 +683,26 @@
 
 				--process according to user_exists, sip_uri, external number
 					if (user_exists == "true") then
+
+						caller_id = ''
+
+						if (caller_id_name ~= nil and #caller_id_name > 0) then
+							caller_id = "origination_caller_id_name='" .. caller_id_name .. "',"
+						end
+
+						if (caller_id_number ~= nil and #caller_id_number > 0) then
+							caller_id = "origination_caller_id_number='" .. caller_id_number .. "',"
+						end
+
 						--get the extension_uuid
 						cmd = "user_data ".. destination_number .."@"..domain_name.." var extension_uuid";
 						extension_uuid = trim(api:executeString(cmd));
 						--send to user
-						local dial_string_to_user = "[sip_invite_domain="..domain_name..",domain_name="..domain_name..",call_direction="..call_direction..","..group_confirm.."leg_timeout="..destination_timeout..","..delay_name.."="..destination_delay..",dialed_extension=" .. row.destination_number .. ",extension_uuid="..extension_uuid .. row.record_session .. "]user/" .. row.destination_number .. "@" .. domain_name;
+						local dial_string_to_user = "[sip_invite_domain="..domain_name.."," .. caller_id .. "domain_name="..domain_name..",call_direction="..call_direction..","..group_confirm.."leg_timeout="..destination_timeout..","..delay_name.."="..destination_delay..",dialed_extension=" .. row.destination_number .. ",extension_uuid="..extension_uuid .. row.record_session .. "]user/" .. row.destination_number .. "@" .. domain_name;
 						dial_string = dial_string_to_user;
 					elseif (tonumber(destination_number) == nil) then
 						--sip uri
-						dial_string = "[sip_invite_domain="..domain_name..",domain_name="..domain_name..",call_direction="..call_direction..","..group_confirm.."leg_timeout="..destination_timeout..","..delay_name.."="..destination_delay.."]" .. row.destination_number;
+						dial_string = "[sip_invite_domain="..domain_name.."," .. caller_id .. "domain_name="..domain_name..",call_direction="..call_direction..","..group_confirm.."leg_timeout="..destination_timeout..","..delay_name.."="..destination_delay.."]" .. row.destination_number;
 					else
 						--external number
 							route_bridge = 'loopback/'..destination_number;
@@ -712,7 +723,7 @@
 							if (ring_group_caller_id_number ~= nil and #ring_group_caller_id_number > 0) then
 								caller_id = caller_id .. "origination_caller_id_number="..ring_group_caller_id_number..","
 							elseif (caller_id_number ~= nil and #caller_id_number > 0) then
-								caller_id = caller_id .. "origination_caller_id_number=" .. caller_id_number .. ","
+								caller_id = "origination_caller_id_number='" .. caller_id_number .. "',"
 							end
 
 						--set the destination dial string
