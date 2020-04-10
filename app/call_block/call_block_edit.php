@@ -348,6 +348,13 @@
 	if (!isset($_REQUEST["id"])) {
 		$sql = "select caller_id_number, caller_id_name, start_epoch, direction, hangup_cause, duration, billsec, xml_cdr_uuid from v_xml_cdr ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		if ($_SESSION['cdr']['month_limit']['numeric']) {
+			$xml_cdr_month_limit = $_SESSION['cdr']['month_limit']['numeric'];
+			if (is_numeric($xml_cdr_month_limit)) {
+				$sql .= "and start_stamp  > 'now'::timestamp - '" . $xml_cdr_month_limit . " month'::interval ";
+			}
+			unset($xml_cdr_month_limit);
+		}
 		$sql .= "and direction != 'outbound' ";
 		$sql .= "order by start_stamp DESC ";
 		$sql .= "limit 20 ";
