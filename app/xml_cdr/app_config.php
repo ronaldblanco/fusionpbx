@@ -179,15 +179,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "class to call";
-		$y += 1;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "39edc906-fc8b-4365-9162-0de39a7d6c71";
-		$apps[$x]['default_settings'][$y]['default_setting_category'] = "cdr";
-		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "month_limit";
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "1";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Default limit for query to xml_cdr to limit results for X month";
-		
 
 
 	//schema details

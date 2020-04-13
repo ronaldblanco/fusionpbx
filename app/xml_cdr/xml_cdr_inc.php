@@ -150,60 +150,24 @@
 		}
 	}
 
-	if (strlen($start_stamp_begin) > 0 && strlen($start_stamp_end) > 0) { 
-		$sql_where_ands[] = "start_stamp BETWEEN '".$start_stamp_begin.":00.000' AND '".$start_stamp_end.":59.999'"; 
-	} else {
-		if (strlen($start_stamp_begin) > 0) { 
-			$sql_where_ands[] = "start_stamp >= '".$start_stamp_begin.":00.000'";
-		}
-		if (strlen($start_stamp_end) > 0) { 
-			$sql_where_ands[] = "start_stamp <= '".$start_stamp_end.":59.999'"; 
-		}
-		if (strlen($start_stamp_begin) == 0 && strlen($start_stamp_end) == 0) {
-			if ($_SESSION['cdr']['month_limit']['numeric']) {
-				$xml_cdr_month_limit = $_SESSION['cdr']['month_limit']['numeric'];
-				if (is_numeric($xml_cdr_month_limit)) {
-					$sql_where_ands[] =  "start_stamp  >= 'now'::timestamp - '" . $xml_cdr_month_limit . " month'::interval ";
-				}
-				unset($xml_cdr_month_limit);
-			}
-		}
+	if (strlen($start_stamp_begin) > 0 && strlen($start_stamp_end) > 0) { $sql_where_ands[] = "start_stamp BETWEEN '".$start_stamp_begin.":00.000' AND '".$start_stamp_end.":59.999'"; }
+	else {
+		if (strlen($start_stamp_begin) > 0) { $sql_where_ands[] = "start_stamp >= '".$start_stamp_begin.":00.000'"; }
+		if (strlen($start_stamp_end) > 0) { $sql_where_ands[] = "start_stamp <= '".$start_stamp_end.":59.999'"; }
 	}
-
-	if (strlen($answer_stamp_begin) > 0 && strlen($answer_stamp_end) > 0) { 
-		$sql_where_ands[] = "answer_stamp BETWEEN '".$answer_stamp_begin.":00.000' AND '".$answer_stamp_end.":59.999'"; 
-	} else {
-		if (strlen($answer_stamp_begin) > 0) { 
-			$sql_where_ands[] = "answer_stamp >= '".$answer_stamp_begin.":00.000'"; 
-		}
-		if (strlen($answer_stamp_end) > 0) { 
-			$sql_where_ands[] = "answer_stamp <= '".$answer_stamp_end.":59.999'"; 
-		}
+	if (strlen($answer_stamp_begin) > 0 && strlen($answer_stamp_end) > 0) { $sql_where_ands[] = "answer_stamp BETWEEN '".$answer_stamp_begin.":00.000' AND '".$answer_stamp_end.":59.999'"; }
+	else {
+		if (strlen($answer_stamp_begin) > 0) { $sql_where_ands[] = "answer_stamp >= '".$answer_stamp_begin.":00.000'"; }
+		if (strlen($answer_stamp_end) > 0) { $sql_where_ands[] = "answer_stamp <= '".$answer_stamp_end.":59.999'"; }
 	}
-
-	if (strlen($end_stamp_begin) > 0 && strlen($end_stamp_end) > 0) { 
-		$sql_where_ands[] = "end_stamp BETWEEN '".$end_stamp_begin.":00.000' AND '".$end_stamp_end.":59.999'"; 
-	} else {
-		if (strlen($end_stamp_begin) > 0) { 
-			$sql_where_ands[] = "end_stamp >= '".$end_stamp_begin.":00.000'"; 
-		}
-		if (strlen($end_stamp_end) > 0) { 
-			$sql_where_ands[] = "end_stamp <= '".$end_stamp_end.":59.999'"; 
-		}
+	if (strlen($end_stamp_begin) > 0 && strlen($end_stamp_end) > 0) { $sql_where_ands[] = "end_stamp BETWEEN '".$end_stamp_begin.":00.000' AND '".$end_stamp_end.":59.999'"; }
+	else {
+		if (strlen($end_stamp_begin) > 0) { $sql_where_ands[] = "end_stamp >= '".$end_stamp_begin.":00.000'"; }
+		if (strlen($end_stamp_end) > 0) { $sql_where_ands[] = "end_stamp <= '".$end_stamp_end.":59.999'"; }
 	}
-
-	if (strlen($duration) > 0) { 
-		$sql_where_ands[] = "duration like '%".$duration."%'"; 
-	}
-
-	if (strlen($billsec) > 0) { 
-		$sql_where_ands[] = "billsec like '%".$billsec."%'"; 
-	}
-
-	if (strlen($hangup_cause) > 0) { 
-		$sql_where_ands[] = "hangup_cause like '%".$hangup_cause."%'"; 
-	}
-	
+	if (strlen($duration) > 0) { $sql_where_ands[] = "duration like '%".$duration."%'"; }
+	if (strlen($billsec) > 0) { $sql_where_ands[] = "billsec like '%".$billsec."%'"; }
+	if (strlen($hangup_cause) > 0) { $sql_where_ands[] = "hangup_cause like '%".$hangup_cause."%'"; }
 	if (strlen($call_result) > 0) {
 		switch ($call_result) {
 			case 'answered':
@@ -242,41 +206,15 @@
 				$sql_where_ands[] = "(answer_stamp is null and bridge_uuid is null and billsec = 0 and sip_hangup_disposition = 'send_refuse')";
 		}
 	}
-	if (strlen($xml_cdr_uuid) > 0) { 
-		$sql_where_ands[] = "xml_cdr_uuid = '".$xml_cdr_uuid."'"; 
-	}
-
-	if (strlen($bleg_uuid) > 0) { 
-		$sql_where_ands[] = "bleg_uuid = '".$bleg_uuid."'"; 
-	}
-
-	if (strlen($accountcode) > 0) { 
-		$sql_where_ands[] = "accountcode = '".$accountcode."'"; 
-	}
-
-	if (strlen($read_codec) > 0) { 
-		$sql_where_ands[] = "read_codec like '%".$read_codec."%'"; 
-	}
-
-	if (strlen($write_codec) > 0) { 
-		$sql_where_ands[] = "write_codec like '%".$write_codec."%'"; 
-	}
-
-	if (strlen($remote_media_ip) > 0) { 
-		$sql_where_ands[] = "remote_media_ip like '%".$remote_media_ip."%'"; 
-	}
-
-	if (strlen($network_addr) > 0) { 
-		$sql_where_ands[] = "network_addr like '%".$network_addr."%'"; 
-	}
-
-	if (strlen($mos_comparison) > 0 && strlen($mos_score) > 0 ) { 
-		$sql_where_ands[] = "rtp_audio_in_mos " . $mos_comparison . " ".$mos_score.""; 
-	}
-
-	if (strlen($leg) > 0) { 
-		$sql_where_ands[] = "leg='$leg'"; 
-	}
+	if (strlen($xml_cdr_uuid) > 0) { $sql_where_ands[] = "xml_cdr_uuid = '".$xml_cdr_uuid."'"; }
+	if (strlen($bleg_uuid) > 0) { $sql_where_ands[] = "bleg_uuid = '".$bleg_uuid."'"; }
+	if (strlen($accountcode) > 0) { $sql_where_ands[] = "accountcode = '".$accountcode."'"; }
+	if (strlen($read_codec) > 0) { $sql_where_ands[] = "read_codec like '%".$read_codec."%'"; }
+	if (strlen($write_codec) > 0) { $sql_where_ands[] = "write_codec like '%".$write_codec."%'"; }
+	if (strlen($remote_media_ip) > 0) { $sql_where_ands[] = "remote_media_ip like '%".$remote_media_ip."%'"; }
+	if (strlen($network_addr) > 0) { $sql_where_ands[] = "network_addr like '%".$network_addr."%'"; }
+	if (strlen($mos_comparison) > 0 && strlen($mos_score) > 0 ) { $sql_where_ands[] = "rtp_audio_in_mos " . $mos_comparison . " ".$mos_score.""; }
+	if (strlen($leg) > 0) { $sql_where_ands[] = "leg='$leg'"; }
 
 	//if not admin or superadmin, only show own calls
 	if (!permission_exists('xml_cdr_domain')) {
