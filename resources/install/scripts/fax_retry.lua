@@ -262,7 +262,7 @@
 	sql = sql .. ")";
 
 	local params = {
-		uuid                           = uuid;
+		uuid                           = api:executeString("create_uuid");
 		domain_uuid                    = domain_uuid;
 		fax_uuid                       = fax_uuid;
 		fax_success                    = fax_success;
