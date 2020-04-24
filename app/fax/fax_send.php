@@ -753,7 +753,8 @@ if (!function_exists('fax_split_dtmf')) {
 
 			if (count($route_array) == 0) {
 				//send the internal call to the registered extension
-				$fax_uri = "user/".$fax_number."@".$_SESSION['domain_name'];
+				//$fax_uri = "user/".$fax_number."@".$_SESSION['domain_name'];
+				$fax_uri = "loopback/".$fax_prefix . $fax_number;
 				$fax_variables = "";
 			}
 			else {

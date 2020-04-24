@@ -298,8 +298,8 @@
 	email_address = email_address:gsub(",", "\\,")
 	from_address = explode(',', from_address)[1]
 
-	uri_array = explode("/",fax_uri);
-	if (uri_array[1] == 'user') then
+	uri_array = explode("/",fax_uri)
+	if (uri_array[1] == 'user' or uri_array[1] == 'loopback') then
         number_dialed = uri_array[2]
     else
         number_dialed = uri_array[4]
