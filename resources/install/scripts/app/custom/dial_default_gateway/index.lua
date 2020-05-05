@@ -39,7 +39,7 @@ if (session:ready()) then
             freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Dialing through gateway "..gateway_uuid.."\n");
             local callee_id_number = session:getVariable("callee_id_number")
             callee_id_number = callee_id_number and callee_id_number or "" 
-            session:execute("bridge", "sofia/gateway/" .. gateway_uuid .. "/" .. callee_id_number)
+            session:execute("bridge", "{sip_cid_type=none}sofia/gateway/" .. gateway_uuid .. "/" .. callee_id_number)
         else
             freeswitch.consoleLog("NOTICE", "[dial_default_gateway] Cannot get gateway for domain("..results_count..")\n");
         end
