@@ -782,6 +782,9 @@ if (!function_exists('fax_split_dtmf')) {
 				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 				if ($fp) {
 					$cmd = "api originate " . $dial_string;
+					if ($_SESSION['fax']['send_api_mode']['text'] == 'background') {
+						$cmd = "bg" . $cmd;
+					}
 					// echo($cmd . "<br/>\n");
 					//send the command to event socket
 					$response = event_socket_request($fp, $cmd);

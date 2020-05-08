@@ -281,6 +281,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
 		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d6b64905-ddb6-455d-78eb-d641a1e504bc";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "send_api_mode";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "background";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Do not for answer of other side, when sending a fax to return to web page";
+		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d2977fe1-ee7e-4403-b44f-8d86aeb5f310";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "send_retry_limit";
