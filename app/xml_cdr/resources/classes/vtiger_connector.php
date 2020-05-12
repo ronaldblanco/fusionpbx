@@ -95,7 +95,7 @@ if (!class_exists('vtiger_connector')) {
                 'answered' => $xml_varibles->billsec,
             );
 
-            if (strlen(strval($xml_varibles->last_sent_callee_id_name)) > 0) {
+            if (strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
                 $send_data['fields']['recording'] = base64_decode(urldecode($xml_varibles->vtiger_record_path));
             }
 
