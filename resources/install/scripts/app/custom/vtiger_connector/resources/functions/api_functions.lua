@@ -8,30 +8,37 @@ function vtiger_api_call(method, credentials, data, is_return)
     api_data['timestamp'] = os.time()
     api_data['uuid'] = session:getVariable('call_uuid') or ""
 
-    local api_string = credentials['url'] .. "call_"..method..".php content-type application/json post '"..json_encode(api_data).."'"
-    if (api_data['debug']) then
-        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] "..api_string)
-    else
-        local api_response = api:execute("curl ", api_string)
-        freeswitch.consoleLog("NOTICE", "[vtiger_connector][call_"..method.."] Response: "..api_response)
+    local cmd_string = credentials['url'] .. "call_" .. method .. " content-type application/json connect-timeout 1 timeout 2 post '"..json_encode(api_data).."'"
+    cmd_string = "curl " .. cmd_string
+    if is_return == nil then 
+        cmd_string = "bgapi " .. cmd_string
     end
-
+    if (api_data['debug']) then
+        log.notice("[DEBUG][call_"..method.."] " .. cmd_string)
+    else
+        local api_response = api:executeString(cmd_string)
+        log.notice("[call_"..method.."] Response: " .. api_response)
+        return api_response
+    end
+    return nil
 end
 
 function ringing_answered_call(type)
     
     local vtiger_url = session:getVariable("vtiger_url")
     local vtiger_api_key = session:getVariable("vtiger_api_key")
+
 	if (vtiger_url == nil or vtiger_api_key == nil) then
-		freeswitch.consoleLog("WARNING", "[vtiger_connector]["..type.."] Can't get URL or key")
+		log.warning("["..type.."] Can't get URL or key")
 		do return end
     end
     
     local credentials = {}
-	credentials['url'], credentials['key'] = dec64(vtiger_url), dec64(vtiger_api_key)
+    credentials['url'], credentials['key'] = dec64(vtiger_url), dec64(vtiger_api_key)
+    
 	local dialed_user = session:getVariable("dialed_user")
 	if (dialed_user == nil) then
-		freeswitch.consoleLog("WARNING", "[vtiger_connector]["..type.."] Can't get dialed user")
+		log.warning("["..type.."] Can't get dialed user")
 		do return end
 	end
 	local call_data = {}

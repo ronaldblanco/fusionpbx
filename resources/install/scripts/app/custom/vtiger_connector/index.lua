@@ -6,7 +6,7 @@
 -- url
 -- api_key
 
-local log = require "resources.functions.log".sms
+local log = require "resources.functions.log".vtiger
 
 require "app.custom.vtiger_connector.resources.functions.api_functions"
 
@@ -25,9 +25,8 @@ local db = Database.new('system')
 
 assert(db:connected())
 
-local license_key = argv[3] or '';
-local execute_on_ring_suffix = argv[4] or '3';
-local execute_on_answer_suffix = argv[5] or '3';
+local execute_on_ring_suffix = argv[3] or '3';
+local execute_on_answer_suffix = argv[4] or '3';
 
 if (session:ready()) then
 
@@ -40,20 +39,30 @@ if (session:ready()) then
 
     if vtiger_settings_enabled ~= 'true' then
         log.info("VTiger is not enabled. Exiting")
-
         do return end
     end
 
     local vtiger_settings_url = settings:get('vtiger', 'url', 'text')
-    local vtiger_settings_api_key = settings:get('vtiger', 'api_password', 'text')
+    local vtiger_settings_api_key = settings:get('vtiger', 'password', 'text')
     local vtiger_settings_record_path = settings:get('vtiger', 'record_path', 'text')
+    local vtiger_settings_sticky_calls = settings:get('vtiger', 'sticky_calls', 'boolean')
     
     log.notice("Got Vtiger URL("..vtiger_settings_url..") and key("..vtiger_settings_api_key..")")
+
+    if (vtiger_settings_url:sub(-1) ~= '/') then
+        vtiger_settings_url = vtiger_settings_url .. "/"
+    end
+
     session:execute("export", "vtiger_url="..enc64(vtiger_settings_url))
     session:execute("export", "vtiger_api_key="..enc64(vtiger_settings_api_key))
-    session:execute("export", "vtiger_record_path="..enc64(vtiger_settings_record_path))    
+
+    if vtiger_settings_record_path ~= nil and #vtiger_settings_record_path > 0 then
+        session:execute("export", "vtiger_record_path="..enc64(vtiger_settings_record_path))
+    end
+
     session:execute("export", "nolocal:execute_on_ring_"..execute_on_ring_suffix.."=lua app_custom.lua vtiger_connector ringing")
     session:execute("export", "nolocal:execute_on_answer_"..execute_on_answer_suffix.."=lua app_custom.lua vtiger_connector answer")
+
     local call_start_data = {}
     
     local src = {}
@@ -68,5 +77,8 @@ if (session:ready()) then
 
     local credentials = {}
     credentials['url'], credentials['key'] = vtiger_settings_url, vtiger_settings_api_key
-    vtiger_api_call("start", credentials, call_start_data)
+    local responce = vtiger_api_call("start", credentials, call_start_data, true)
+    if vtiger_settings_sticky_calls == 'true' then
+        log.notice("Response: " .. responce)
+    end
 end
