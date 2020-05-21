@@ -13,6 +13,7 @@ opthelp = [[
  -v, --verbose                      If specified - verbose info is printed on FS console
  -t, --transfer-ringback=OPTARG     True/False. Default - True. Set also transfer ringback
  -r, --ringback=OPTARG              True/False. Default - True. Set also transfer ringback
+ -h, --hold-music=OPTARG            True/False. Default - True. Set also transfer ringback
 ]]
 
 
@@ -32,15 +33,16 @@ if (session:ready()) then
         do return end
     end
 
-    hold_music = session:getVariable("hold_music")
-    
-    if (hold_music ~= nil) then
-        hold_music = local_to_file_stream(hold_music, opts.s)
-        session:execute("export", "hold_music=" .. hold_music)
+    if (opts.h == nil or string.lower(opts.h) == 'true') then
+        hold_music = session:getVariable("hold_music")
+        if (hold_music ~= nil) then
+            hold_music = local_to_file_stream(hold_music, opts.s)
+            session:execute("export", "hold_music=" .. hold_music)
+        end
+        fsLog("hold_music set")
     end
-    fsLog("hold_music set")
 
-    if (opts.t == nil or opts.t == 'true') then
+    if (opts.t == nil or string.lower(opts.t) == 'true') then
         transfer_ringback = session:getVariable("transfer_ringback")
         if (transfer_ringback ~= nil) then
             transfer_ringback = local_to_file_stream(transfer_ringback, opts.s)
@@ -49,7 +51,7 @@ if (session:ready()) then
         fsLog("transfer_ringback set")
     end
 
-    if (opts.r == nil or opts.r == 'true') then
+    if (opts.r == nil or string.lower(opts.r) == 'true') then
         ringback = session:getVariable("ringback")
         if (ringback ~= nil) then
             ringback = local_to_file_stream(ringback, opts.s)
