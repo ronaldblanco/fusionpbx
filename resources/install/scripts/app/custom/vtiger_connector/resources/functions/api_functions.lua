@@ -1,6 +1,8 @@
 -- data is provided by this funstions
 -- timestamp
 
+local log = require "resources.functions.log".vtiger
+
 function vtiger_api_call(method, credentials, data, is_return)
 
     local api_data = data
