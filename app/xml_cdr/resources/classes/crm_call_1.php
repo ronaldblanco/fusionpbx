@@ -95,9 +95,9 @@ if (!class_exists('crm_call_1')) {
                                                         'Content-Length: ' . strlen($data_string)
                                                     ));
             } else {
-                $fields_string = http_build_query($data['fields']);
+                $data_string = http_build_query($data['fields']);
                 curl_setopt($ch,CURLOPT_POST, 1);
-                curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+                curl_setopt($ch,CURLOPT_POSTFIELDS, $data_string);
             }
 
             $resp = curl_exec($ch);
