@@ -101,7 +101,7 @@ if (!class_exists('crm_call_1')) {
             }
 
             $resp = curl_exec($ch);
-            $err = curl_error($curl);
+            $err = curl_error($ch);
 
             curl_close($ch);
 
