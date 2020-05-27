@@ -27,10 +27,10 @@ if (!class_exists('crm_call_1')) {
             $send_data = array(
                 'url' => $url,
                 'fields' => array(
-                    'timestamp' => $xml_varibles->end_epoch,
-                    'direction' => $xml_varibles->direction,
-                    'ivr_path' => $xml_varibles->ivr_path,
-                    'uuid' => $xml_varibles->uuid,
+                    'timestamp' => strval($xml_varibles->end_epoch),
+                    'direction' => strval($xml_varibles->direction),
+                    'ivr_path' => strval($xml_varibles->ivr_path),
+                    'uuid' => strval($xml_varibles->uuid),
                 )
             );
             // Get correct hangup
@@ -64,8 +64,8 @@ if (!class_exists('crm_call_1')) {
             );
 
             $send_data['fields']['time'] = array(
-                'duration' => $xml_varibles->duration,
-                'answered' => $xml_varibles->billsec,
+                'duration' => strval($xml_varibles->duration),
+                'answered' => strval($xml_varibles->billsec),
             );
 
             if (strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
@@ -93,9 +93,14 @@ if (!class_exists('crm_call_1')) {
                                                 ));
 
             $resp = curl_exec($ch);
+            $err = curl_error($curl);
+
             curl_close($ch);
 
-            file_put_contents('/tmp/api_crm_call_1.log', " -> ".$data['url']. " Req:".$data_string." Resp:".$resp."\n");
+            $log_string = ($err) ? "[ERROR] " . $err : "[SUCCESS] ";
+            $log_string .= " -> ".$data['url']. " Req:".$data_string." Resp:".$resp."\n";
+
+            file_put_contents('/tmp/api_crm_call_1.log', $log_string);
 
         }
     }
