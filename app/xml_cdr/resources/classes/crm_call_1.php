@@ -54,8 +54,8 @@ if (!class_exists('crm_call_1')) {
             }
 
             $send_data['fields']['src'] = array(
-                'name' => $xml_varibles->caller_id_name,
-                'number' => $xml_varibles->caller_id_number,
+                'name' => strval($xml_varibles->caller_id_name),
+                'number' => strval($xml_varibles->caller_id_number),
             );
 
             $send_data['fields']['last_seen'] = array(
@@ -72,25 +72,33 @@ if (!class_exists('crm_call_1')) {
                 $send_data['fields']['recording'] = base64_decode(urldecode($xml_varibles->vtiger_record_path));
             }
 
-            $this->send($send_data);
+            $this->send($send_data, False);
         }
 
-        private function send($data) {
-
-            
-            $data_string = json_encode($data['fields']);
+        private function send($data, $is_json = True) {
 
             $ch = curl_init($this->url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-            curl_setopt($ch, CURLOPT_HEADER, true);
+
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_AUTOREFERER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 3);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
-                                                    'Content-Length: ' . strlen($data_string)
-                                                ));
+
+            if ($is_json) {
+
+                $data_string = json_encode($data['fields']);
+
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                curl_setopt($ch, CURLOPT_HEADER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
+                                                        'Content-Length: ' . strlen($data_string)
+                                                    ));
+            } else {
+                $fields_string = http_build_query($data['fields']);
+                curl_setopt($ch,CURLOPT_POST, 1);
+                curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+            }
 
             $resp = curl_exec($ch);
             $err = curl_error($curl);
