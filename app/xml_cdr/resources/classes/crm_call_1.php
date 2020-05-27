@@ -72,7 +72,7 @@ if (!class_exists('crm_call_1')) {
                 $send_data['fields']['recording'] = base64_decode(urldecode($xml_varibles->vtiger_record_path));
             }
 
-            $this->send($url, $send_data, False);
+            $this->send($url, $send_data);
         }
 
         private function send($url, $data, $is_json = True) {
