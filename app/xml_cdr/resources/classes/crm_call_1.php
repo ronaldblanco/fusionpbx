@@ -29,7 +29,7 @@ if (!class_exists('crm_call_1')) {
                 'fields' => array(
                     'timestamp' => strval($xml_varibles->end_epoch),
                     'direction' => strval($xml_varibles->direction),
-                    'ivr_path' => strval($xml_varibles->ivr_path),
+                    'ivr_path' => rtrim(strval($xml_varibles->ivr_path),'_'),
                     'uuid' => strval($xml_varibles->uuid),
                 )
             );
