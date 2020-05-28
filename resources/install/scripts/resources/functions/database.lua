@@ -191,7 +191,7 @@ local function new_database(backend, backend_name)
   end
 
   function Database:quote(str)
-    return "'" .. self:escape(str) .. "'"
+    return "'" .. (self:escape(str) or "") .. "'"
   end
 
   function Database.__self_test__(...)
