@@ -308,7 +308,7 @@
 		echo "	</tr>\n";
 		echo "</table>";
 	}
-	echo "<b>".$text['title-recordings']."</b>";
+	echo "<b>".$text['title-recordings']." (" . $num_rows . ")</b>";
 	echo "<br /><br />\n";
 	echo $text['description']."\n";
 	echo "<br /><br />\n";
