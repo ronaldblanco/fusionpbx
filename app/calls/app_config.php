@@ -78,4 +78,22 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_order'] = "0";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use enterprise or normal originate string";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d707a33e-b612-44e1-9987-a177afedbf16";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "follow_me";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "outbound_caller_id";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_order'] = "0";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Change outbound callerID during the FollowMe";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "28445fc7-1b41-4340-990c-a23386cabd2f";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "follow_me";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "outbound_caller_id_force";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_order'] = "0";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Change outbound callerID during the FollowMe forcefully to Outbound CallerID";
 ?>

@@ -70,7 +70,7 @@ if (session:ready()) then
     local caller_id_number = session:getVariable('caller_id_number') or ""
     caller_id_number = caller_id_number:gsub("%D", "")
 
-    if (caller_id_number ~= "") then
+    if (caller_id_number ~= "" and #caller_id_number > 7) then
         local responce = crm_api_call(crm_start_settings_url, caller_id_number, true)
         log.notice("Response: " .. responce)
     end

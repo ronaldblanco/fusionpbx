@@ -389,13 +389,21 @@ include "root.php";
 
 						//set the caller id
 						if ($_SESSION['follow_me']['outbound_caller_id']['boolean'] == "true") {
-							if (strlen($this->outbound_caller_id_name) > 0) {
-								$variables[] = "origination_caller_id_name=".$this->cid_name_prefix.$this->outbound_caller_id_name;
-								$variables[] = "effective_caller_id_name=".$this->cid_name_prefix.$this->outbound_caller_id_name;
-							}
-							if (strlen($this->outbound_caller_id_number) > 0) {
-								$variables[] = "origination_caller_id_number=".$this->cid_number_prefix.$this->outbound_caller_id_number;
-								$variables[] = "effective_caller_id_number=".$this->cid_number_prefix.$this->outbound_caller_id_number;
+							if ($_SESSION['follow_me']['outbound_caller_id_force']['boolean'] == "true") {
+								if (strlen($this->outbound_caller_id_name) > 0) {
+									$variables[] = "origination_caller_id_name=".$this->cid_name_prefix.$this->outbound_caller_id_name;
+									$variables[] = "effective_caller_id_name=".$this->cid_name_prefix.$this->outbound_caller_id_name;
+								}
+								if (strlen($this->outbound_caller_id_number) > 0) {
+									$variables[] = "origination_caller_id_number=".$this->cid_number_prefix.$this->outbound_caller_id_number;
+									$variables[] = "effective_caller_id_number=".$this->cid_number_prefix.$this->outbound_caller_id_number;
+								}
+							} else {
+								$variables[] = "origination_caller_id_number=\${cond(\${from_user_exists} == true ? ".$this->cid_number_prefix.$this->outbound_caller_id_number." : \${caller_id_number})}";
+								$variables[] = "origination_caller_id_name=\${cond(\${from_user_exists} == true ? ".$this->cid_name_prefix.$this->outbound_caller_id_name." : \${caller_id_name})}";
+								
+								$variables[] = "effective_caller_id_number=\${cond(\${from_user_exists} == true ? ".$this->cid_number_prefix.$this->outbound_caller_id_number." : \${caller_id_number})}";
+								$variables[] = "effective_caller_id_name=\${cond(\${from_user_exists} == true ? ".$this->cid_name_prefix.$this->outbound_caller_id_name." : \${caller_id_name})}";
 							}
 						}
 						//else {
