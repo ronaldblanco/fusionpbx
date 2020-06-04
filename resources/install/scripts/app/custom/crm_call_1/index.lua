@@ -15,8 +15,11 @@ local type_transfer_table = {
     ["investor_lead"] = "505",
     ["agent"] = "511",
     ["referral_source"] = "504",
-    ["retail_brokerage_client"] = "513"
+    ["retail_brokerage_client"] = "513",
+    ["default"] = "501"
 }
+
+local main_number = "500"
 
 local log = require "resources.functions.log".crm_call_1
 
@@ -260,6 +263,12 @@ if (session:ready()) then
     session:execute("export", "crm_end_settings_url=" .. base_enc64(crm_end_settings_url))
     
     local caller_id_number = session:getVariable('caller_id_number') or ""
+    local destination_number = session:getVariable('destination_number') or ""
+
+    if destination_number ~= main_number then
+        log.info("It's not a main number, exiting...")
+        do return end
+    end
     
     caller_id_number = caller_id_number:gsub("%D", "")
     caller_id_number = caller_id_number:sub(-10)
@@ -285,6 +294,12 @@ if (session:ready()) then
         if transfer_extension then
             log.info("Transferring to " .. transfer_extension .. " with cache")
             session:execute("transfer", transfer_extension .. " XML " .. domain_name)
+            do return end
         end
     end
+
+    transfer_extension = type_transfer_table['default']
+
+    log.info("Transferring to " .. transfer_extension .. " with default option")
+    session:execute("transfer", transfer_extension .. " XML " .. domain_name)
 end
