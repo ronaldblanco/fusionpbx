@@ -399,11 +399,11 @@ include "root.php";
 									$variables[] = "effective_caller_id_number=".$this->cid_number_prefix.$this->outbound_caller_id_number;
 								}
 							} else {
-								$variables[] = "origination_caller_id_number=\${cond(\${from_user_exists} == true ? ".$this->cid_number_prefix.$this->outbound_caller_id_number." : \${caller_id_number})}";
-								$variables[] = "origination_caller_id_name=\${cond(\${from_user_exists} == true ? ".$this->cid_name_prefix.$this->outbound_caller_id_name." : \${caller_id_name})}";
+								$variables[] = "origination_caller_id_number=\${cond(x\${from_user_exists} == xtrue ? ".$this->cid_number_prefix.$this->outbound_caller_id_number." : \${origination_caller_id_number})}";
+								$variables[] = "origination_caller_id_name=\${cond(x\${from_user_exists} == xtrue ? ".$this->cid_name_prefix.$this->outbound_caller_id_name." : \${origination_caller_id_name})}";
 								
-								$variables[] = "effective_caller_id_number=\${cond(\${from_user_exists} == true ? ".$this->cid_number_prefix.$this->outbound_caller_id_number." : \${caller_id_number})}";
-								$variables[] = "effective_caller_id_name=\${cond(\${from_user_exists} == true ? ".$this->cid_name_prefix.$this->outbound_caller_id_name." : \${caller_id_name})}";
+								$variables[] = "effective_caller_id_number=\${cond(x\${from_user_exists} == xtrue ? ".$this->cid_number_prefix.$this->outbound_caller_id_number." : \${origination_caller_id_number})}";
+								$variables[] = "effective_caller_id_name=\${cond(x\${from_user_exists} == xtrue ? ".$this->cid_name_prefix.$this->outbound_caller_id_name." : \${origination_caller_id_name})}";
 							}
 						}
 						//else {
