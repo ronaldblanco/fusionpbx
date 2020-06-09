@@ -49,8 +49,8 @@ if (session:ready()) then
     
     log.notice("Got Vtiger URL("..vtiger_settings_url..") and key("..vtiger_settings_api_key..")")
 
-    if (vtiger_settings_url:sub(-1) ~= '/') then
-        vtiger_settings_url = vtiger_settings_url .. "/"
+    if (vtiger_settings_url:sub(-1) == '/') then
+        vtiger_settings_url = sub(1, #vtiger_settings_url - 1)
     end
 
     session:execute("export", "vtiger_url="..enc64(vtiger_settings_url))
