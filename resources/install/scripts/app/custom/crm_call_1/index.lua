@@ -61,22 +61,28 @@ function process_json_answer(responce)
         return nil
     end
 
-    data = data[1]
-
-    if (data["route_call_to_extension"] and string.len(data["route_call_to_extension"]) > 0) then
-        return data["route_call_to_extension"]
+    for _, v in ipairs(data) do
+        if (v["route_call_to_extension"] and string.len(v["route_call_to_extension"]) > 0 and v["route_call_to_extension"] ~= 'null') then
+            return v["route_call_to_extension"]
+        end
     end
 
-    if (data["route_call_with_option"] and string.len(data["route_call_with_option"]) > 0) then
-        return "option_" .. data["route_call_with_option"]
+    for _, v in ipairs(data) do
+        if (v["route_call_option"] and string.len(v["route_call_option"]) > 0 and v["route_call_option"] ~= 'null') then
+            return "option_" .. v["route_call_option"]
+        end
     end
 
-    if (data['type'] and string.len(data['type']) > 0) then
-        local data_type = string.lower(data['type'])
-        data_type = data_type:gsub(" ", "_")
+    for _, v in ipairs(data) do
+        if (v['type'] and string.len(v['type']) > 0 and v['type'] ~= 'null') then
+            local data_type = string.lower(v['type'])
+            data_type = data_type:gsub(" ", "_")
 
-        return type_transfer_table[data_type]
+            return type_transfer_table[data_type]
+        end
     end
+
+    return nil
 end
 
 function get_contact_uuid()
