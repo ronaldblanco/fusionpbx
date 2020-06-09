@@ -68,8 +68,12 @@ if (!class_exists('crm_call_1')) {
                 'answered' => strval($xml_varibles->billsec),
             );
 
-            if (strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
-                $send_data['fields']['recording'] = base64_decode(urldecode($xml_varibles->vtiger_record_path));
+            if (strlen(strval($xml_varibles->record_name)) > 0) {
+                $record_link = strval($xml_varibles->record_path);
+                $record_link = explode('archive', $record_link)[1];
+                if (strlen($record_link) > 0) {
+                    $send_data['fields']['recording'] =  $record_link . "/" . strval($xml_varibles->record_name);
+                }
             }
 
             $this->send($url, $send_data);
