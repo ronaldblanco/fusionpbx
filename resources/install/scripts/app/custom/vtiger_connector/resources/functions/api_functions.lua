@@ -10,6 +10,7 @@ function vtiger_api_call(method, credentials, data, is_return)
     api_data['timestamp'] = os.time()
     api_data['uuid'] = session:getVariable('call_uuid') or ""
     api_data['vtigersignature'] = credentials['key'] or ""
+    api_data['callstatus'] = method or ""
 
     local cmd_string = credentials['url'] .. " content-type application/json connect-timeout 1 timeout 2 post '"..json_encode(api_data).."'"
     cmd_string = "curl " .. cmd_string
