@@ -92,7 +92,7 @@ if (!class_exists('vtiger_connector')) {
             
             $data_string = json_encode($data['fields']);
 
-            $ch = curl_init($this->url);
+            $ch = curl_init($data['url']);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
             curl_setopt($ch, CURLOPT_HEADER, true);
