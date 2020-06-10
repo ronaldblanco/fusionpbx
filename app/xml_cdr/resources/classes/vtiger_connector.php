@@ -26,13 +26,13 @@ if (!class_exists('vtiger_connector')) {
             }
 
             $send_data = array(
-                'callstate' => 'call_end',
                 'url' => $url,
-                'vtigersignature' => $key,
-                'uuid' => $xml_varibles->uuid,
                 'fields' => array(
                     'timestamp' => strval($xml_varibles->end_epoch),
                     'direction' => strval($xml_varibles->direction),
+                    'vtigersignature' => $key,
+                    'uuid' => strval($xml_varibles->uuid),
+                    'callstate' => 'call_end',
                 )
             );
             // Get correct hangup
