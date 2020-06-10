@@ -18,16 +18,17 @@ if (!class_exists('vtiger_connector')) {
 
         public function process(&$xml_varibles) {
 
-            $url =  strlen($xml_varibles->vtiger_url) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_url), true) : False;
-            $key = strlen($xml_varibles->vtiger_api_key) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_api_key), true) : False;
+            $url =  strlen($xml_varibles->vtiger_url) > 0 ? base64_decode(urldecode(strval($xml_varibles->vtiger_url)), true) : False;
+            $key = strlen($xml_varibles->vtiger_api_key) > 0 ? base64_decode(urldecode(strval($xml_varibles->vtiger_api_key)), true) : False;
 
             if (!$url or !$key) {
                 return;
             }
 
             $send_data = array(
+                'callstate' => 'call_end',
                 'url' => $url,
-                'key' => $key,
+                'vtigersignature' => $key,
                 'uuid' => $xml_varibles->uuid,
                 'fields' => array(
                     'timestamp' => $xml_varibles->end_epoch,
@@ -81,7 +82,7 @@ if (!class_exists('vtiger_connector')) {
             
             $data_string = json_encode($data['fields']);
 
-            $ch = curl_init($this->url.'/call_end');
+            $ch = curl_init($this->url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
             curl_setopt($ch, CURLOPT_HEADER, true);
