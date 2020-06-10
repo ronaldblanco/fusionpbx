@@ -105,9 +105,14 @@ if (!class_exists('vtiger_connector')) {
                                                 ));
 
             $resp = curl_exec($ch);
+            $err = curl_error($ch);
             curl_close($ch);
 
-            file_put_contents('/tmp/api_vtiger.log', " -> " . $data['url'] .  " Req:" . $data_string . " Resp:" . $resp . "\n");
+            $resp_text = " Responce: " . $resp;
+            if ($err) {
+                $resp_text = "Error: " . $err;
+            }
+            file_put_contents('/tmp/api_vtiger.log', " -> " . $data['url'] .  " Req:" . $data_string . $resp_text . "\n");
 
         }
     }
