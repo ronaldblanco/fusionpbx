@@ -31,12 +31,12 @@ if (!class_exists('vtiger_connector')) {
                 'vtigersignature' => $key,
                 'uuid' => $xml_varibles->uuid,
                 'fields' => array(
-                    'timestamp' => $xml_varibles->end_epoch,
-                    'direction' => $xml_varibles->direction,
+                    'timestamp' => strval($xml_varibles->end_epoch),
+                    'direction' => strval($xml_varibles->direction),
                 )
             );
             // Get correct hangup
-            switch ($xml_varibles->hangup_cause) {
+            switch (strval($xml_varibles->hangup_cause)) {
                 case 'NORMAL_CLEARING':
                     $send_data['fields']['status'] = 'answered';
                     break;
@@ -56,8 +56,8 @@ if (!class_exists('vtiger_connector')) {
             }
 
             $send_data['fields']['src'] = array(
-                'name' => $xml_varibles->caller_id_name,
-                'number' => $xml_varibles->caller_id_number,
+                'name' => strval($xml_varibles->caller_id_name),
+                'number' => strval($xml_varibles->caller_id_number),
             );
 
             $send_data['fields']['last_seen'] = array(
@@ -66,19 +66,20 @@ if (!class_exists('vtiger_connector')) {
             );
 
             $send_data['fields']['time'] = array(
-                'duration' => $xml_varibles->duration,
-                'answered' => $xml_varibles->billsec,
+                'duration' => strval($xml_varibles->duration),
+                'answered' => strval($xml_varibles->billsec),
             );
 
             if (strlen(strval($xml_varibles->record_name)) > 0 && strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
                 $record_link = strval($xml_varibles->record_path);
                 $record_link = explode('recordings', $record_link)[1];
-                $vtiger_record_path = base64_decode(urldecode($xml_varibles->vtiger_record_path));
-                if (substr($vtiger_record_path, -1) == "/") {
-                    $vtiger_record_path  = substr($vtiger_record_path, 0, -1);
-                }
-                $record_link = $vtiger_record_path . $record_link;
+                
                 if (strlen($record_link) > 0) {
+                    $vtiger_record_path = base64_decode(urldecode($xml_varibles->vtiger_record_path));
+                    if (substr($vtiger_record_path, -1) == "/") {
+                        $vtiger_record_path  = substr($vtiger_record_path, 0, -1);
+                    }
+                    $record_link = $vtiger_record_path . $record_link;
                     $send_data['fields']['recording'] =  $record_link . "/" . strval($xml_varibles->record_name);
                 }
             }
