@@ -18,8 +18,8 @@ if (!class_exists('vtiger_connector')) {
 
         public function process(&$xml_varibles) {
 
-            $url =  strlen($xml_varibles->vtiger_url) > 0 ? base64_decode(urldecode(strval($xml_varibles->vtiger_url)), true) : False;
-            $key = strlen($xml_varibles->vtiger_api_key) > 0 ? base64_decode(urldecode(strval($xml_varibles->vtiger_api_key)), true) : False;
+            $url =  strlen($xml_varibles->vtiger_url) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_url), true) : False;
+            $key = strlen($xml_varibles->vtiger_api_key) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_api_key), true) : False;
 
             if (!$url or !$key) {
                 return;
@@ -70,8 +70,13 @@ if (!class_exists('vtiger_connector')) {
                 'answered' => $xml_varibles->billsec,
             );
 
-            if (strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
-                $send_data['fields']['recording'] = base64_decode(urldecode($xml_varibles->vtiger_record_path));
+            if (strlen(strval($xml_varibles->record_name)) > 0 && strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
+                $record_link = strval($xml_varibles->record_path);
+                $record_link = explode('archive', $record_link)[1];
+                $record_link = base64_decode(urldecode($xml_varibles->vtiger_record_path)) . "/". $record_link;
+                if (strlen($record_link) > 0) {
+                    $send_data['fields']['recording'] =  $record_link . "/" . strval($xml_varibles->record_name);
+                }
             }
 
             $this->send($send_data);
