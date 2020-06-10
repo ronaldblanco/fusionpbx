@@ -72,8 +72,12 @@ if (!class_exists('vtiger_connector')) {
 
             if (strlen(strval($xml_varibles->record_name)) > 0 && strlen(strval($xml_varibles->vtiger_record_path)) > 0) {
                 $record_link = strval($xml_varibles->record_path);
-                $record_link = explode('archive', $record_link)[1];
-                $record_link = base64_decode(urldecode($xml_varibles->vtiger_record_path)) . "/". $record_link;
+                $record_link = explode('recordings', $record_link)[1];
+                $vtiger_record_path = base64_decode(urldecode($xml_varibles->vtiger_record_path));
+                if (substr($vtiger_record_path, -1) != "/") {
+                    $vtiger_record_path .= "/";
+                }
+                $record_link = $vtiger_record_path . $record_link;
                 if (strlen($record_link) > 0) {
                     $send_data['fields']['recording'] =  $record_link . "/" . strval($xml_varibles->record_name);
                 }
