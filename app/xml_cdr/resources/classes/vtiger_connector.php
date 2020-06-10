@@ -74,8 +74,8 @@ if (!class_exists('vtiger_connector')) {
                 $record_link = strval($xml_varibles->record_path);
                 $record_link = explode('recordings', $record_link)[1];
                 $vtiger_record_path = base64_decode(urldecode($xml_varibles->vtiger_record_path));
-                if (substr($vtiger_record_path, -1) != "/") {
-                    $vtiger_record_path .= "/";
+                if (substr($vtiger_record_path, -1) == "/") {
+                    $vtiger_record_path  = substr($vtiger_record_path, 0, -1);
                 }
                 $record_link = $vtiger_record_path . $record_link;
                 if (strlen($record_link) > 0) {
@@ -106,7 +106,7 @@ if (!class_exists('vtiger_connector')) {
             $resp = curl_exec($ch);
             curl_close($ch);
 
-            file_put_contents('/tmp/api_vtiger.log', " -> ".$data['url'].'/call_end'. " Req:".$data_string." Resp:".$resp."\n");
+            file_put_contents('/tmp/api_vtiger.log', " -> " . $data['url'] .  " Req:" . $data_string . " Resp:" . $resp . "\n");
 
         }
     }
