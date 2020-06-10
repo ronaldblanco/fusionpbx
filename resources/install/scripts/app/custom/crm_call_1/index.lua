@@ -63,13 +63,13 @@ function process_json_answer(responce)
 
     for _, v in ipairs(data) do
         if (v["route_call_to_extension"] and string.len(v["route_call_to_extension"]) > 0 and v["route_call_to_extension"] ~= 'null') then
-            return v["route_call_to_extension"]
+            return v["route_call_to_extension"], v['first_name'], v['last_name']
         end
     end
 
     for _, v in ipairs(data) do
         if (v["route_call_option"] and string.len(v["route_call_option"]) > 0 and v["route_call_option"] ~= 'null') then
-            return "option_" .. v["route_call_option"]
+            return "option_" .. v["route_call_option"], v['first_name'], v['last_name']
         end
     end
 
@@ -78,11 +78,11 @@ function process_json_answer(responce)
             local data_type = string.lower(v['type'])
             data_type = data_type:gsub(" ", "_")
 
-            return type_transfer_table[data_type]
+            return type_transfer_table[data_type], v['first_name'], v['last_name']
         end
     end
 
-    return nil
+    return nil, nil, nil
 end
 
 function get_contact_uuid()
@@ -284,10 +284,21 @@ if (session:ready()) then
         local responce = crm_api_call(crm_start_settings_url, caller_id_number, true)
         log.notice("Response: " .. responce)
         local transfer_extension
+        local first_name
+        local last_name
 
         if (responce and responce:len() > 2) then
 
-            transfer_extension = process_json_answer(responce)
+            transfer_extension, first_name, last_name = process_json_answer(responce)
+
+            if first_name and #first_name > 0 and first_name ~= 'null' then
+                session:execute("export", "crm_first_name=" .. first_name)
+            end
+
+            if last_name and #last_name > 0 and last_name ~= 'null' then
+                session:execute("export", "crm_last_name=" .. last_name)
+            end
+
             if transfer_extension then
                 update_or_save(caller_id_number, transfer_extension)
                 log.info("Transferring to " .. transfer_extension .. " with request")
