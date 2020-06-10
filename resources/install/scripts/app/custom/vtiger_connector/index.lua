@@ -1,4 +1,5 @@
 -- This function is called like app_custom.lua vtiger_connector
+
 -- You MUST specify VTiger URL in Default (or Domain) settings.
 -- Also it uses freeswitch curl command, so it also need to be loaded
 
@@ -55,6 +56,7 @@ if (session:ready()) then
 
     session:execute("export", "vtiger_url="..enc64(vtiger_settings_url))
     session:execute("export", "vtiger_api_key="..enc64(vtiger_settings_api_key))
+    session:execute("export", "vtiger_call_uuid=${call_uuid}")
 
     if vtiger_settings_record_path ~= nil and #vtiger_settings_record_path > 0 then
         session:execute("export", "vtiger_record_path="..enc64(vtiger_settings_record_path))

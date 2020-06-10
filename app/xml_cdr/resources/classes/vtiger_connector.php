@@ -21,6 +21,8 @@ if (!class_exists('vtiger_connector')) {
             $url =  strlen($xml_varibles->vtiger_url) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_url), true) : False;
             $key = strlen($xml_varibles->vtiger_api_key) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_api_key), true) : False;
 
+            $uuid = strlen(strval($xml_varibles->vtiger_call_uuid)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->call_uuid);
+
             if (!$url or !$key) {
                 return;
             }
@@ -31,7 +33,7 @@ if (!class_exists('vtiger_connector')) {
                     'timestamp' => strval($xml_varibles->end_epoch),
                     'direction' => strval($xml_varibles->direction),
                     'vtigersignature' => $key,
-                    'uuid' => strval($xml_varibles->uuid),
+                    'uuid' => $uuid,
                     'callstate' => 'call_end',
                 )
             );
