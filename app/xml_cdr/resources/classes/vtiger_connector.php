@@ -34,7 +34,7 @@ if (!class_exists('vtiger_connector')) {
                     'direction' => strval($xml_varibles->direction),
                     'vtigersignature' => $key,
                     'uuid' => $uuid,
-                    'callstate' => 'call_end',
+                    'callstatus' => 'call_end',
                 )
             );
             // Get correct hangup
