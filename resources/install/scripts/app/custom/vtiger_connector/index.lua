@@ -31,6 +31,12 @@ local execute_on_answer_suffix = argv[4] or '3';
 
 if (session:ready()) then
 
+    if session:getVariable('vtiger_call_uuid') then
+        log.notice("VTiger is already enabled for this call, exiting...")
+        do return end
+    end
+
+
     local domain_name = session:getVariable('domain_name')
     local domain_uuid = session:getVariable('domain_uuid')
 
