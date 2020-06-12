@@ -37,6 +37,8 @@ if (!class_exists('vtiger_connector')) {
                     'callstatus' => 'call_end',
                 )
             );
+
+            $hangup_cause = strlen(strval($xml_varibles->originate_disposition)) > 0 ? strval($xml_varibles->originate_disposition) : strval($xml_varibles->hangup_cause);
             // Get correct hangup
             switch (strval($xml_varibles->hangup_cause)) {
                 case 'NORMAL_CLEARING':
@@ -48,6 +50,7 @@ if (!class_exists('vtiger_connector')) {
                     $send_data['fields']['status'] = 'busy';
                     break;
                 case 'NO_ANSWER':
+                case 'ALLOTTED_TIMEOUT':
                 case 'NO_USER_RESPONSE':
                 case 'ORIGINATOR_CANCEL':
                 case 'LOSE_RACE': // This cause usually in ring groups, so this call is not ended.
