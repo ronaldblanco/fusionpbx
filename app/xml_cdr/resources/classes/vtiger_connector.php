@@ -21,13 +21,12 @@ if (!class_exists('vtiger_connector')) {
             $url =  strlen($xml_varibles->vtiger_url) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_url), true) : False;
             $key = strlen($xml_varibles->vtiger_api_key) > 0 ? base64_decode(urldecode($xml_varibles->vtiger_api_key), true) : False;
 
-            $uuid = strlen(strval($xml_varibles->vtiger_call_uuid)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->call_uuid);
-
             if (!$url or !$key) {
                 return;
             }
 
             $direction = strlen(strval($xml_varibles->call_direction)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->direction);
+            $uuid = strlen(strval($xml_varibles->vtiger_call_uuid)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->call_uuid);
 
             $send_data = array(
                 'url' => $url,
