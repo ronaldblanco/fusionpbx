@@ -25,7 +25,7 @@ if (!class_exists('vtiger_connector')) {
                 return;
             }
 
-            $direction = strlen(strval($xml_varibles->call_direction)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->direction);
+            $direction = strlen(strval($xml_varibles->call_direction)) > 0 ? strval($xml_varibles->call_direction) : strval($xml_varibles->direction);
             $uuid = strlen(strval($xml_varibles->vtiger_call_uuid)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->call_uuid);
 
             $send_data = array(
