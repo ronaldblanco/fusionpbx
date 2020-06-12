@@ -40,7 +40,7 @@ if (!class_exists('vtiger_connector')) {
 
             $hangup_cause = strlen(strval($xml_varibles->originate_disposition)) > 0 ? strval($xml_varibles->originate_disposition) : strval($xml_varibles->hangup_cause);
             // Get correct hangup
-            switch (strval($xml_varibles->hangup_cause)) {
+            switch ($hangup_cause) {
                 case 'NORMAL_CLEARING':
                     $send_data['fields']['status'] = 'answered';
                     break;
