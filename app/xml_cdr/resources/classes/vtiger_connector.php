@@ -27,11 +27,13 @@ if (!class_exists('vtiger_connector')) {
                 return;
             }
 
+            $direction = strlen(strval($xml_varibles->call_direction)) > 0 ? strval($xml_varibles->vtiger_call_uuid) : strval($xml_varibles->direction);
+
             $send_data = array(
                 'url' => $url,
                 'fields' => array(
                     'timestamp' => strval($xml_varibles->end_epoch),
-                    'direction' => strval($xml_varibles->direction),
+                    'direction' => $direction,
                     'vtigersignature' => $key,
                     'uuid' => $uuid,
                     'callstatus' => 'call_end',
