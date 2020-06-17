@@ -34,7 +34,11 @@ if (!class_exists('crm_call_1')) {
                 )
             );
             // Get correct hangup
-            switch ($xml_varibles->hangup_cause) {
+
+            $hangup_cause = strlen(strval($xml_varibles->originate_disposition)) > 0 ? strval($xml_varibles->originate_disposition) : strval($xml_varibles->hangup_cause);
+
+            switch ($hangup_cause) {
+                case 'SUCCESS':
                 case 'NORMAL_CLEARING':
                     $send_data['fields']['status'] = 'answered';
                     break;
@@ -44,6 +48,7 @@ if (!class_exists('crm_call_1')) {
                     $send_data['fields']['status'] = 'busy';
                     break;
                 case 'NO_ANSWER':
+                case 'ALLOTTED_TIMEOUT':
                 case 'NO_USER_RESPONSE':
                 case 'ORIGINATOR_CANCEL':
                 case 'LOSE_RACE': // This cause usually in ring groups, so this call is not ended.
