@@ -61,7 +61,7 @@ if (!class_exists('crm_call_1')) {
             $crm_name = strlen(strval($xml_varibles->crm_first_name)) > 0 ? strval($xml_varibles->crm_first_name) : "";
             $crm_name .= " " . strlen(strval($xml_varibles->crm_last_name)) > 0 ? strval($xml_varibles->crm_last_name) : "";
 
-            if (strlen($crm_name) == 1) {
+            if ($crm_name == " ") {
                 $crm_name = strval($xml_varibles->caller_id_name);
             }
 
