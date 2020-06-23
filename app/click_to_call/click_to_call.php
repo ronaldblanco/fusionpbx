@@ -57,11 +57,14 @@
 		);
 
 	//retrieve submitted variables         
-		$src = check_str($_GET['src']);         
+		$src = check_str($_GET['src']);
+		$dest = check_str($_GET['dest']);
+
 		$src_cid_name = isset($_GET['src_cid_name']) ? check_str($_GET['src_cid_name']) : "";         
 		$src_cid_number = isset($_GET['src_cid_number']) ? check_str($_GET['src_cid_number']) : "";          
-		$dest = check_str($_GET['dest']);          
-		$auto_answer = isset($_GET['auto_answer']) ? check_str($_GET['auto_answer']) : "false";         
+		        
+		$auto_answer = isset($_GET['auto_answer']) ? check_str($_GET['auto_answer']) : "false";
+
 		$rec = check_str($_GET['rec']); //true,false         
 		$ringback = isset($_GET['ringback']) ? check_str($_GET['ringback']) : "";
 		$context = isset($_GET['context']) ? check_str($_GET['context']) : "";
@@ -176,8 +179,8 @@
 		$source_common = "{";
 		$source_common .= "origination_uuid=" . $origination_uuid;
 		$source_common .= ",click_to_call=true";
-		$source_common .= ",origination_caller_id_name='" . $dst . "'";
-		$source_common .= ",origination_caller_id_number=" . $dst;
+		$source_common .= ",origination_caller_id_name='" . $dest . "'";
+		$source_common .= ",origination_caller_id_number=" . $dest;
 		$source_common .= ",instant_ringback=true";
 		$source_common .= ",ringback='" . $ringback_value . "'";
 		$source_common .= ",presence_id='" . $src . "@" . $domain_name . "'";
