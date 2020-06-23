@@ -179,6 +179,8 @@
 		$source_common = "{";
 		$source_common .= "origination_uuid=" . $origination_uuid;
 		$source_common .= ",click_to_call=true";
+		$source_common .= ",effective_caller_id_name='" . $src_cid_name . "'";
+		$source_common .= ",effective_caller_id_number='" . $src_cid_number . "'";
 		$source_common .= ",origination_caller_id_name='" . $dest . "'";
 		$source_common .= ",origination_caller_id_number=" . $dest;
 		$source_common .= ",instant_ringback=true";
