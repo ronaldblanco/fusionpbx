@@ -40,7 +40,7 @@ end
 
 if session:ready() then
 
-    local ani = session:getVariable("ani")
+    local ani = session:getVariable("caller_id_number") or session:getVariable("ani")
     ani = ani:gsub("%D", "")
    
     local append_ani = ""
