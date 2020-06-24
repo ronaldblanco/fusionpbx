@@ -194,9 +194,17 @@
 
 		if ($src_user_exists) {
 			//source is a local extension
-			$source = $source_common.$sip_auto_answer.
-				",domain_uuid=".$domain_uuid.
-				",domain_name=".$domain_name."}user/".$src."@".$domain_name;
+			// Get user registered. 
+			$switch_cmd = "api sofia_contact */". $src ."@" . $domain_name;
+			$src_user_contact = trim(event_socket_request($fp, $switch_cmd));
+
+			if (strlen($src_user_contact) > 0 && (strpos($src_user_contact, '-ERR') === true || $src_user_contact == 'error/user_not_registered')) {
+				$src_user_contact = "user/" . $src . "@" . $domain_name;
+			}
+
+			$source = $source_common . $sip_auto_answer .
+				",domain_uuid=" . $domain_uuid .
+				",domain_name=" . $domain_name . "}" . $src_user_contact;
 		} else {
 			//source is an elsewhere number
 			$bridge_array = outbound_route_to_bridge($domain_uuid, $src);
