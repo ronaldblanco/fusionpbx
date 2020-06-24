@@ -15,7 +15,7 @@
 {* snom_attended_transfer_on_ringing - http://wiki.snom.com/Settings/attended_transfer_on_ringing *}
 {* snom_status_msgs_that_show_directly - http://wiki.snom.com/Settings/status_msgs_that_show_directly *}
 {* snom_monitor_calls - Monitor ongoing calls on the screen http://wiki.snom.com/Settings/goto_monitor_state_on_line_activity *}
-{* snom_resync_peiod - Resync configuration period http://wiki.snom.com/Settings/settings_refresh_timer *}
+{* snom_resync_period - Resync configuration period http://wiki.snom.com/Settings/settings_refresh_timer *}
 {* snom_backgrouond_image_url - URL of background image http://wiki.snom.com/Settings/custom_bg_image_url *}
 {* snom_enable_srtp - Enable or disable SRTP by default http://wiki.snom.com/Settings/user_srtp *}
 {* snom_dtmf_mode -Set DTMF mode http://wiki.snom.com/Settings/user_dtmf_info *}
@@ -77,7 +77,7 @@
 <attended_transfer_on_ringing perm="R">{if isset ($snom_attended_transfer_on_ringing)}{$snom_attended_transfer_on_ringing}{else}on{/if}</attended_transfer_on_ringing> 
 {if isset($snom_status_msgs_that_show_directly)}<status_msgs_that_show_directly perm="R">{$snom_status_msgs_that_show_directly}</status_msgs_that_show_directly>{/if}
 {if isset ($snom_monitor_calls)}<goto_monitor_state_on_line_activity perm="R">{$snom_monitor_calls}</goto_monitor_state_on_line_activity>{/if}
-<settings_refresh_timer perm="R">{if isset ($snom_resync_peiod)}{$snom_resync_peiod}{else}7200{/if}</settings_refresh_timer>
+<settings_refresh_timer perm="R">{if isset ($snom_resync_period)}{$snom_resync_period}{else}7200{/if}</settings_refresh_timer>
 
 {if isset ($snom_backgrouond_image_url)}<custom_bg_image_url perm="R">{$snom_backgrouond_image_url}</custom_bg_image_url>{/if}
 
