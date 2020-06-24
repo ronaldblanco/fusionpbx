@@ -150,7 +150,7 @@
             {/if}
         {/if}
     {else}
-        <!-- {$row.device_key_id} außerhalb des Bereichs -->
+        <!-- {$row.device_key_id} outside the range -->
     {/if}
 {/foreach}
 </functionKeys>
