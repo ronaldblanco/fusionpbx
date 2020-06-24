@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+{strip}
 {* V11 2019-05-10 *}
 {* Variables used *}
 {* snom_time_zone - Timezone in SNOM format http://wiki.snom.com/Settings/timezone *}
@@ -26,7 +27,7 @@
 
 {$regularKeys = 16}
 {$snom_is_D3xx = false}
-
+{/strip}
 <settings>
 <phone-settings e="2">
 <timezone perm="!">{$snom_time_zone}</timezone>
@@ -35,6 +36,7 @@
 {if isset($snom_vpn_enable)}
 <vpn_on perm="R">{$snom_vpn_enable}</vpn_on>
 <vpn_tarball_url perm="R">https://{$http_auth_username}:{$http_auth_password}@{$domain_name}{$project_path}/app/provision/{$mac}-snomovpn.tar</vpn_tarball_url>
+{/if}
 <syslog_server perm="R">{$snom_syslog_server}</syslog_server>
 
 <gui_fkey1 perm="R">{if isset ($snom_gui_fkey1)}{$snom_gui_fkey1}{else}F_REGS{/if}</gui_fkey1>
