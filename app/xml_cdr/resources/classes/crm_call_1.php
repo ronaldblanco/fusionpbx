@@ -35,27 +35,41 @@ if (!class_exists('crm_call_1')) {
             );
             // Get correct hangup
 
-            $hangup_cause = strlen(strval($xml_varibles->originate_disposition)) > 0 ? strval($xml_varibles->originate_disposition) : strval($xml_varibles->hangup_cause);
+            $dialstatus = strval($xml_varibles->DIALSTATUS);
+            $sip_hangup_disposition = strval($xml_varibles->sip_hangup_disposition);
 
-            switch ($hangup_cause) {
-                case 'SUCCESS':
-                case 'NORMAL_CLEARING':
-                    $send_data['fields']['status'] = 'answered';
-                    break;
-                case 'CALL_REJECTED':
-                case 'SUBSCRIBER_ABSENT':
-                case 'USER_BUSY':
+            // Get correct hangup
+            switch ($dialstatus) {
+                case 'CANCEL':
+                case 'BUSY':
                     $send_data['fields']['status'] = 'busy';
                     break;
-                case 'NO_ANSWER':
-                case 'ALLOTTED_TIMEOUT':
-                case 'NO_USER_RESPONSE':
-                case 'ORIGINATOR_CANCEL':
-                case 'LOSE_RACE': // This cause usually in ring groups, so this call is not ended.
+                case 'NOANSWER':
                     $send_data['fields']['status'] = 'no answer';
                     break;
+                case 'SUCCESS':
+                    $send_data['fields']['status'] = 'answered';
+                    if ($sip_hangup_disposition == "recv_cancel") {
+                        $send_data['fields']['status'] = 'busy';
+                    }
+                    break;
                 default:
-                    $send_data['fields']['status'] = 'failed';
+                    // No Dialstatus
+                    switch ($sip_hangup_disposition) {
+                        case "send_cancel":
+                            $send_data['fields']['status'] = 'no answer';
+                            break;
+                        case "recv_bye":
+                        case "send_bye":
+                            $send_data['fields']['status'] = 'answered';
+                            break;
+                        case "send_refuse":
+                            $send_data['fields']['status'] = 'busy';
+                            break;
+                    }
+            }
+            if (!$send_data['fields']['status']) {
+                $send_data['fields']['status'] = 'failed';
             }
 
             $crm_name = strlen(strval($xml_varibles->crm_first_name)) > 0 ? strval($xml_varibles->crm_first_name) : "";
