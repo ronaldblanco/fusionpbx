@@ -108,55 +108,55 @@
 
 <functionKeys>
 {foreach $keys["expansion"] as $row}
-	{if $row.device_key_line == "" || $row.device_key_line == "0"}
-		{if $row.device_key_type == "line"}
-			<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
-		{else if $row.device_key_type == "blf"}
-			<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
-		{else}
-			<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
-		{/if}
-	{else}
-		{if $row.device_key_type == "line"}
-			<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
-		{else if $row.device_key_type == "blf"}
-			<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
-		{else}
-			<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
-		{/if}
-	{/if}
+    {if $row.device_key_line == "" || $row.device_key_line == "0"}
+        {if $row.device_key_type == "line"}
+<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+        {else if $row.device_key_type == "blf"}
+<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+        {else}
+<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+        {/if}
+    {else}
+        {if $row.device_key_type == "line"}
+<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+        {else if $row.device_key_type == "blf"}
+<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+        {else}
+<fkey idx="{$row.device_key_id-1+$regularKeys+$snom_is_D3xx*126}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+        {/if}
+    {/if}
 {/foreach}
 {foreach $keys["line"] as $row}
-	{if $row.device_key_id <= $regularKeys}
-		{if $row.device_key_line == "" || $row.device_key_line == "0"}
-			{if $row.device_key_type == "line"}
-				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
-			{else if $row.device_key_type == "blf"}
-				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
-			{else if $row.device_key_type == "keyevent"}
-				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" lp="on" perm="R">keyevent {$row.device_key_value}</fkey>
-			{else}
-				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
-			{/if}
-		{else}
-			{if $row.device_key_type == "line"}
-				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
-			{else if $row.device_key_type == "blf"}
-				<fkey idx="{$row.device_key_id-1}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
-			{else if $row.device_key_type == "keyevent"}
-				<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" lp="on" perm="R">keyevent {$row.device_key_value}</fkey>
-			{else}
-				<fkey idx="{$row.device_key_id-1}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
-			{/if}
-		{/if}
-	{else}
-		<!-- {$row.device_key_id} außerhalb des Bereichs -->
-	{/if}
+    {if $row.device_key_id <= $regularKeys}
+        {if $row.device_key_line == "" || $row.device_key_line == "0"}
+            {if $row.device_key_type == "line"}
+<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+            {else if $row.device_key_type == "blf"}
+<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+            {else if $row.device_key_type == "keyevent"}
+<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" lp="on" perm="R">keyevent {$row.device_key_value}</fkey>
+            {else}
+<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+            {/if}
+        {else}
+            {if $row.device_key_type == "line"}
+<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" perm="R">line</fkey>
+            {else if $row.device_key_type == "blf"}
+<fkey idx="{$row.device_key_id-1}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">blf &lt;sip:{$row.device_key_value}@{$domain_name};user=phone&gt;|**</fkey>
+            {else if $row.device_key_type == "keyevent"}
+<fkey idx="{$row.device_key_id-1}" context="active" label="{$row.device_key_label}" lp="on" perm="R">keyevent {$row.device_key_value}</fkey>
+            {else}
+<fkey idx="{$row.device_key_id-1}" context="{$row.device_key_line}" label="{$row.device_key_label}" perm="R">{$row.device_key_type} {$row.device_key_value} {$row.device_key_extension}</fkey>
+            {/if}
+        {/if}
+    {else}
+        <!-- {$row.device_key_id} außerhalb des Bereichs -->
+    {/if}
 {/foreach}
 </functionKeys>
 
 {if isset($snom_phonebook_url)}
-	{fetch file=''|cat:$snom_phonebook_url|cat:'&vendor=snom'}
+    {fetch file=''|cat:$snom_phonebook_url|cat:'&vendor=snom'}
 {/if}
 
 </settings>
