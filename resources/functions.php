@@ -865,18 +865,16 @@ function switch_module_is_running($fp, $mod) {
 
 //format a number (n) replace with a number (r) remove the number
 function format_string ($format, $data) {
-	$x=0;
+	$x = 0;
 	$tmp = '';
 	for ($i = 0; $i <= strlen($format); $i++) {
-		$tmp_format = strtolower(substr($format, $i, 1));
+		$tmp_format = substr($format, $i, 1);
 		if ($tmp_format == 'x') {
 			$tmp .= substr($data, $x, 1);
 			$x++;
-		}
-		elseif ($tmp_format == 'r') {
+		} elseif ($tmp_format == 'r') {
 			$x++;
-		}
-		else {
+		} else {
 			$tmp .= $tmp_format;
 		}
 	}
@@ -885,15 +883,26 @@ function format_string ($format, $data) {
 
 //get the format and use it to format the phone number
 	function format_phone($phone_number) {
+
+		// Left for backward compatibility
 		$phone_number = trim($phone_number, "+");
-		if (is_numeric($phone_number)) {
+
+		$tmp_phone_number = $phone_number;
+
+		if (isset($_SESSION["format"]["phone_allowed_characters"])) {
+			foreach ($_SESSION["format"]["phone_allowed_characters"] as &$phone_allowed_character) {
+				$tmp_phone_number = str_replace($phone_allowed_character, '', $tmp_phone_number);
+			}
+		}
+
+		if (is_numeric($tmp_phone_number)) {
 			if (isset($_SESSION["format"]["phone"])) foreach ($_SESSION["format"]["phone"] as &$format) {
-				$format_count = substr_count($format, 'x');
-				$format_count = $format_count + substr_count($format, 'R');
-				$format_count = $format_count + substr_count($format, 'r');
+				$tmp_format = strtolower($format);
+				$format_count = substr_count($tmp_format, 'x');
+				$format_count = $format_count + substr_count($tmp_format, 'r');
 				if ($format_count == strlen($phone_number)) {
 					//format the number
-					$phone_number = format_string($format, $phone_number);
+					$phone_number = format_string($tmp_format, $phone_number);
 				}
 			}
 		}
