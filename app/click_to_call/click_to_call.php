@@ -45,10 +45,8 @@
 	$language = new text;
 	$text = $language->get();
 
-
-
 //send the call
-	if (is_array($_GET) && isset($_GET['src']) && isset($_GET['dest'])) {
+	if (is_array($_REQUEST) && isset($_REQUEST['src']) && isset($_REQUEST['dest'])) {
 
 		$echo_message = "";
 		$api_result = array(
@@ -57,18 +55,20 @@
 		);
 
 	//retrieve submitted variables         
-		$src = check_str($_GET['src']);
-		$dest = check_str($_GET['dest']);
+		$src = check_str($_REQUEST['src']);
+		$dest = check_str($_REQUEST['dest']);
 
-		$src_cid_name = isset($_GET['src_cid_name']) ? check_str($_GET['src_cid_name']) : "";         
-		$src_cid_number = isset($_GET['src_cid_number']) ? check_str($_GET['src_cid_number']) : "";          
+		$src_cid_name = isset($_REQUEST['src_cid_name']) ? check_str($_REQUEST['src_cid_name']) : "";         
+		$src_cid_number = isset($_REQUEST['src_cid_number']) ? check_str($_REQUEST['src_cid_number']) : "";          
 		        
-		$auto_answer = isset($_GET['auto_answer']) ? check_str($_GET['auto_answer']) : "false";
+		$auto_answer = isset($_REQUEST['auto_answer']) ? check_str($_REQUEST['auto_answer']) : "false";
 
-		$rec = check_str($_GET['rec']); //true,false         
-		$ringback = isset($_GET['ringback']) ? check_str($_GET['ringback']) : "";
-		$context = isset($_GET['context']) ? check_str($_GET['context']) : "";
-		$click_to_call_form = check_str($_GET['click_to_call_form']);
+		$rec = check_str($_REQUEST['rec']); //true,false         
+		$ringback = isset($_REQUEST['ringback']) ? check_str($_REQUEST['ringback']) : "";
+		$context = isset($_REQUEST['context']) ? check_str($_REQUEST['context']) : "";
+		$click_to_call_form = check_str($_REQUEST['click_to_call_form']);
+
+		$is_bgapi = isset($_REQUEST['bgapi']) ? filter_var($_REQUEST['bgapi'], FILTER_VALIDATE_BOOLEAN) : False;
 
 		//clean up variable values
 		$src = str_replace(array('.','(',')','-',' '), '', $src);
@@ -235,7 +235,11 @@
 			$api_result['message'] .= "Connection to Event Socket failed.";
 		} else {
 			//display the last command
-			$switch_cmd = "api originate " . $source . " " . $dest_command;
+			$switch_cmd = "api originate ";
+			if ($is_bgapi) {
+				$switch_cmd = "bg" . $switch_cmd;
+			}
+			$switch_cmd .= $source . " " . $dest_command;
 			$echo_message .= "<div align='center'>" . $switch_cmd . "<br /><br /><strong>" . $src . " has called " . $dest . "</strong></div>\n";
 			//show the command result
 			$result_originate = trim(event_socket_request($fp, $switch_cmd));
