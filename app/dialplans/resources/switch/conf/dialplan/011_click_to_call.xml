@@ -1,4 +1,4 @@
-<context name="public">
+<context name="{v_context}">
 	<extension name="click-to-call" continue="true" app_uuid="b1cd7509-5576-469a-892d-d0cfb66a4198" global="true">
 		<condition field="click_to_call" expression="true">
 			<action application="set" data="user_from_host=${domain_name}" inline="true"/>
