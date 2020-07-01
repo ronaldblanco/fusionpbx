@@ -1,6 +1,6 @@
 <context name="{v_context}">
 	<extension name="click-to-call" continue="true" app_uuid="b1cd7509-5576-469a-892d-d0cfb66a4198">
-		<condition field="click_to_call" expression="true">
+		<condition field="click_to_call" expression="^true$">
 			<action application="set" data="user_from_host=${domain_name}" inline="true"/>
 			<action application="set" data="extension_uuid=${user_data ${sip_to_user}@${domain_name} var extension_uuid}" inline="true"/>
 			<action application="set" data="call_timeout=${user_data ${sip_to_user}@${domain_name} var call_timeout}" inline="true"/>
