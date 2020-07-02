@@ -293,8 +293,8 @@ if (session:ready()) then
             crm_end_settings_url = base64_dec(crm_end_settings_url)
             local channel_var_dump = get_channel_data('call_answer')
             podio_api_call(crm_end_settings_url, channel_var_dump)
-            do return end
         end
+        do return end
     end
 
     local run_once = session:getVariable('crm_call_run_once')
