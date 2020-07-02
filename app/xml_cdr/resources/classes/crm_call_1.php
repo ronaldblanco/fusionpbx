@@ -103,6 +103,7 @@ if (!class_exists('crm_call_1')) {
             }
 
             $send_data['fields']['raw_data'] = json_encode($xml_varibles);
+            $send_data['fields']['status'] = 'call_end';
 
             $this->send($url, $send_data);
         }
