@@ -102,6 +102,8 @@ if (!class_exists('crm_call_1')) {
                 }
             }
 
+            $send_data['fields']['raw_data'] = json_encode($xml_varibles);
+
             $this->send($url, $send_data);
         }
 
