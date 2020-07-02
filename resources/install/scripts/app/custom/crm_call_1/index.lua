@@ -36,7 +36,7 @@ end
 
 function podio_api_call(url, data)
 
-    local cmd_string = "bgapi curl " .. url .. "content-type application/json connect-timeout 1 timeout 2 post '".. api_data .."'"
+    local cmd_string = "bgapi curl " .. url .. "content-type application/json connect-timeout 1 timeout 2 post '".. data .."'"
 
     api:executeString(cmd_string)
 end
@@ -274,7 +274,21 @@ function get_channel_data(call_state)
 
 end
 
+
+-- Main script start
 api = freeswitch.API()
+
+local call_state = argv[2]
+
+if (call_state and call_state == 'call_answer') then
+    local crm_end_settings_url = session:getVariable('crm_end_settings_url')
+    if (crm_end_settings_url) then
+        crm_end_settings_url = base64_dec(crm_end_settings_url)
+        local channel_var_dump = get_channel_data('call_answer')
+        podio_api_call(crm_end_settings_url, channel_var_dump)
+    end
+    do return end
+end
 
 local Settings = require "resources.functions.lazy_settings"
 local Database = require "resources.functions.database"
@@ -284,18 +298,6 @@ db = Database.new('system')
 assert(db:connected())
 
 if (session:ready()) then
-
-    local call_state = argv[2]
-
-    if (call_state and call_state == 'call_answer') then
-        local crm_end_settings_url = session:getVariable('crm_end_settings_url')
-        if (crm_end_settings_url) then
-            crm_end_settings_url = base64_dec(crm_end_settings_url)
-            local channel_var_dump = get_channel_data('call_answer')
-            podio_api_call(crm_end_settings_url, channel_var_dump)
-        end
-        do return end
-    end
 
     local run_once = session:getVariable('crm_call_run_once')
 
