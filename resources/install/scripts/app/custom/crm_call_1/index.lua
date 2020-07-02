@@ -23,7 +23,7 @@ local main_number = "500"
 
 local log = require "resources.functions.log".crm_call_1
 
-function crm_api_call(url, data, is_return)
+function contact_api_call(url, data, is_return)
 
     local cmd_string = "curl " .. url .. "?phone_number=" .. data .. " connect-timeout 1 timeout 2 post"
 
@@ -34,9 +34,16 @@ function crm_api_call(url, data, is_return)
     return api:executeString(cmd_string)
 end
 
+function podio_api_call(url, data)
+
+    local cmd_string = "bgapi curl " .. url .. "content-type application/json connect-timeout 1 timeout 2 post '".. api_data .."'"
+
+    api:executeString(cmd_string)
+end
+
 -- Base64 encoding/decoding
 -- encoding
-function base_enc64(data)
+function base64_enc(data)
     local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
     return ((data:gsub('.', function(x) 
@@ -50,6 +57,25 @@ function base_enc64(data)
         return b:sub(c+1,c+1)
     end)..({ '', '==', '=' })[#data%3+1])
 end
+
+function base64_dec(data)
+
+    local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+    local data = string.gsub(data, '[^'..b..'=]', '')
+    return (data:gsub('.', function(x)
+        if (x == '=') then return '' end
+        local r,f='',(b:find(x)-1)
+        for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end
+        return r;
+    end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+        if (#x ~= 8) then return '' end
+        local c=0
+        for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
+        return string.char(c)
+    end))
+end
+
 
 function process_json_answer(responce)
 
@@ -230,6 +256,24 @@ function update_or_save(caller_id_number, transfer_extension)
 
 end
 
+function get_channel_data(call_state)
+
+    local uuid_dump = api:executeString('uuid_dump ' .. session:get_uuid())
+
+    local var_table = {}
+    var_table['call_state'] = call_state
+
+    for line in string.gmatch(uuid_dump, "([^\n]+)") do
+        local k, v = string.match(line, "^(.*):(.*)$", 1)
+        var_table[k] = v
+    end
+
+    local json = freeswitch.JSON()
+
+    return json:encode(var_table)
+
+end
+
 api = freeswitch.API()
 
 local Settings = require "resources.functions.lazy_settings"
@@ -240,6 +284,18 @@ db = Database.new('system')
 assert(db:connected())
 
 if (session:ready()) then
+
+    local call_state = argv[2]
+
+    if (call_state and call_state == 'call_answer') then
+        local crm_end_settings_url = session:getVariable('crm_end_settings_url')
+        if (crm_end_settings_url) then
+            crm_end_settings_url = base64_dec(crm_end_settings_url)
+            local channel_var_dump = get_channel_data('call_answer')
+            podio_api_call(crm_end_settings_url, channel_var_dump)
+            do return end
+        end
+    end
 
     local run_once = session:getVariable('crm_call_run_once')
 
@@ -265,11 +321,16 @@ if (session:ready()) then
     local crm_start_settings_url = settings:get('crm_call', 'start_url', 'text')
     local crm_end_settings_url = settings:get('crm_call', 'end_url', 'text')
 
-    session:execute("export", "crm_start_settings_url=" .. base_enc64(crm_start_settings_url))
-    session:execute("export", "crm_end_settings_url=" .. base_enc64(crm_end_settings_url))
+    session:execute("export", "crm_start_settings_url=" .. base64_enc(crm_start_settings_url))
+    session:execute("export", "crm_end_settings_url=" .. base64_enc(crm_end_settings_url))
     
     local caller_id_number = session:getVariable('caller_id_number') or ""
     local destination_number = session:getVariable('destination_number') or ""
+
+    -- Execute call_start to podio
+    local channel_var_dump = get_channel_data('call_start')
+    podio_api_call(crm_end_settings_url, channel_var_dump)
+    -- End call_start to podio
 
     if destination_number ~= main_number then
         log.info("It's not a main number, exiting...")
@@ -281,7 +342,7 @@ if (session:ready()) then
 
     if (caller_id_number ~= "" and #caller_id_number > 7) then
 
-        local responce = crm_api_call(crm_start_settings_url, caller_id_number, true)
+        local responce = contact_api_call(crm_start_settings_url, caller_id_number, true)
         log.notice("Response: " .. responce)
         local transfer_extension
         local first_name
