@@ -68,7 +68,7 @@
 		$context = isset($_REQUEST['context']) ? check_str($_REQUEST['context']) : "";
 		$click_to_call_form = check_str($_REQUEST['click_to_call_form']);
 
-		$originate_timeout = isset($_REQUEST['timeout']) ? check_str($_REQUEST['timeout']) : False;
+		$originate_timeout = isset($_REQUEST['timeout']) ? check_str($_REQUEST['timeout']) : "20";
 		$is_bgapi = isset($_REQUEST['bgapi']) ? filter_var($_REQUEST['bgapi'], FILTER_VALIDATE_BOOLEAN) : False;
 
 		//clean up variable values
@@ -225,10 +225,7 @@
 			$dest_command .= ",ringback='" . $ringback_value . "'";
 			$dest_command .= "}sofia/external/" . $dest . ")";
 		} else {
-			$dest_command = $dest . " XML " . $domain_name . " " . $src_cid_name . " " . $src_cid_number;
-			if ($originate_timeout) {
-				$dest_command .= " " . $originate_timeout;
-			}
+			$dest_command = $dest . " XML " . $domain_name . " " . $src_cid_name . " " . $src_cid_number . " " . $originate_timeout;
 		}
 
 	//create the even socket connection and send the event socket command
