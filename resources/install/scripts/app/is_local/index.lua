@@ -103,12 +103,25 @@ if (session:ready()) then
 
             --transfer the call
                 session:transfer(actual_destination_number, "XML", destination_context)
+                do return end
         end)
+
+        -- set the cache not to ask database again
+        key = "app:dialplan:outbound:is_local:" .. destination_number .. "@" .. domain_name
+        value = "none"
+        ok, err = cache.set(key, value, expire["is_local"])
+
         do return end
 
     end
 
     --cache is found
+    --check cache is not none
+    if (value == "none") then
+        log.notice("Call is not local. Source: cache")
+        do return end
+    end
+
     --add the function
     require "resources.functions.explode";
 
