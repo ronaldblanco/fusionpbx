@@ -62,13 +62,15 @@ if (session:ready()) then
         local dbh = Database.new('system');
 
         --select data from the database
-        local sql = "SELECT destination_number, destination_context "
+        local sql = "SELECT v_destinations.destination_number, v_destinations.destination_context "
         sql = sql .. "FROM v_destinations "
-        sql = sql .. "WHERE ("
-        sql = sql .. "destination_number LIKE '%" .. destination_number .. "'"
-        sql = sql .. ") "
-        sql = sql .. "AND destination_type = 'inbound' "
-        sql = sql .. "AND destination_enabled = 'true' "
+        sql = sql .. "JOIN v_domains"
+        sql = sql .. " ON v_destinations.domain_uuid = v_domains.domain_uuid "
+        sql = sql .. "WHERE"
+        sql = sql .. " v_destinations.destination_number LIKE '%" .. destination_number .. "'"
+        sql = sql .. " AND v_destinations.destination_type = 'inbound'"
+        sql = sql .. " AND v_destinations.destination_enabled = 'true'"
+        sql = sql .. " AND v_domains.domain_enabled = 'true'"
 
         if (debug["sql"]) then
             log.notice("SQL:" .. sql)
