@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 //restrict to command line only
 	if(defined('STDIN')) {
@@ -11,12 +11,11 @@
 		require_once "resources/classes/text.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 		$format = 'text'; //html, text
-	
+
 		//add multi-lingual support
 		$language = new text;
 		$text = $language->get();
-	}
-	else {
+	} else {
 		die('access denied');
 	}
 
@@ -39,15 +38,16 @@
 	$sql .= " school_bell_timezone as timezone ";
 	$sql .= "FROM v_school_bells ";
 	$sql .= "JOIN v_domains ON v_domains.domain_uuid = v_school_bells.domain_uuid ";
-	$sql .= " WHERE school_bell_min = :current_minute";
-	$sql .= " OR school_bell_min = -1";
-	
+	$sql .= " WHERE v_school_bells.school_bell_min = :current_minute";
+	$sql .= " OR v_school_bells.school_bell_min = -1";
+	$sql .= " AND v_domains.domain_enabled = 'true'";
+
 	$prep_statement = $db->prepare(check_sql($sql));
 	if (!$prep_statement) {
 		die('SQL forming error');
 	}
 	$prep_statement->bindValue('current_minute', $current_minute);
-	
+
 	if (!$prep_statement->execute()) {
 		die('SQL execute error');
 	}
@@ -115,7 +115,7 @@
 		$switch_cmd .= "call_timeout=".$school_bell_ring_timeout."}";
 		$switch_cmd .= "loopback/".$school_bell['extension']."/".$school_bell['context'];
 		$switch_cmd .= " &playback(".$school_bell['full_path'].")";
-		
+
 		event_socket_request($freeswitch_event_socket, $switch_cmd);
 
 	}
