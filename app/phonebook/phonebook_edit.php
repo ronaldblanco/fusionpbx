@@ -56,7 +56,7 @@
 		$phonenumber = check_str($_POST["phonenumber"]);
 		$phonebook_desc = check_str($_POST["phonebook_desc"]);
 		$phonebook_groups = isset($_POST["phonebook_groups"]) ? $_POST["phonebook_groups"] : [''];
-		
+
 		foreach ($phonebook_groups as $k => $v) {
 			$phonebook_groups[$k] = check_str($v);
 		}
@@ -121,10 +121,12 @@
 					if (strlen($phonebook_group) > 0) {
 						$sql = "INSERT INTO v_phonebook_to_groups (";
 						$sql .= "domain_uuid, ";
+						$sql .= "phonebook_to_group_uuid, ";
 						$sql .= "phonebook_uuid, ";
 						$sql .= "group_uuid) ";
 						$sql .= "VALUES ";
 						$sql .= "('$domain_uuid', ";
+						$sql .= "'" . uuid() . "', ";
 						$sql .= "'$phonebook_uuid', ";
 						$sql .= "'".$phonebook_group."')";
 						$db->exec(check_sql($sql));
@@ -147,7 +149,7 @@
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				unset($prep_statement, $sql);
-				
+
 				// Add group relations
 
 				$sql = "DELETE FROM v_phonebook_to_groups WHERE";
@@ -161,10 +163,12 @@
 					if (strlen($phonebook_group) > 0) {
 						$sql = "INSERT INTO v_phonebook_to_groups (";
 						$sql .= "domain_uuid, ";
+						$sql .= "phonebook_to_group_uuid, ";
 						$sql .= "phonebook_uuid, ";
 						$sql .= "group_uuid) ";
 						$sql .= "VALUES ";
 						$sql .= "('$domain_uuid', ";
+						$sql .= "'" . uuid() . "', ";
 						$sql .= "'$phonebook_uuid', ";
 						$sql .= "'".$phonebook_group."')";
 						$prep_statement = $db->prepare(check_sql($sql));
@@ -316,7 +320,7 @@
     echo $text['description-phonebook_phonenumber']."\n";
     echo "</td>\n";
 	echo "</tr>\n";
-	
+
 	// Description
     echo "<tr>\n";
     echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
@@ -342,7 +346,7 @@
     echo $text['description-phonebook_groups']."\n";
     echo "</td>\n";
     echo "</tr>\n";
-	
+
 	foreach ($phonebook_groups_all as $phonebook_group) {
 
 		$phonebook_group = array_map("escape", $phonebook_group);

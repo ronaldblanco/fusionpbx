@@ -85,6 +85,10 @@
 			$echo_message .= "<div align='center'><strong>Connection to Event Socket failed.</strong></div>";
 			$api_result['status'] = '500';
 			$api_result['message'] .= "Connection to Event Socket failed";
+			if ($click_to_call_form != 'true') {
+				echo json_encode($api_result);
+				die;
+			}
 		}
 
 		$src = explode("@", $src)[0];

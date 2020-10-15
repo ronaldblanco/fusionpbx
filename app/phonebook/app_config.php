@@ -170,6 +170,12 @@
                 $apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "domain_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
                 $z += 1;
+                $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_to_group_uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
+                $apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "char(36)";
+                $apps[$x]['db'][$y]['fields'][$z]['key']['type'] = "primary";
+                $z += 1;
                 $apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "phonebook_uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "uuid";
                 $apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
