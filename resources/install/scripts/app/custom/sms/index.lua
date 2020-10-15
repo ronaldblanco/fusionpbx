@@ -349,6 +349,41 @@ if sms_source == 'internal' then
 
 	-- Cleanup text
 	sms_message_text = text_cleanup(sms_message_text)
+	
+	-- RONALD UPDATE to handler MMS using Acrobits GroundWire using external php file---------------------------------------------------------------------------------
+	MMS = false --Default SMS
+	log.debug("RONALD UPDATE!")
+	attch = sms_message_text:find("attachments")
+	if(attch) then
+		log.debug("Message type it is MMS!; Prepare and sent using external handler! Domian_id:" .. domain_uuid)
+		
+		-- Send to the MMS external handler provider using curl
+		sms_message_text = sms_message_text:gsub(" ","___")
+		mmscmd = "curl https://localhost/app/sms/hook/sms_hook_vi_new_outbound.php?from=" .. caller_id_from .. "&to=" .. to_user .. "&domain=" .. domain_uuid .. "&data=" .. sms_message_text
+		MMS = true
+
+		if opts.d then log.info("Using CURL command " .. mmscmd) end
+
+		api:executeString(mmscmd)
+		
+		sms_message_text = "A MMS message with attachemnts was send to handler: https://domain.com/handler.php!"
+		
+	else
+		log.debug("Message type it is SMS!; Nothing to do in external handler!; internal operation! Domain_id:" .. domain_uuid)
+	end
+	
+	if(domain_uuid == "8765765" and MMS == false) then -- Message from Domain and type SMS
+		log.debug("SMS from domain!, Notification to the Crm it is nedeed!")
+		sms_message_text_new = sms_message_text:gsub(" ","___")
+		crmnotification = "curl https://domain.com/sendSMS.php?from=" .. caller_id_from .. "&to=" .. to_user .. "&key=" .. domain_uuid .. "&text=" .. sms_message_text_new
+		api:executeString(crmnotification)
+	end
+	
+	-- print("RONALD TEST")
+	-- log.info("Using CURL command " .. cmd)
+	-- log.info("Using CURL command " .. sms_message_text)
+	-- MMS example: {attachments:[{content-size:359019,content-type:image/jpeg,content-url:https://mmmsg.acrobits.net/1ly5nblnk4w26dr867ttbbet4iamqddlf,encryption-key:34A342F2AB95DF833BF44185528B7A62,hash:2539213394}],body:Fffffffffffff}
+	-- END of RONALD UPDATE -----------------------------------------------------------------------------------------------------------------------------------------
 
 	--replace variables for their value
 	if (sms_carrier_url) then
@@ -374,12 +409,14 @@ if sms_source == 'internal' then
 		sms_carrier_body = ""
 	end
 
-	-- Send to the provider using curl
-	cmd = "curl " .. sms_carrier_url .. " content-type " .. sms_carrier_content_type .. " " .. sms_carrier_method .. " " .. sms_carrier_body
+	if(MMS == false) then -- ONLY SEND SMS; MMS are HANDLER APART in RONALD UPDATE Code section--------------
+		-- Send to the provider using curl
+		cmd = "curl " .. sms_carrier_url .. " content-type " .. sms_carrier_content_type .. " " .. sms_carrier_method .. " " .. sms_carrier_body
 
-	if opts.d then log.info("Using CURL command " .. cmd) end
+		if opts.d then log.info("Using CURL command " .. cmd) end
 
-	api:executeString(cmd)
+		api:executeString(cmd)
+	end -----------------------------------------------------------------------------------------------------
 
 	local params= {
 		domain_uuid = domain_uuid,
