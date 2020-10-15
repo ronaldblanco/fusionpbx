@@ -3,6 +3,9 @@
 		<condition>
 			<action application="export" data="origination_callee_id_name=${destination_number}"/>
 			<action application="set" data="RFC2822_DATE=${strftime(%a, %d %b %Y %T %z)}"/>
+			<action application="set" data="concurrent_calls_limit=2"/>
+			<action application="set" data="client_tech_prefix=0000"/>
+			<action application="set" data="record_session=true"/>
 		</condition>
 	</extension>
 </context>
