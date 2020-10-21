@@ -22,14 +22,16 @@
 
 --get the variables
 	domain_name = session:getVariable("domain_name");
+	from = session:getVariable("caller_id_number");
+	to = session:getVariable("destination_number");
 	--domain_uuid = session:getVariable("domain_uuid");
 	--context = session:getVariable("context");
 	--user = session:getVariable("sip_auth_username")
 		--or session:getVariable("username");
 
 --get the argv values
-	from = argv[2];
-	to = argv[3];
+	--from = argv[2];
+	--to = argv[3];
 
 --freeswitch.consoleLog("NOTICE", "[LIMIT REPORT] " .. "RONALD LUA TEST limit_report FSLOG" .. "\n")
 
