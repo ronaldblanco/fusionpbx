@@ -1181,7 +1181,7 @@ function number_pad($number,$n) {
 			if ($max_characters+$x >= strlen($string)) { return $string; }
 			if ($preserve_word) {
 				for ($x = 0; $x < strlen($string); $x++) {
-					if ($string{$max_characters+$x} == " ") {
+					if ($string[$max_characters+$x] == " ") {
 						return substr($string,0,$max_characters+$x)." ...";
 					}
 					else { continue; }
