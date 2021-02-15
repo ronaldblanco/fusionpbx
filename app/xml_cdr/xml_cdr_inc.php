@@ -103,7 +103,7 @@
 		$leg = check_str($_REQUEST["leg"]);
 	}
 
-	if(!permission_exists(xml_cdr_b_leg)){
+	if(!permission_exists('xml_cdr_b_leg')){
 		$leg = 'a';
 	}
 
@@ -127,6 +127,10 @@
 	if (strlen($caller_extension_uuid) > 0 && is_uuid($caller_extension_uuid)) {
 		$sql_where_ands[] = "e.extension_uuid = '".$caller_extension_uuid."'";
 	}
+	if (strlen($caller_id_number) > 0) {
+                $mod_caller_id_number = str_replace("*", "%", $caller_id_number);
+                $sql_where_ands[] = "caller_id_number like '".$mod_caller_id_number."'";
+        }
 	if (strlen($caller_destination) > 0) {
 		$mod_caller_destination = str_replace("*", "%", $caller_destination);
 		$sql_where_ands[] = "caller_destination like '".$mod_caller_destination."'";
@@ -262,7 +266,7 @@
 			}
 
 			// concatenate the 'or's array, then add to the 'and's array
-			if (sizeof($sql_where_ors) > 0) {
+			if ((is_array($sql_where_ors)) && (sizeof($sql_where_ors) > 0)) {
 				$sql_where_ands[] = "( ".implode(" or ", $sql_where_ors)." )";
 			}
 		}
@@ -272,7 +276,7 @@
 	}
 
 	// concatenate the 'ands's array, add to where clause
-	if (sizeof($sql_where_ands) > 0) {
+	if ((is_array($sql_where_ands)) && (sizeof($sql_where_ands) > 0)) {
 		$sql_where = " and ".implode(" and ", $sql_where_ands);
 	}
 
